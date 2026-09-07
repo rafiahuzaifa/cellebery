@@ -16,20 +16,17 @@ const categories = [
   {
     label: "Headphones",
     detail: "Immersive. Powerful. Personal.",
-    image:
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85",
+    image: "/ChatGPT%20Image%20Aug%2027,%202026,%2005_22_17%20PM.png",
   },
   {
     label: "Earbuds",
     detail: "Small form. Big sound.",
-    image:
-      "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=1200&q=85",
+    image: "/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_17%20PM.png",
   },
   {
     label: "Speakers",
     detail: "Turn every moment up.",
-    image:
-      "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=1200&q=85",
+    image: "/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png",
   },
 ];
 
@@ -86,16 +83,16 @@ export default function Home() {
           muted
           loop
           playsInline
-          poster="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=2200&q=90"
+          poster="/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png"
           aria-hidden="true"
         >
-          <source src="/audio-motion.mp4" type="video/mp4" />
+          <source src="/CELIBERY_Bluetooth_speaker_comme…_202609080042.mp4" type="video/mp4" />
         </video>
         <div
           className="absolute inset-0 bg-cover bg-[center_38%] opacity-75"
           style={{
             backgroundImage:
-              "linear-gradient(90deg, #080a0c 6%, rgba(8,10,12,.74) 42%, rgba(8,10,12,.14) 100%), url(https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=2200&q=90)",
+              "linear-gradient(90deg, #080a0c 6%, rgba(8,10,12,.74) 42%, rgba(8,10,12,.14) 100%), url('/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png')",
           }}
         />
         <div className="grain absolute inset-0" />
@@ -132,7 +129,7 @@ export default function Home() {
       <section id="featured" className="relative border-y border-white/10 bg-[#101416] px-6 py-24 lg:px-12 lg:py-32">
         <div className="mx-auto grid max-w-[1440px] items-center gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
           <div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{copy.featured}</p><h2 className="display-font text-6xl font-semibold uppercase leading-[0.88] sm:text-8xl">{isArabic ? <>اسمع<br />كل<br /><span className="text-white/35">تفصيل.</span></> : <>Hear<br />every<br /><span className="text-white/35">detail.</span></>}</h2><p className="mt-8 max-w-sm text-sm leading-7 text-white/55">{copy.featuredBody}</p><div className="mt-10 flex items-center gap-5"><Link href="/shop/x7-pro" className="inline-flex items-center gap-6 bg-white px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-[#9ff6ed]">{copy.discoverX7} <ArrowUpRight size={15} /></Link><span className="text-sm text-white/45">SAR 499</span></div></div>
-          <div className="relative aspect-[1.1] overflow-hidden bg-[#171d1e]"><div className="absolute inset-0 bg-cover bg-center opacity-80" style={{ backgroundImage: "linear-gradient(90deg, rgba(16,20,22,.1), rgba(16,20,22,.3)), url(https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=1600&q=85)" }} /><div className="absolute bottom-6 left-6 flex gap-2">{stats.map(([value, label]) => <div key={value} className="border border-white/20 bg-[#080a0c]/75 px-3 py-3 backdrop-blur-md"><p className="text-sm font-semibold text-[#9ff6ed]">{value}</p><p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-white/55">{label}</p></div>)}</div></div>
+          <div className="relative aspect-[1.1] overflow-hidden bg-[#171d1e]"><div className="absolute inset-0 bg-cover bg-center opacity-80" style={{ backgroundImage: "linear-gradient(90deg, rgba(16,20,22,.1), rgba(16,20,22,.3)), url('/ChatGPT%20Image%20Aug%2027,%202026,%2005_22_17%20PM.png')" }} /><div className="absolute bottom-6 left-6 flex gap-2">{stats.map(([value, label]) => <div key={value} className="border border-white/20 bg-[#080a0c]/75 px-3 py-3 backdrop-blur-md"><p className="text-sm font-semibold text-[#9ff6ed]">{value}</p><p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-white/55">{label}</p></div>)}</div></div>
         </div>
       </section>
 
@@ -145,10 +142,10 @@ export default function Home() {
               muted
               loop
               playsInline
-              poster="https://images.unsplash.com/photo-1518441312948-7f0e0e2e0d9c?auto=format&fit=crop&w=1800&q=85"
+              poster="/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png"
               aria-label={isArabic ? "فيديو تجربة CELIBERY الصوتية" : "CELIBERY sound experience video"}
             >
-              <source src="/audio-motion.mp4" type="video/mp4" />
+              <source src="/Person_holding_Bluetooth_speaker_202609080042.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-gradient-to-t from-[#080a0c] via-transparent to-transparent" />
             <div className="absolute bottom-7 left-7 right-7 flex items-end justify-between gap-5 lg:bottom-10 lg:left-10 lg:right-10">
@@ -165,7 +162,7 @@ export default function Home() {
 
       <section id="story" className="mx-auto grid max-w-[1440px] gap-12 px-6 py-24 lg:grid-cols-[1fr_1fr] lg:items-end lg:px-12 lg:py-36"><div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{copy.why}</p><h2 className="display-font max-w-2xl text-5xl font-semibold uppercase leading-[0.9] sm:text-7xl">{isArabic ? <>الصوت يجب<br /><span className="text-white/35">أن يرافقك.</span></> : <>Sound should<br /><span className="text-white/35">follow you.</span></>}</h2></div><div className="max-w-md justify-self-end"><div className="mb-8 flex items-center gap-3 text-[#9ff6ed]"><Volume2 size={19} strokeWidth={1.5} /><span className="text-[10px] uppercase tracking-[0.18em]">{isArabic ? "مصمم لكل تردد" : "Built for every frequency"}</span></div><p className="text-lg leading-8 text-white/55">{isArabic ? "من أول نغمة في الرياض إلى آخر ضوء على البحر الأحمر، تمنحك CELIBERY تفاصيل وعمقاً وحرية في كل لحظة." : "From the first note in Riyadh to the last light on the Red Sea, CELIBERY brings detail, depth, and freedom to every moment."}</p><Link href="/shop" className="mt-8 inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] transition hover:text-[#9ff6ed]">{copy.philosophy} <ArrowUpRight size={15} /></Link></div></section>
 
-      <footer className="border-t border-white/10 px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-8 sm:flex-row sm:items-end"><div><div className="mb-4 text-lg font-bold tracking-[0.28em]">CELIBERY</div><p className="text-xs text-white/40">Sound without limits.</p></div><div className="flex gap-6 text-[10px] uppercase tracking-[0.16em] text-white/45"><a href="#shop" className="transition hover:text-white">Shop</a><a href="#story" className="transition hover:text-white">Support</a><a href="#story" className="transition hover:text-white">Instagram</a></div></div></footer>
+      <footer className="border-t border-white/10 px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-8 sm:flex-row sm:items-end"><div><div className="brand-mark mb-4" role="img" aria-label="CELIBERY" /><p className="text-xs text-white/40">Sound without limits.</p></div><div className="flex gap-6 text-[10px] uppercase tracking-[0.16em] text-white/45"><a href="#shop" className="transition hover:text-white">Shop</a><a href="#story" className="transition hover:text-white">Support</a><a href="#story" className="transition hover:text-white">Instagram</a></div></div></footer>
     </main>
   );
 }

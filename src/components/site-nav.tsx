@@ -29,7 +29,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
   return (
     <>
       <nav className={`relative z-30 mx-auto flex max-w-[1440px] items-center justify-between px-6 py-7 lg:px-12 ${textTone}`}>
-        <Link href="/" className="text-lg font-bold tracking-[0.28em]">CELIBERY</Link>
+        <Link href="/" aria-label="CELIBERY home" className="brand-mark" />
         <div className="hidden items-center gap-8 text-[10px] font-semibold uppercase tracking-[0.18em] lg:flex">
           {links.map(([label, href], index) => <Link key={label} className={index === 0 ? "text-white" : "text-white/60 transition hover:text-[#9ff6ed]"} href={href}>{label}</Link>)}
         </div>
@@ -42,7 +42,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
       </nav>
 
       {menuOpen && <div className="absolute inset-0 z-50 min-h-screen bg-[#080a0c] p-6 lg:hidden">
-        <div className="flex items-center justify-between"><Link href="/" className="text-lg font-bold tracking-[0.28em]" onClick={() => setMenuOpen(false)}>CELIBERY</Link><button aria-label={isArabic ? "إغلاق القائمة" : "Close navigation"} className="grid size-10 place-items-center rounded-full border border-white/15" onClick={() => setMenuOpen(false)}><X size={18} /></button></div>
+        <div className="flex items-center justify-between"><Link href="/" aria-label="CELIBERY home" className="brand-mark" onClick={() => setMenuOpen(false)} /><button aria-label={isArabic ? "إغلاق القائمة" : "Close navigation"} className="grid size-10 place-items-center rounded-full border border-white/15" onClick={() => setMenuOpen(false)}><X size={18} /></button></div>
         <div className="mt-24 flex flex-col gap-7 text-4xl font-light tracking-[-0.06em]">{links.map(([label, href]) => <Link key={label} href={href} onClick={() => setMenuOpen(false)}>{label}</Link>)}</div>
       </div>}
     </>
