@@ -83,17 +83,12 @@ export default function Home() {
           muted
           loop
           playsInline
-          poster="/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png"
           aria-hidden="true"
         >
           <source src="/CELIBERY_Bluetooth_speaker_comme…_202609080042.mp4" type="video/mp4" />
         </video>
         <div
-          className="absolute inset-0 bg-cover bg-[center_38%] opacity-75"
-          style={{
-            backgroundImage:
-              "linear-gradient(90deg, #080a0c 6%, rgba(8,10,12,.74) 42%, rgba(8,10,12,.14) 100%), url('/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png')",
-          }}
+          className="absolute inset-0 bg-linear-to-r from-[#080a0c] via-[#080a0c]/65 to-[#080a0c]/10"
         />
         <div className="grain absolute inset-0" />
         <SiteNav overlay />
