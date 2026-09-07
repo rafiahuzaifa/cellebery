@@ -1,0 +1,216 @@
+"use client";
+
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { LanguageToggle, useLocale } from "@/components/locale-provider";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  Headphones,
+  Menu,
+  Search,
+  ShoppingBag,
+  Sparkles,
+  Volume2,
+  X,
+} from "lucide-react";
+import { useState } from "react";
+
+const categories = [
+  {
+    label: "Headphones",
+    detail: "Immersive. Powerful. Personal.",
+    image:
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85",
+  },
+  {
+    label: "Earbuds",
+    detail: "Small form. Big sound.",
+    image:
+      "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=1200&q=85",
+  },
+  {
+    label: "Speakers",
+    detail: "Turn every moment up.",
+    image:
+      "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=1200&q=85",
+  },
+];
+
+const stats = [
+  ["40H", "Battery life"],
+  ["ANC", "Noise cancellation"],
+  ["5.3", "Bluetooth"],
+];
+
+export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { isArabic } = useLocale();
+  const navItems = isArabic ? ["المتجر", "سماعات الرأس", "سماعات الأذن", "مكبرات الصوت", "قصتنا"] : ["Shop", "Headphones", "Earbuds", "Speakers", "Our story"];
+  const copy = isArabic ? {
+    eyebrow: "جيل جديد من الصوت",
+    heroLast: "بلا حدود.",
+    explore: "استكشف المجموعة",
+    discover: "اكتشف CELIBERY",
+    country: "المملكة العربية السعودية / ٢٠٢٦",
+    subline: "صوت فاخر مصمم لحياتك اليومية.",
+    scroll: "مرر للاستكشاف",
+    collection: "اكتشف ترددك",
+    choose: "اختر صوتك.",
+    featured: "السلسلة المميزة / X7 Pro",
+    hear: "اسمع كل تفصيل.",
+    featuredBody: "صوت غامر، وإلغاء ضوضاء متكيف، وراحة طوال اليوم مصممة لحركتك.",
+    discoverX7: "اكتشف X7 Pro",
+    why: "لماذا CELIBERY",
+    follow: "الصوت يجب أن يرافقك.",
+    philosophy: "فلسفتنا",
+  } : {
+    eyebrow: "New era of sound",
+    heroLast: "limits.",
+    explore: "Explore collection",
+    discover: "Discover CELIBERY",
+    country: "Saudi Arabia / 2026",
+    subline: "Premium audio engineered for everyday life.",
+    scroll: "Scroll to explore",
+    collection: "Find your frequency",
+    choose: "Choose your sound.",
+    featured: "The signature series / X7 Pro",
+    hear: "Hear every detail.",
+    featuredBody: "Immersive sound, adaptive noise cancellation, and all-day comfort engineered for the way you move.",
+    discoverX7: "Discover X7 Pro",
+    why: "Why CELIBERY",
+    follow: "Sound should follow you.",
+    philosophy: "Our philosophy",
+  };
+
+  return (
+    <main className="overflow-hidden bg-[#080a0c] text-[#f3f5f5]">
+      <section className="relative min-h-[720px] h-screen max-h-[980px] overflow-hidden border-b border-white/10">
+        <video
+          className="absolute inset-0 h-full w-full object-cover opacity-35 mix-blend-screen"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=2200&q=90"
+          aria-hidden="true"
+        >
+          <source src="/audio-motion.mp4" type="video/mp4" />
+        </video>
+        <div
+          className="absolute inset-0 bg-cover bg-[center_38%] opacity-75"
+          style={{
+            backgroundImage:
+              "linear-gradient(90deg, #080a0c 6%, rgba(8,10,12,.74) 42%, rgba(8,10,12,.14) 100%), url(https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=2200&q=90)",
+          }}
+        />
+        <div className="grain absolute inset-0" />
+        <nav className="relative z-10 mx-auto flex max-w-[1440px] items-center justify-between px-6 py-7 lg:px-12">
+          <a href="#top" className="text-lg font-bold tracking-[0.28em] text-white">
+            CELIBERY
+          </a>
+          <div className="hidden items-center gap-8 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/65 lg:flex">
+            {navItems.map((item, index) => (
+              <a key={item} className={index === 0 ? "text-white" : ""} href={index === 4 ? "#story" : "#shop"}>
+                {item}
+              </a>
+            ))}
+          </div>
+          <div className="flex items-center gap-2">
+            <button aria-label="Search" className="hidden size-10 place-items-center rounded-full border border-white/15 text-white/75 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed] sm:grid">
+              <Search size={16} strokeWidth={1.5} />
+            </button>
+            <button aria-label="Shopping bag" className="grid size-10 place-items-center rounded-full border border-white/15 text-white/75 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed]">
+              <ShoppingBag size={16} strokeWidth={1.5} />
+            </button>
+            <button aria-label="Open navigation" className="grid size-10 place-items-center rounded-full border border-white/15 text-white/75 lg:hidden" onClick={() => setMenuOpen(true)}>
+              <Menu size={17} strokeWidth={1.5} />
+            </button>
+            <LanguageToggle />
+          </div>
+        </nav>
+
+        {menuOpen && (
+          <div className="absolute inset-0 z-20 bg-[#080a0c] p-6 lg:hidden">
+            <div className="flex items-center justify-between">
+              <span className="text-lg font-bold tracking-[0.28em]">CELIBERY</span>
+              <button aria-label="Close navigation" className="grid size-10 place-items-center rounded-full border border-white/15" onClick={() => setMenuOpen(false)}>
+                <X size={18} />
+              </button>
+            </div>
+            <div className="mt-24 flex flex-col gap-7 text-4xl font-light tracking-[-0.06em]">
+              {navItems.map((item, index) => (
+                <a key={item} href={index === 4 ? "#story" : "#shop"} onClick={() => setMenuOpen(false)}>{item}</a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div id="top" className="relative z-10 mx-auto flex h-[calc(100%-100px)] max-w-[1440px] flex-col justify-end px-6 pb-12 lg:px-12 lg:pb-20">
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl">
+            <p className="mb-5 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]"><Sparkles size={13} /> {copy.eyebrow}</p>
+            <h1 className="display-font max-w-xl text-7xl font-semibold uppercase leading-[0.85] sm:text-8xl lg:text-[9.5rem]">{isArabic ? <>صوت<br />{copy.heroLast}</> : <>Sound<br />without<br /><span className="text-white/45">{copy.heroLast}</span></>}</h1>
+            <div className="mt-9 flex flex-col gap-5 sm:flex-row sm:items-center">
+              <Link href="/shop" className="group inline-flex w-fit items-center gap-8 bg-[#9ff6ed] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white">{copy.explore} <ArrowUpRight size={15} className="transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link>
+              <a href="#story" className="inline-flex w-fit items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/75 transition hover:text-[#9ff6ed]">{copy.discover} <ArrowDownRight size={15} /></a>
+            </div>
+          </motion.div>
+          <div className="mt-12 flex items-end justify-between border-t border-white/20 pt-4 text-[10px] uppercase tracking-[0.17em] text-white/45">
+            <span>{copy.country}</span><span className="hidden sm:block">{copy.subline}</span><span className="flex items-center gap-2">{copy.scroll} <ArrowDownRight size={13} /></span>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-white/10 bg-[#0d1113] px-6 py-5 lg:px-12">
+        <div className="mx-auto grid max-w-[1440px] grid-cols-2 gap-5 text-[10px] uppercase tracking-[0.16em] text-white/55 sm:grid-cols-4">
+          {[["01", "Fast Saudi delivery"], ["02", "Secure payment"], ["03", "Two-year warranty"], ["04", "Here when you need us"]].map(([number, label]) => <div key={number} className="flex items-center gap-3"><span className="text-[#9ff6ed]">{number}</span>{label}</div>)}
+        </div>
+      </section>
+
+      <section id="shop" className="mx-auto max-w-[1440px] px-6 py-24 lg:px-12 lg:py-36">
+        <div className="mb-12 flex items-end justify-between gap-5"><div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{copy.collection}</p><h2 className="display-font text-5xl font-semibold uppercase sm:text-7xl">{isArabic ? <>اختر<br />صوتك.</> : <>Choose<br />your sound.</>}</h2></div><Link href="/shop" className="hidden items-center gap-2 text-[10px] uppercase tracking-[0.17em] text-white/60 transition hover:text-[#9ff6ed] sm:flex">{isArabic ? "عرض كل المنتجات" : "View all products"} <ArrowUpRight size={15} /></Link></div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {categories.map((category, index) => <motion.a whileHover={{ y: -5 }} transition={{ duration: 0.25 }} href="#featured" key={category.label} className="group relative aspect-[0.82] overflow-hidden bg-[#151a1c] p-6 sm:p-8"><div className="absolute inset-0 bg-cover bg-center opacity-65 transition duration-700 group-hover:scale-105 group-hover:opacity-90" style={{ backgroundImage: `linear-gradient(180deg, rgba(8,10,12,.12), #080a0c 95%), url(${category.image})` }} /><div className="relative flex h-full flex-col justify-between"><span className="flex size-9 items-center justify-center rounded-full border border-white/30 text-xs text-white/60">0{index + 1}</span><div><h3 className="display-font text-4xl font-semibold uppercase">{category.label}</h3><p className="mt-2 text-sm text-white/55">{category.detail}</p><span className="mt-7 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9ff6ed] opacity-0 transition group-hover:opacity-100">Explore <ArrowUpRight size={14} /></span></div></div></motion.a>)}
+        </div>
+      </section>
+
+      <section id="featured" className="relative border-y border-white/10 bg-[#101416] px-6 py-24 lg:px-12 lg:py-32">
+        <div className="mx-auto grid max-w-[1440px] items-center gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
+          <div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{copy.featured}</p><h2 className="display-font text-6xl font-semibold uppercase leading-[0.88] sm:text-8xl">{isArabic ? <>اسمع<br />كل<br /><span className="text-white/35">تفصيل.</span></> : <>Hear<br />every<br /><span className="text-white/35">detail.</span></>}</h2><p className="mt-8 max-w-sm text-sm leading-7 text-white/55">{copy.featuredBody}</p><div className="mt-10 flex items-center gap-5"><Link href="/shop/x7-pro" className="inline-flex items-center gap-6 bg-white px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-[#9ff6ed]">{copy.discoverX7} <ArrowUpRight size={15} /></Link><span className="text-sm text-white/45">SAR 499</span></div></div>
+          <div className="relative aspect-[1.1] overflow-hidden bg-[#171d1e]"><div className="absolute inset-0 bg-cover bg-center opacity-80" style={{ backgroundImage: "linear-gradient(90deg, rgba(16,20,22,.1), rgba(16,20,22,.3)), url(https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=1600&q=85)" }} /><div className="absolute bottom-6 left-6 flex gap-2">{stats.map(([value, label]) => <div key={value} className="border border-white/20 bg-[#080a0c]/75 px-3 py-3 backdrop-blur-md"><p className="text-sm font-semibold text-[#9ff6ed]">{value}</p><p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-white/55">{label}</p></div>)}</div></div>
+        </div>
+      </section>
+
+      <section className="border-b border-white/10 bg-[#0d1113] px-6 py-6 lg:px-12">
+        <div className="mx-auto grid max-w-[1440px] gap-5 lg:grid-cols-[1.35fr_0.65fr]">
+          <div className="group relative min-h-[360px] overflow-hidden bg-[#151a1c] lg:min-h-[520px]">
+            <video
+              className="absolute inset-0 h-full w-full object-cover opacity-70 transition duration-1000 group-hover:scale-105 group-hover:opacity-90"
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster="https://images.unsplash.com/photo-1518441312948-7f0e0e2e0d9c?auto=format&fit=crop&w=1800&q=85"
+              aria-label={isArabic ? "فيديو تجربة CELIBERY الصوتية" : "CELIBERY sound experience video"}
+            >
+              <source src="/audio-motion.mp4" type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#080a0c] via-transparent to-transparent" />
+            <div className="absolute bottom-7 left-7 right-7 flex items-end justify-between gap-5 lg:bottom-10 lg:left-10 lg:right-10">
+              <div><p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9ff6ed]">{isArabic ? "صوت يتحرك معك" : "Sound in motion"}</p><h2 className="display-font max-w-lg text-4xl font-semibold uppercase leading-[0.9] sm:text-6xl">{isArabic ? <>استمع<br />بشكل مختلف.</> : <>Listen<br />differently.</>}</h2></div>
+              <span className="hidden size-12 shrink-0 items-center justify-center rounded-full border border-white/30 text-[#9ff6ed] sm:flex"><ArrowUpRight size={18} /></span>
+            </div>
+          </div>
+          <div className="flex min-h-[360px] flex-col justify-between bg-[#9ff6ed] p-7 text-[#080a0c] lg:min-h-[520px] lg:p-10">
+            <div className="flex items-center justify-between"><Headphones size={24} strokeWidth={1.25} /><span className="text-[10px] font-bold uppercase tracking-[0.18em]">CELIBERY / 01</span></div>
+            <div><p className="mb-4 text-[10px] font-bold uppercase tracking-[0.18em]">{isArabic ? "هندسة الصوت" : "Audio engineering"}</p><p className="max-w-xs text-3xl font-semibold leading-[0.95] tracking-[-0.05em]">{isArabic ? "تفاصيل أكثر. ضوضاء أقل. حرية أكبر." : "More detail. Less noise. More freedom."}</p><Link href="/shop/x7-pro" className="mt-8 inline-flex items-center gap-3 border-b border-[#080a0c] pb-2 text-[10px] font-bold uppercase tracking-[0.16em]">{isArabic ? "اكتشف X7 Pro" : "Discover X7 Pro"} <ArrowUpRight size={15} /></Link></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="story" className="mx-auto grid max-w-[1440px] gap-12 px-6 py-24 lg:grid-cols-[1fr_1fr] lg:items-end lg:px-12 lg:py-36"><div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{copy.why}</p><h2 className="display-font max-w-2xl text-5xl font-semibold uppercase leading-[0.9] sm:text-7xl">{isArabic ? <>الصوت يجب<br /><span className="text-white/35">أن يرافقك.</span></> : <>Sound should<br /><span className="text-white/35">follow you.</span></>}</h2></div><div className="max-w-md justify-self-end"><div className="mb-8 flex items-center gap-3 text-[#9ff6ed]"><Volume2 size={19} strokeWidth={1.5} /><span className="text-[10px] uppercase tracking-[0.18em]">{isArabic ? "مصمم لكل تردد" : "Built for every frequency"}</span></div><p className="text-lg leading-8 text-white/55">{isArabic ? "من أول نغمة في الرياض إلى آخر ضوء على البحر الأحمر، تمنحك CELIBERY تفاصيل وعمقاً وحرية في كل لحظة." : "From the first note in Riyadh to the last light on the Red Sea, CELIBERY brings detail, depth, and freedom to every moment."}</p><Link href="/shop" className="mt-8 inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] transition hover:text-[#9ff6ed]">{copy.philosophy} <ArrowUpRight size={15} /></Link></div></section>
+
+      <footer className="border-t border-white/10 px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-8 sm:flex-row sm:items-end"><div><div className="mb-4 text-lg font-bold tracking-[0.28em]">CELIBERY</div><p className="text-xs text-white/40">Sound without limits.</p></div><div className="flex gap-6 text-[10px] uppercase tracking-[0.16em] text-white/45"><a href="#shop" className="transition hover:text-white">Shop</a><a href="#story" className="transition hover:text-white">Support</a><a href="#story" className="transition hover:text-white">Instagram</a></div></div></footer>
+    </main>
+  );
+}
