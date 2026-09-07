@@ -135,7 +135,7 @@ export default function Home() {
 
       <section className="border-b border-white/10 bg-[#0d1113] px-6 py-6 lg:px-12">
         <div className="mx-auto grid max-w-[1440px] gap-5 lg:grid-cols-[1.35fr_0.65fr]">
-          <div className="group relative min-h-[360px] overflow-hidden bg-[#151a1c] lg:min-h-[520px]">
+          <div className="group relative min-h-[430px] overflow-hidden bg-[#151a1c] sm:min-h-[500px] lg:min-h-[520px]">
             <video
               className="absolute inset-0 h-full w-full object-cover opacity-70 transition duration-1000 group-hover:scale-105 group-hover:opacity-90"
               autoPlay
@@ -148,7 +148,7 @@ export default function Home() {
               <source src="/Person_holding_Bluetooth_speaker_202609080042.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-gradient-to-t from-[#080a0c] via-transparent to-transparent" />
-            <div className="absolute bottom-7 left-7 right-7 flex items-end justify-between gap-5 lg:bottom-10 lg:left-10 lg:right-10">
+            <div className="absolute bottom-7 left-6 right-6 flex items-end justify-between gap-5 sm:left-7 sm:right-7 lg:bottom-10 lg:left-10 lg:right-10">
               <div><p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9ff6ed]">{isArabic ? "صوت يتحرك معك" : "Sound in motion"}</p><h2 className="display-font max-w-lg text-4xl font-semibold uppercase leading-[0.9] sm:text-6xl">{isArabic ? <>استمع<br />بشكل مختلف.</> : <>Listen<br />differently.</>}</h2></div>
               <span className="hidden size-12 shrink-0 items-center justify-center rounded-full border border-white/30 text-[#9ff6ed] sm:flex"><ArrowUpRight size={18} /></span>
             </div>

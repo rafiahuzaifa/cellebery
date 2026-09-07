@@ -1,8 +1,9 @@
 "use client";
 
-import { Menu, Search, ShoppingBag, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight, Menu, Search, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LanguageToggle, useLocale } from "@/components/locale-provider";
 
 export function SiteNav({ overlay = false }: { overlay?: boolean }) {
@@ -26,6 +27,13 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
   const textTone = overlay ? "text-white" : "text-white/80";
   const borderTone = overlay ? "border-white/15" : "border-white/15";
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   return (
     <>
       <nav className={`relative z-30 mx-auto flex max-w-[1440px] items-center justify-between px-6 py-7 lg:px-12 ${textTone}`}>
@@ -34,17 +42,20 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
           {links.map(([label, href], index) => <Link key={label} className={index === 0 ? "text-white" : "text-white/60 transition hover:text-[#9ff6ed]"} href={href}>{label}</Link>)}
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/shop#search" aria-label={isArabic ? "البحث" : "Search"} className={`hidden size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed] sm:grid`}><Search size={16} strokeWidth={1.5} /></Link>
+          <Link href="/shop#search" aria-label={isArabic ? "البحث" : "Search"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed]`}><Search size={16} strokeWidth={1.5} /></Link>
           <Link href="/shop#cart" aria-label={isArabic ? "السلة" : "Shopping bag"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed]`}><ShoppingBag size={16} strokeWidth={1.5} /></Link>
           <button aria-label={isArabic ? "فتح القائمة" : "Open navigation"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 lg:hidden`} onClick={() => setMenuOpen(true)}><Menu size={17} strokeWidth={1.5} /></button>
           <LanguageToggle />
         </div>
       </nav>
 
-      {menuOpen && <div className="absolute inset-0 z-50 min-h-screen bg-[#080a0c] p-6 lg:hidden">
-        <div className="flex items-center justify-between"><Link href="/" aria-label="CELIBERY home" className="brand-mark" onClick={() => setMenuOpen(false)} /><button aria-label={isArabic ? "إغلاق القائمة" : "Close navigation"} className="grid size-10 place-items-center rounded-full border border-white/15" onClick={() => setMenuOpen(false)}><X size={18} /></button></div>
-        <div className="mt-24 flex flex-col gap-7 text-4xl font-light tracking-[-0.06em]">{links.map(([label, href]) => <Link key={label} href={href} onClick={() => setMenuOpen(false)}>{label}</Link>)}</div>
-      </div>}
+      <AnimatePresence>
+        {menuOpen && <motion.div className="fixed inset-0 z-50 overflow-y-auto bg-[#080a0c] p-6 lg:hidden" initial={{ opacity: 0, y: "-4%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "-4%" }} transition={{ duration: 0.25, ease: "easeOut" }}>
+          <div className="flex items-center justify-between border-b border-white/10 pb-6"><Link href="/" aria-label="CELIBERY home" className="brand-mark" onClick={() => setMenuOpen(false)} /><button aria-label={isArabic ? "إغلاق القائمة" : "Close navigation"} className="grid size-10 place-items-center rounded-full border border-white/15 text-white/75 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed]" onClick={() => setMenuOpen(false)}><X size={18} /></button></div>
+          <div className="mt-14 flex flex-col">{links.map(([label, href], index) => <Link key={label} href={href} onClick={() => setMenuOpen(false)} className="flex items-center justify-between border-b border-white/10 py-5 text-2xl font-light tracking-[-0.04em] transition-colors hover:text-[#9ff6ed]"><span className="flex items-center gap-4"><span className="text-[10px] font-semibold tracking-[0.18em] text-[#9ff6ed]">0{index + 1}</span>{label}</span><ArrowUpRight size={15} className="text-white/30" /></Link>)}</div>
+          <p className="mt-12 text-[10px] uppercase tracking-[0.18em] text-white/35">CELIBERY / Saudi Arabia / 2026</p>
+        </motion.div>}
+      </AnimatePresence>
     </>
   );
 }

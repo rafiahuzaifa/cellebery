@@ -15,7 +15,7 @@ const products = [
     detail: "Adaptive ANC / 40H battery",
     price: 499,
     rating: "4.9",
-    image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=1200&q=85",
+    image: "/ChatGPT%20Image%20Aug%2027,%202026,%2005_22_17%20PM.png",
     badge: "Best seller",
   },
   {
@@ -25,7 +25,7 @@ const products = [
     detail: "Hi-Fi / IPX5 water resistant",
     price: 299,
     rating: "4.8",
-    image: "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=1200&q=85",
+    image: "/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_17%20PM.png",
     badge: "New arrival",
   },
   {
@@ -35,7 +35,7 @@ const products = [
     detail: "360 sound / 12H battery",
     price: 249,
     rating: "4.7",
-    image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=1200&q=85",
+    image: "/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png",
     badge: "Popular",
   },
   {
@@ -45,7 +45,7 @@ const products = [
     detail: "Deep bass / 32H battery",
     price: 349,
     rating: "4.8",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85",
+    image: "/ChatGPT%20Image%20Aug%2027,%202026,%2005_22_17%20PM.png",
     badge: "Everyday essential",
   },
   {
@@ -55,7 +55,7 @@ const products = [
     detail: "Spatial audio / ANC",
     price: 399,
     rating: "4.9",
-    image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=1200&q=85",
+    image: "/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_17%20PM.png",
     badge: "Signature",
   },
   {
@@ -65,7 +65,7 @@ const products = [
     detail: "Powerful bass / IPX7",
     price: 599,
     rating: "4.8",
-    image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=1200&q=85",
+    image: "/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png",
     badge: "Made for outdoors",
   },
 ];
@@ -133,6 +133,11 @@ function ShopPageContent() {
   const filterMap: Record<string, string> = { [labels.all]: "All products", [labels.headphones]: "Headphones", [labels.earbuds]: "Earbuds", [labels.speakers]: "Speakers" };
   const categoryParam = searchParams.get("category");
   const activeFilter = categoryParam ? `${categoryParam.charAt(0).toUpperCase()}${categoryParam.slice(1)}` : selectedFilter;
+  const frequencyImage = activeFilter === "Earbuds"
+    ? "/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_17%20PM.png"
+    : activeFilter === "Speakers"
+      ? "/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png"
+      : "/ChatGPT%20Image%20Aug%2027,%202026,%2005_22_17%20PM.png";
   const chooseFilter = (filter: string) => {
     setSelectedFilter(filter);
     router.replace(filter === "All products" ? "/shop" : `/shop?category=${filter.toLowerCase()}`);
@@ -158,7 +163,7 @@ function ShopPageContent() {
     <main className="min-h-screen bg-[#080a0c] text-[#f3f5f5]">
       <header className="border-b border-white/10"><SiteNav /></header>
 
-      <section className="mx-auto max-w-[1440px] px-6 pb-16 pt-20 lg:px-12 lg:pb-24 lg:pt-28"><p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{labels.collection}</p><div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end"><div><h1 className="display-font text-6xl font-semibold uppercase leading-[0.88] sm:text-8xl">{isArabic ? <>اعثر على<br /><span className="text-white/35">ترددك.</span></> : <>Find your<br /><span className="text-white/35">frequency.</span></>}</h1><p className="mt-7 max-w-md text-sm leading-7 text-white/50">{labels.description}</p></div><p className="max-w-xs text-[10px] uppercase leading-5 tracking-[0.15em] text-white/40">Premium audio / Saudi Arabia<br />{products.length} {labels.products}</p></div></section>
+      <section className="mx-auto max-w-[1440px] px-6 pb-16 pt-20 lg:px-12 lg:pb-24 lg:pt-28"><p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{labels.collection}</p><div className="grid gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-end lg:gap-20"><div><h1 className="display-font text-6xl font-semibold uppercase leading-[0.88] sm:text-8xl">{isArabic ? <>اعثر على<br /><span className="text-white/35">ترددك.</span></> : <>Find your<br /><span className="text-white/35">frequency.</span></>}</h1><p className="mt-7 max-w-md text-sm leading-7 text-white/50">{labels.description}</p></div><div className="group relative min-h-52 overflow-hidden border border-white/10 bg-[#151a1c] sm:min-h-64"><div className="absolute -inset-3 scale-105 bg-cover bg-center blur-[3px] transition duration-700 group-hover:scale-110" style={{ backgroundImage: `url(${frequencyImage})` }} /><div className="absolute inset-0 bg-gradient-to-tr from-[#080a0c]/80 via-[#080a0c]/25 to-transparent" /><div className="relative flex h-full min-h-52 flex-col justify-between p-5 sm:min-h-64 sm:p-7"><span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{activeFilter === "All products" ? "CELIBERY / 01" : activeFilter}</span><p className="max-w-[13rem] text-sm uppercase leading-5 tracking-[0.14em] text-white/75">Premium sound, tuned for your frequency.</p></div></div></div><p className="mt-8 max-w-xs text-[10px] uppercase leading-5 tracking-[0.15em] text-white/40">Premium audio / Saudi Arabia<br />{products.length} {labels.products}</p></section>
 
       <section className="border-y border-white/10 bg-[#0d1113] px-6 py-4 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"><div className="flex gap-2 overflow-x-auto pb-1">{translatedFilters.map((filter) => <button key={filter} onClick={() => chooseFilter(filterMap[filter])} className={`whitespace-nowrap border px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.15em] transition ${activeFilter === filterMap[filter] ? "border-[#9ff6ed] bg-[#9ff6ed] text-[#080a0c]" : "border-white/15 text-white/55 hover:border-white/40 hover:text-white"}`}>{filter}</button>)}</div><div className="flex gap-2"><label id="search" className="flex min-w-0 flex-1 items-center gap-2 border border-white/15 px-3 text-white/45 focus-within:border-[#9ff6ed] lg:w-64"><Search size={15} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={labels.search} className="min-w-0 bg-transparent py-3 text-xs text-white outline-none placeholder:text-white/35" /></label><button onClick={() => setFiltersOpen((open) => !open)} aria-label={isArabic ? "فتح الفلاتر" : "Toggle filters"} className={`grid size-11 place-items-center border transition lg:hidden ${filtersOpen ? "border-[#9ff6ed] text-[#9ff6ed]" : "border-white/15 text-white/60"}`}><SlidersHorizontal size={16} /></button><select value={sort} onChange={(event) => setSort(event.target.value)} className="hidden border border-white/15 bg-[#0d1113] px-3 text-[10px] uppercase tracking-[0.12em] text-white/60 outline-none lg:block"><option>Featured</option><option>Price: low to high</option><option>Price: high to low</option></select></div>{filtersOpen && <div className="flex gap-2 lg:hidden"><select value={sort} onChange={(event) => setSort(event.target.value)} className="w-full border border-white/15 bg-[#0d1113] px-3 py-3 text-[10px] uppercase tracking-[0.12em] text-white/60 outline-none"><option>Featured</option><option>Price: low to high</option><option>Price: high to low</option></select><button aria-label={isArabic ? "إغلاق الفلاتر" : "Close filters"} onClick={() => setFiltersOpen(false)} className="grid size-11 place-items-center border border-white/15 text-white/60"><X size={16} /></button></div>}</div></section>
 
