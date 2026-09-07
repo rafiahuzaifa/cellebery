@@ -1,9 +1,11 @@
 "use client";
 
-import { ArrowLeft, ArrowUpRight, Heart, Search, SlidersHorizontal, X } from "lucide-react";
+import { ArrowUpRight, Heart, Search, SlidersHorizontal, X } from "lucide-react";
 import Link from "next/link";
-import { LanguageToggle, useLocale } from "@/components/locale-provider";
-import { useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useLocale } from "@/components/locale-provider";
+import { SiteNav } from "@/components/site-nav";
+import { Suspense, useMemo, useState } from "react";
 
 const products = [
   {
@@ -91,9 +93,11 @@ function ProductCard({ product, saved, onToggle }: { product: Product; saved: bo
   );
 }
 
-export default function ShopPage() {
+function ShopPageContent() {
   const { isArabic } = useLocale();
-  const [activeFilter, setActiveFilter] = useState("All products");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [selectedFilter, setSelectedFilter] = useState("All products");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("Featured");
   const [saved, setSaved] = useState<string[]>([]);
@@ -127,6 +131,12 @@ export default function ShopPage() {
   };
   const translatedFilters = [labels.all, labels.headphones, labels.earbuds, labels.speakers];
   const filterMap: Record<string, string> = { [labels.all]: "All products", [labels.headphones]: "Headphones", [labels.earbuds]: "Earbuds", [labels.speakers]: "Speakers" };
+  const categoryParam = searchParams.get("category");
+  const activeFilter = categoryParam ? `${categoryParam.charAt(0).toUpperCase()}${categoryParam.slice(1)}` : selectedFilter;
+  const chooseFilter = (filter: string) => {
+    setSelectedFilter(filter);
+    router.replace(filter === "All products" ? "/shop" : `/shop?category=${filter.toLowerCase()}`);
+  };
 
   const filteredProducts = useMemo(() => {
     const matching = products.filter((product) => {
@@ -146,21 +156,19 @@ export default function ShopPage() {
 
   return (
     <main className="min-h-screen bg-[#080a0c] text-[#f3f5f5]">
-      <header className="border-b border-white/10 px-6 py-6 lg:px-12">
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between">
-          <Link href="/" className="text-lg font-bold tracking-[0.28em]">CELIBERY</Link>
-          <div className="hidden items-center gap-8 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/55 lg:flex"><Link className="text-white" href="/shop">{isArabic ? "المتجر" : "Shop"}</Link><Link href="/">{labels.headphones}</Link><Link href="/">{labels.earbuds}</Link><Link href="/">{labels.speakers}</Link></div>
-          <div className="flex items-center gap-3"><Link href="/" aria-label="Back to home" className="grid size-10 place-items-center rounded-full border border-white/15 text-white/70 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed]"><ArrowLeft size={16} /></Link><LanguageToggle /><button aria-label="Shopping bag" className="grid size-10 place-items-center rounded-full border border-white/15 text-white/70 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed]"><span className="text-sm">0</span></button></div>
-        </div>
-      </header>
+      <header className="border-b border-white/10"><SiteNav /></header>
 
       <section className="mx-auto max-w-[1440px] px-6 pb-16 pt-20 lg:px-12 lg:pb-24 lg:pt-28"><p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{labels.collection}</p><div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end"><div><h1 className="display-font text-6xl font-semibold uppercase leading-[0.88] sm:text-8xl">{isArabic ? <>اعثر على<br /><span className="text-white/35">ترددك.</span></> : <>Find your<br /><span className="text-white/35">frequency.</span></>}</h1><p className="mt-7 max-w-md text-sm leading-7 text-white/50">{labels.description}</p></div><p className="max-w-xs text-[10px] uppercase leading-5 tracking-[0.15em] text-white/40">Premium audio / Saudi Arabia<br />{products.length} {labels.products}</p></div></section>
 
-      <section className="border-y border-white/10 bg-[#0d1113] px-6 py-4 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"><div className="flex gap-2 overflow-x-auto pb-1">{translatedFilters.map((filter) => <button key={filter} onClick={() => setActiveFilter(filterMap[filter])} className={`whitespace-nowrap border px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.15em] transition ${activeFilter === filterMap[filter] ? "border-[#9ff6ed] bg-[#9ff6ed] text-[#080a0c]" : "border-white/15 text-white/55 hover:border-white/40 hover:text-white"}`}>{filter}</button>)}</div><div className="flex gap-2"><label className="flex min-w-0 flex-1 items-center gap-2 border border-white/15 px-3 text-white/45 focus-within:border-[#9ff6ed] lg:w-64"><Search size={15} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={labels.search} className="min-w-0 bg-transparent py-3 text-xs text-white outline-none placeholder:text-white/35" /></label><button onClick={() => setFiltersOpen((open) => !open)} aria-label={isArabic ? "فتح الفلاتر" : "Toggle filters"} className={`grid size-11 place-items-center border transition lg:hidden ${filtersOpen ? "border-[#9ff6ed] text-[#9ff6ed]" : "border-white/15 text-white/60"}`}><SlidersHorizontal size={16} /></button><select value={sort} onChange={(event) => setSort(event.target.value)} className="hidden border border-white/15 bg-[#0d1113] px-3 text-[10px] uppercase tracking-[0.12em] text-white/60 outline-none lg:block"><option>Featured</option><option>Price: low to high</option><option>Price: high to low</option></select></div>{filtersOpen && <div className="flex gap-2 lg:hidden"><select value={sort} onChange={(event) => setSort(event.target.value)} className="w-full border border-white/15 bg-[#0d1113] px-3 py-3 text-[10px] uppercase tracking-[0.12em] text-white/60 outline-none"><option>Featured</option><option>Price: low to high</option><option>Price: high to low</option></select><button aria-label={isArabic ? "إغلاق الفلاتر" : "Close filters"} onClick={() => setFiltersOpen(false)} className="grid size-11 place-items-center border border-white/15 text-white/60"><X size={16} /></button></div>}</div></section>
+      <section className="border-y border-white/10 bg-[#0d1113] px-6 py-4 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"><div className="flex gap-2 overflow-x-auto pb-1">{translatedFilters.map((filter) => <button key={filter} onClick={() => chooseFilter(filterMap[filter])} className={`whitespace-nowrap border px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.15em] transition ${activeFilter === filterMap[filter] ? "border-[#9ff6ed] bg-[#9ff6ed] text-[#080a0c]" : "border-white/15 text-white/55 hover:border-white/40 hover:text-white"}`}>{filter}</button>)}</div><div className="flex gap-2"><label id="search" className="flex min-w-0 flex-1 items-center gap-2 border border-white/15 px-3 text-white/45 focus-within:border-[#9ff6ed] lg:w-64"><Search size={15} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={labels.search} className="min-w-0 bg-transparent py-3 text-xs text-white outline-none placeholder:text-white/35" /></label><button onClick={() => setFiltersOpen((open) => !open)} aria-label={isArabic ? "فتح الفلاتر" : "Toggle filters"} className={`grid size-11 place-items-center border transition lg:hidden ${filtersOpen ? "border-[#9ff6ed] text-[#9ff6ed]" : "border-white/15 text-white/60"}`}><SlidersHorizontal size={16} /></button><select value={sort} onChange={(event) => setSort(event.target.value)} className="hidden border border-white/15 bg-[#0d1113] px-3 text-[10px] uppercase tracking-[0.12em] text-white/60 outline-none lg:block"><option>Featured</option><option>Price: low to high</option><option>Price: high to low</option></select></div>{filtersOpen && <div className="flex gap-2 lg:hidden"><select value={sort} onChange={(event) => setSort(event.target.value)} className="w-full border border-white/15 bg-[#0d1113] px-3 py-3 text-[10px] uppercase tracking-[0.12em] text-white/60 outline-none"><option>Featured</option><option>Price: low to high</option><option>Price: high to low</option></select><button aria-label={isArabic ? "إغلاق الفلاتر" : "Close filters"} onClick={() => setFiltersOpen(false)} className="grid size-11 place-items-center border border-white/15 text-white/60"><X size={16} /></button></div>}</div></section>
 
-      <section className="mx-auto max-w-[1440px] px-6 py-12 lg:px-12 lg:py-20"><div className="mb-8 flex items-center justify-between text-[10px] uppercase tracking-[0.15em] text-white/40"><span>{filteredProducts.length} {labels.results}</span><span className="text-[#9ff6ed]">{labels.delivery}</span></div>{filteredProducts.length > 0 ? <div className="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} saved={saved.includes(product.id)} onToggle={() => toggleSaved(product.id)} />)}</div> : <div className="border border-white/10 py-24 text-center"><p className="text-sm text-white/50">{isArabic ? "لا توجد منتجات تطابق بحثك." : "No products match your search."}</p><button onClick={() => { setQuery(""); setActiveFilter("All products"); }} className="mt-5 text-[10px] font-bold uppercase tracking-[0.15em] text-[#9ff6ed]">{labels.clear}</button></div>}</section>
+      <section className="mx-auto max-w-[1440px] px-6 py-12 lg:px-12 lg:py-20"><div className="mb-8 flex items-center justify-between text-[10px] uppercase tracking-[0.15em] text-white/40"><span>{filteredProducts.length} {labels.results}</span><span className="text-[#9ff6ed]">{labels.delivery}</span></div>{filteredProducts.length > 0 ? <div className="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} saved={saved.includes(product.id)} onToggle={() => toggleSaved(product.id)} />)}</div> : <div className="border border-white/10 py-24 text-center"><p className="text-sm text-white/50">{isArabic ? "لا توجد منتجات تطابق بحثك." : "No products match your search."}</p><button onClick={() => { setQuery(""); chooseFilter("All products"); }} className="mt-5 text-[10px] font-bold uppercase tracking-[0.15em] text-[#9ff6ed]">{labels.clear}</button></div>}</section>
 
       <footer className="border-t border-white/10 px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] justify-between gap-6 text-[10px] uppercase tracking-[0.15em] text-white/40"><span>CELIBERY / Sound without limits.</span><Link href="/">Back to home ↑</Link></div></footer>
     </main>
   );
+}
+
+export default function ShopPage() {
+  return <Suspense fallback={<main className="min-h-screen bg-[#080a0c]" />}><ShopPageContent /></Suspense>;
 }

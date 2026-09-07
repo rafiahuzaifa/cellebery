@@ -2,19 +2,15 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { LanguageToggle, useLocale } from "@/components/locale-provider";
+import { SiteNav } from "@/components/site-nav";
+import { useLocale } from "@/components/locale-provider";
 import {
   ArrowDownRight,
   ArrowUpRight,
   Headphones,
-  Menu,
-  Search,
-  ShoppingBag,
   Sparkles,
   Volume2,
-  X,
 } from "lucide-react";
-import { useState } from "react";
 
 const categories = [
   {
@@ -44,9 +40,7 @@ const stats = [
 ];
 
 export default function Home() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const { isArabic } = useLocale();
-  const navItems = isArabic ? ["المتجر", "سماعات الرأس", "سماعات الأذن", "مكبرات الصوت", "قصتنا"] : ["Shop", "Headphones", "Earbuds", "Speakers", "Our story"];
   const copy = isArabic ? {
     eyebrow: "جيل جديد من الصوت",
     heroLast: "بلا حدود.",
@@ -105,46 +99,7 @@ export default function Home() {
           }}
         />
         <div className="grain absolute inset-0" />
-        <nav className="relative z-10 mx-auto flex max-w-[1440px] items-center justify-between px-6 py-7 lg:px-12">
-          <a href="#top" className="text-lg font-bold tracking-[0.28em] text-white">
-            CELIBERY
-          </a>
-          <div className="hidden items-center gap-8 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/65 lg:flex">
-            {navItems.map((item, index) => (
-              <a key={item} className={index === 0 ? "text-white" : ""} href={index === 4 ? "#story" : "#shop"}>
-                {item}
-              </a>
-            ))}
-          </div>
-          <div className="flex items-center gap-2">
-            <button aria-label="Search" className="hidden size-10 place-items-center rounded-full border border-white/15 text-white/75 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed] sm:grid">
-              <Search size={16} strokeWidth={1.5} />
-            </button>
-            <button aria-label="Shopping bag" className="grid size-10 place-items-center rounded-full border border-white/15 text-white/75 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed]">
-              <ShoppingBag size={16} strokeWidth={1.5} />
-            </button>
-            <button aria-label="Open navigation" className="grid size-10 place-items-center rounded-full border border-white/15 text-white/75 lg:hidden" onClick={() => setMenuOpen(true)}>
-              <Menu size={17} strokeWidth={1.5} />
-            </button>
-            <LanguageToggle />
-          </div>
-        </nav>
-
-        {menuOpen && (
-          <div className="absolute inset-0 z-20 bg-[#080a0c] p-6 lg:hidden">
-            <div className="flex items-center justify-between">
-              <span className="text-lg font-bold tracking-[0.28em]">CELIBERY</span>
-              <button aria-label="Close navigation" className="grid size-10 place-items-center rounded-full border border-white/15" onClick={() => setMenuOpen(false)}>
-                <X size={18} />
-              </button>
-            </div>
-            <div className="mt-24 flex flex-col gap-7 text-4xl font-light tracking-[-0.06em]">
-              {navItems.map((item, index) => (
-                <a key={item} href={index === 4 ? "#story" : "#shop"} onClick={() => setMenuOpen(false)}>{item}</a>
-              ))}
-            </div>
-          </div>
-        )}
+        <SiteNav overlay />
 
         <div id="top" className="relative z-10 mx-auto flex h-[calc(100%-100px)] max-w-[1440px] flex-col justify-end px-6 pb-12 lg:px-12 lg:pb-20">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl">
@@ -170,7 +125,7 @@ export default function Home() {
       <section id="shop" className="mx-auto max-w-[1440px] px-6 py-24 lg:px-12 lg:py-36">
         <div className="mb-12 flex items-end justify-between gap-5"><div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{copy.collection}</p><h2 className="display-font text-5xl font-semibold uppercase sm:text-7xl">{isArabic ? <>اختر<br />صوتك.</> : <>Choose<br />your sound.</>}</h2></div><Link href="/shop" className="hidden items-center gap-2 text-[10px] uppercase tracking-[0.17em] text-white/60 transition hover:text-[#9ff6ed] sm:flex">{isArabic ? "عرض كل المنتجات" : "View all products"} <ArrowUpRight size={15} /></Link></div>
         <div className="grid gap-4 md:grid-cols-3">
-          {categories.map((category, index) => <motion.a whileHover={{ y: -5 }} transition={{ duration: 0.25 }} href="#featured" key={category.label} className="group relative aspect-[0.82] overflow-hidden bg-[#151a1c] p-6 sm:p-8"><div className="absolute inset-0 bg-cover bg-center opacity-65 transition duration-700 group-hover:scale-105 group-hover:opacity-90" style={{ backgroundImage: `linear-gradient(180deg, rgba(8,10,12,.12), #080a0c 95%), url(${category.image})` }} /><div className="relative flex h-full flex-col justify-between"><span className="flex size-9 items-center justify-center rounded-full border border-white/30 text-xs text-white/60">0{index + 1}</span><div><h3 className="display-font text-4xl font-semibold uppercase">{category.label}</h3><p className="mt-2 text-sm text-white/55">{category.detail}</p><span className="mt-7 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9ff6ed] opacity-0 transition group-hover:opacity-100">Explore <ArrowUpRight size={14} /></span></div></div></motion.a>)}
+          {categories.map((category, index) => <motion.a whileHover={{ y: -5 }} transition={{ duration: 0.25 }} href={`/shop?category=${category.label.toLowerCase()}`} key={category.label} className="group relative aspect-[0.82] overflow-hidden bg-[#151a1c] p-6 sm:p-8"><div className="absolute inset-0 bg-cover bg-center opacity-65 transition duration-700 group-hover:scale-105 group-hover:opacity-90" style={{ backgroundImage: `linear-gradient(180deg, rgba(8,10,12,.12), #080a0c 95%), url(${category.image})` }} /><div className="relative flex h-full flex-col justify-between"><span className="flex size-9 items-center justify-center rounded-full border border-white/30 text-xs text-white/60">0{index + 1}</span><div><h3 className="display-font text-4xl font-semibold uppercase">{category.label}</h3><p className="mt-2 text-sm text-white/55">{category.detail}</p><span className="mt-7 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9ff6ed] opacity-0 transition group-hover:opacity-100">Explore <ArrowUpRight size={14} /></span></div></div></motion.a>)}
         </div>
       </section>
 
