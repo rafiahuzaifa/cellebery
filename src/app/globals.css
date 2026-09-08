@@ -46,23 +46,159 @@ a {
 }
 
 .brand-mark {
-  width: clamp(132px, 15vw, 176px);
+  width: max-content;
+  min-width: 132px;
   height: clamp(30px, 3.3vw, 38px);
-  display: block;
-  color: currentColor;
-  position: relative;
-}
-
-.brand-mark::after {
-  content: "CELIBERY";
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center start;
-  color: currentColor;
+  display: inline-flex;
+  align-items: center;
+  color: #fff;
   font-size: clamp(1rem, 1.8vw, 1.45rem);
   font-weight: 800;
   letter-spacing: 0.14em;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: visible;
+  text-decoration: none;
+  text-rendering: optimizeLegibility;
+  font-family: var(--font-manrope), Arial, sans-serif;
+  position: relative;
+  z-index: 2;
+}
+
+.brand-logo {
+  width: clamp(120px, 12vw, 150px);
+  height: clamp(30px, 3.3vw, 40px);
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(159, 246, 237, 0.45));
+}
+
+.brand-mark:hover {
+  color: var(--cyan, #9ff6ed);
+}
+
+.media-video {
+  min-height: 100%;
+  height: 100%;
+  width: 100%;
+  display: block;
+  position: relative;
+}
+
+.media-video-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-video-backdrop {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+  align-items: stretch;
+}
+
+.gallery-tile {
+  position: relative;
+  overflow: hidden;
+  min-height: 210px;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #151a1c;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+  transform: translateZ(0);
+}
+
+.gallery-image-tile {
+  min-height: 210px;
+  height: 100%;
+  width: 100%;
+  background-size: contain !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+
+.gallery-video-tile {
+  min-height: 210px;
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
+.gallery-video-tile .media-video {
+  min-height: 100%;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.gallery-video-tile .media-video-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery-tile--wide {
+  grid-column: span 2;
+}
+
+.gallery-tile--tall {
+  grid-row: span 2;
+}
+
+@media (min-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .gallery-tile {
+    min-height: 230px;
+  }
+
+  .gallery-image-tile {
+    min-height: 230px;
+  }
+
+  .gallery-video-tile {
+    min-height: 230px;
+  }
+
+  .gallery-tile--wide {
+    grid-column: span 2;
+  }
+
+  .gallery-tile--tall {
+    grid-row: span 2;
+  }
+}
+
+.full-media {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.bg-cover {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.object-cover {
+  object-fit: cover !important;
 }
 
 .grain {
