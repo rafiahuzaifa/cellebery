@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
-type Locale = "en" | "ar";
+export type Locale = "en" | "ar";
 
 type LocaleContextValue = {
   locale: Locale;
@@ -12,21 +13,45 @@ type LocaleContextValue = {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
-export function LocaleProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en");
+function NavigableLocaleProvider({ children, initialLocale }: { children: React.ReactNode; initialLocale: Locale }) {
+  const router = useRouter();
+  const pathname = usePathname();
 
-  useEffect(() => {
-    document.documentElement.lang = locale;
-    document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
-    window.localStorage.setItem("celibery-locale", locale);
-  }, [locale]);
+  const value = useMemo<LocaleContextValue>(() => {
+    const setLocale = (nextLocale: Locale) => {
+      const segments = pathname.split("/");
+      // segments[0] is "" (leading slash), segments[1] is the current locale.
+      segments[1] = nextLocale;
+      // Read the query string at click time rather than subscribing to
+      // useSearchParams(), which would force every page under this
+      // provider out of static rendering.
+      const query = typeof window !== "undefined" ? window.location.search : "";
+      router.push(`${segments.join("/") || "/"}${query}`);
+    };
 
-  const setLocale = (nextLocale: Locale) => {
-    setLocaleState(nextLocale);
-    window.localStorage.setItem("celibery-locale", nextLocale);
-  };
+    return { locale: initialLocale, setLocale, isArabic: initialLocale === "ar" };
+  }, [initialLocale, pathname, router]);
 
-  return <LocaleContext.Provider value={{ locale, setLocale, isArabic: locale === "ar" }}>{children}</LocaleContext.Provider>;
+  return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
+}
+
+function StaticLocaleProvider({ children, initialLocale }: { children: React.ReactNode; initialLocale: Locale }) {
+  const [locale, setLocale] = useState<Locale>(initialLocale);
+  const value = useMemo<LocaleContextValue>(() => ({ locale, setLocale, isArabic: locale === "ar" }), [locale]);
+  return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
+}
+
+/**
+ * `navigable` (default true) means locale lives in the URL's first segment
+ * (the storefront's /[locale]/... routes) — switching pushes a real
+ * navigation. Pass `navigable={false}` for trees with no locale segment
+ * (the admin panel), where switching is just local UI state and avoids
+ * any navigation-hook usage (keeping those pages statically prerenderable).
+ */
+export function LocaleProvider({ children, initialLocale, navigable = true }: { children: React.ReactNode; initialLocale: Locale; navigable?: boolean }) {
+  return navigable
+    ? <NavigableLocaleProvider initialLocale={initialLocale}>{children}</NavigableLocaleProvider>
+    : <StaticLocaleProvider initialLocale={initialLocale}>{children}</StaticLocaleProvider>;
 }
 
 export function useLocale() {

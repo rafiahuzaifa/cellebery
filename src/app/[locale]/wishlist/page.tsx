@@ -8,7 +8,7 @@ import { useWishlist } from "@/components/wishlist-provider";
 import { useCart } from "@/components/cart-provider";
 
 export default function WishlistPage() {
-  const { isArabic } = useLocale();
+  const { isArabic, locale } = useLocale();
   const { items, removeItem } = useWishlist();
   const { addItem } = useCart();
   const labels = isArabic ? {
@@ -49,7 +49,7 @@ export default function WishlistPage() {
             <h1 className="display-font text-6xl font-semibold uppercase leading-[0.88] sm:text-8xl">{labels.title}</h1>
             <p className="mt-5 text-xs uppercase tracking-[0.16em] text-white/40">{items.length} {items.length === 1 ? labels.count : labels.countPlural}</p>
           </div>
-          <Link href="/shop" className="inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.17em] text-white/60 transition hover:text-[#22d3ee]"><ArrowLeft size={15} /> {labels.continue}</Link>
+          <Link href={`/${locale}/shop`} className="inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.17em] text-white/60 transition hover:text-[#22d3ee]"><ArrowLeft size={15} /> {labels.continue}</Link>
         </div>
       </section>
 
@@ -57,7 +57,7 @@ export default function WishlistPage() {
         <section className="mx-auto max-w-[1440px] px-6 pb-32 lg:px-12">
           <div className="border border-white/10 bg-[#101416] px-6 py-24 text-center">
             <p className="text-sm text-white/50">{labels.empty}</p>
-            <Link href="/shop" className="mt-7 inline-flex items-center gap-5 bg-[#22d3ee] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c]">{labels.explore}<ArrowUpRight size={15} /></Link>
+            <Link href={`/${locale}/shop`} className="mt-7 inline-flex items-center gap-5 bg-[#22d3ee] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c]">{labels.explore}<ArrowUpRight size={15} /></Link>
           </div>
         </section>
       ) : (

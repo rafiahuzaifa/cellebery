@@ -10,28 +10,28 @@ import { useCart } from "@/components/cart-provider";
 import { useWishlist } from "@/components/wishlist-provider";
 
 export function SiteNav({ overlay = false }: { overlay?: boolean }) {
-  const { isArabic } = useLocale();
+  const { isArabic, locale } = useLocale();
   const { itemCount } = useCart();
   const { items: wishlistItems } = useWishlist();
   const [menuOpen, setMenuOpen] = useState(false);
   const links = isArabic
     ? [
-        ["المتجر", "/shop"],
-        ["سماعات الرأس", "/shop?category=headphones"],
-        ["سماعات الأذن", "/shop?category=earbuds"],
-        ["مكبرات الصوت", "/shop?category=speakers"],
-        ["الإكسسوارات", "/shop?category=accessories"],
-        ["وصل حديثاً", "/shop?sort=newest"],
-        ["قصتنا", "/#story"],
+        ["المتجر", `/${locale}/shop`],
+        ["سماعات الرأس", `/${locale}/shop?category=headphones`],
+        ["سماعات الأذن", `/${locale}/shop?category=earbuds`],
+        ["مكبرات الصوت", `/${locale}/shop?category=speakers`],
+        ["الإكسسوارات", `/${locale}/shop?category=accessories`],
+        ["وصل حديثاً", `/${locale}/shop?sort=newest`],
+        ["قصتنا", `/${locale}#story`],
       ]
     : [
-        ["Shop", "/shop"],
-        ["Headphones", "/shop?category=headphones"],
-        ["Earbuds", "/shop?category=earbuds"],
-        ["Speakers", "/shop?category=speakers"],
-        ["Accessories", "/shop?category=accessories"],
-        ["New arrivals", "/shop?sort=newest"],
-        ["Our story", "/#story"],
+        ["Shop", `/${locale}/shop`],
+        ["Headphones", `/${locale}/shop?category=headphones`],
+        ["Earbuds", `/${locale}/shop?category=earbuds`],
+        ["Speakers", `/${locale}/shop?category=speakers`],
+        ["Accessories", `/${locale}/shop?category=accessories`],
+        ["New arrivals", `/${locale}/shop?sort=newest`],
+        ["Our story", `/${locale}#story`],
       ];
   const textTone = overlay ? "text-white" : "text-white/80";
   const borderTone = overlay ? "border-white/15" : "border-white/15";
@@ -47,16 +47,16 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
   return (
     <>
       <nav className={`${navPosition} z-50 mx-auto flex max-w-[1440px] items-center justify-between px-6 py-7 lg:px-12 ${textTone}`}>
-        <Link href="/" aria-label="CELIBERY home" className="brand-mark shrink-0 text-white">
+        <Link href={`/${locale}`} aria-label="CELIBERY home" className="brand-mark shrink-0 text-white">
           <Image src="/celibery-logo.svg" alt="CELIBERY" width={150} height={38} className="brand-logo" priority />
         </Link>
         <div className="hidden items-center gap-8 text-[10px] font-semibold uppercase tracking-[0.18em] lg:flex">
           {links.map(([label, href], index) => <Link key={label} className={index === 0 ? "text-white" : "text-white/60 transition hover:text-[#22d3ee]"} href={href}>{label}</Link>)}
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/shop#search" aria-label={isArabic ? "البحث" : "Search"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee]`}><Search size={16} strokeWidth={1.5} /></Link>
-          <Link href="/wishlist" aria-label={isArabic ? "المفضلة" : "Wishlist"} className={`relative hidden size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee] sm:grid`}><Heart size={16} strokeWidth={1.5} />{wishlistItems.length > 0 && <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-[#22d3ee] text-[8px] font-bold text-[#080a0c]">{wishlistItems.length}</span>}</Link>
-          <Link href="/cart" aria-label={isArabic ? "السلة" : "Shopping bag"} className={`relative grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee]`}><ShoppingBag size={16} strokeWidth={1.5} />{itemCount > 0 && <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-[#22d3ee] text-[8px] font-bold text-[#080a0c]">{itemCount}</span>}</Link>
+          <Link href={`/${locale}/shop#search`} aria-label={isArabic ? "البحث" : "Search"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee]`}><Search size={16} strokeWidth={1.5} /></Link>
+          <Link href={`/${locale}/wishlist`} aria-label={isArabic ? "المفضلة" : "Wishlist"} className={`relative hidden size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee] sm:grid`}><Heart size={16} strokeWidth={1.5} />{wishlistItems.length > 0 && <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-[#22d3ee] text-[8px] font-bold text-[#080a0c]">{wishlistItems.length}</span>}</Link>
+          <Link href={`/${locale}/cart`} aria-label={isArabic ? "السلة" : "Shopping bag"} className={`relative grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee]`}><ShoppingBag size={16} strokeWidth={1.5} />{itemCount > 0 && <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-[#22d3ee] text-[8px] font-bold text-[#080a0c]">{itemCount}</span>}</Link>
           <button aria-label={isArabic ? "فتح القائمة" : "Open navigation"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 lg:hidden`} onClick={() => setMenuOpen(true)}><Menu size={17} strokeWidth={1.5} /></button>
           <LanguageToggle />
         </div>
@@ -64,7 +64,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
 
       <AnimatePresence>
         {menuOpen && <motion.div className="fixed inset-0 z-50 overflow-y-auto bg-[#080a0c] p-6 lg:hidden" initial={{ opacity: 0, y: "-4%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "-4%" }} transition={{ duration: 0.25, ease: "easeOut" }}>
-          <div className="flex items-center justify-between border-b border-white/10 pb-6"><Link href="/" aria-label="CELIBERY home" className="brand-mark shrink-0 text-white" onClick={() => setMenuOpen(false)}><Image src="/celibery-logo.svg" alt="CELIBERY" width={150} height={38} className="brand-logo" priority /></Link><button aria-label={isArabic ? "إغلاق القائمة" : "Close navigation"} className="grid size-10 place-items-center rounded-full border border-white/15 text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee]" onClick={() => setMenuOpen(false)}><X size={18} /></button></div>
+          <div className="flex items-center justify-between border-b border-white/10 pb-6"><Link href={`/${locale}`} aria-label="CELIBERY home" className="brand-mark shrink-0 text-white" onClick={() => setMenuOpen(false)}><Image src="/celibery-logo.svg" alt="CELIBERY" width={150} height={38} className="brand-logo" priority /></Link><button aria-label={isArabic ? "إغلاق القائمة" : "Close navigation"} className="grid size-10 place-items-center rounded-full border border-white/15 text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee]" onClick={() => setMenuOpen(false)}><X size={18} /></button></div>
           <div className="mt-14 flex flex-col">{links.map(([label, href], index) => <Link key={label} href={href} onClick={() => setMenuOpen(false)} className="flex items-center justify-between border-b border-white/10 py-5 text-2xl font-light tracking-[-0.04em] transition-colors hover:text-[#22d3ee]"><span className="flex items-center gap-4"><span className="text-[10px] font-semibold tracking-[0.18em] text-[#22d3ee]">0{index + 1}</span>{label}</span><ArrowUpRight size={15} className="text-white/30" /></Link>)}</div>
           <p className="mt-12 text-[10px] uppercase tracking-[0.18em] text-white/35">CELIBERY / Saudi Arabia / 2026</p>
         </motion.div>}

@@ -108,7 +108,7 @@ function RatingStars({ rating }: { rating: number }) {
 }
 
 export default function Home() {
-  const { isArabic } = useLocale();
+  const { isArabic, locale } = useLocale();
   const { addItem } = useCart();
   const { isSaved, toggleItem } = useWishlist();
   const copy = isArabic ? {
@@ -197,7 +197,7 @@ export default function Home() {
               </h1>
               <p className="mt-8 max-w-xl text-sm font-medium uppercase leading-7 tracking-[0.16em] text-white/60">{isArabic ? "صوت فاخر مصمم للحياة اليومية." : "Premium audio engineered for everyday life."}</p>
               <div className="mt-9 flex flex-col gap-5 sm:flex-row sm:items-center">
-                <Link href="/shop" className="group inline-flex w-fit items-center gap-8 bg-[#22d3ee] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white">{isArabic ? "استكشف المجموعة" : "EXPLORE COLLECTION"} <ArrowUpRight size={15} className="transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link>
+                <Link href={`/${locale}/shop`} className="group inline-flex w-fit items-center gap-8 bg-[#22d3ee] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white">{isArabic ? "استكشف المجموعة" : "EXPLORE COLLECTION"} <ArrowUpRight size={15} className="transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link>
                 <a href="#story" className="inline-flex w-fit items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/75 transition hover:text-[#22d3ee]">{isArabic ? "اكتشف CELIBERY" : "DISCOVER CELIBERY"} <ArrowDownRight size={15} /></a>
               </div>
               <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-4 sm:flex sm:flex-wrap sm:gap-7">
@@ -228,12 +228,12 @@ export default function Home() {
             <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#22d3ee]">{copy.collection}</p>
             <h2 className="display-font text-5xl font-semibold uppercase sm:text-7xl">{isArabic ? <>اختر<br />صوتك.</> : <>Choose<br />your sound.</>}</h2>
           </div>
-          <Link href="/shop" className="hidden items-center gap-2 text-[10px] uppercase tracking-[0.17em] text-white/60 transition hover:text-[#22d3ee] sm:flex">{isArabic ? "عرض كل المنتجات" : "View all products"} <ArrowUpRight size={15} /></Link>
+          <Link href={`/${locale}/shop`} className="hidden items-center gap-2 text-[10px] uppercase tracking-[0.17em] text-white/60 transition hover:text-[#22d3ee] sm:flex">{isArabic ? "عرض كل المنتجات" : "View all products"} <ArrowUpRight size={15} /></Link>
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
           {categories.map((category) => (
-            <motion.a whileHover={{ y: -5 }} transition={{ duration: 0.25 }} href={`/shop?category=${category.label.toLowerCase()}`} key={category.label} className="group relative aspect-[0.82] overflow-hidden bg-[#151a1c] p-6 sm:p-8">
+            <motion.a whileHover={{ y: -5 }} transition={{ duration: 0.25 }} href={`/${locale}/shop?category=${category.label.toLowerCase()}`} key={category.label} className="group relative aspect-[0.82] overflow-hidden bg-[#151a1c] p-6 sm:p-8">
               <div className="full-media absolute inset-0 opacity-65 transition duration-700 group-hover:opacity-90" style={{ backgroundImage: `linear-gradient(180deg, rgba(8,10,12,.12), #080a0c 95%), url(${category.image})` }} />
               <div className="absolute inset-0 border border-white/10 transition group-hover:border-[#22d3ee]/60" />
               <div className="relative flex h-full flex-col justify-between">
@@ -260,7 +260,7 @@ export default function Home() {
             </div>
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <button onClick={() => addItem({ id: "x7-pro", name: "CELIBERY X7 Pro", price: 499, image: "/products/headphones-detail.jpg" })} className="inline-flex items-center gap-4 bg-[#22d3ee] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white"><ShoppingBag size={15} /> {copy.addToCart}</button>
-              <Link href="/shop/x7-pro" className="inline-flex items-center gap-6 border border-white/20 px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:border-[#22d3ee] hover:text-[#22d3ee]">{copy.discoverX7} <ArrowUpRight size={15} /></Link>
+              <Link href={`/${locale}/shop/x7-pro`} className="inline-flex items-center gap-6 border border-white/20 px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:border-[#22d3ee] hover:text-[#22d3ee]">{copy.discoverX7} <ArrowUpRight size={15} /></Link>
             </div>
           </div>
           <div className="relative aspect-[1.1] overflow-hidden bg-[#171d1e]">
@@ -302,7 +302,7 @@ export default function Home() {
           </div>
           <div className="flex min-h-[360px] flex-col justify-between bg-[#22d3ee] p-7 text-[#080a0c] lg:min-h-[520px] lg:p-10">
             <div className="flex items-center justify-between"><Headphones size={24} strokeWidth={1.25} /><span className="text-[10px] font-bold uppercase tracking-[0.18em]">CELIBERY / 01</span></div>
-            <div><p className="mb-4 text-[10px] font-bold uppercase tracking-[0.18em]">{isArabic ? "هندسة الصوت" : "Audio engineering"}</p><p className="max-w-xs text-3xl font-semibold leading-[0.95] tracking-[-0.05em]">{isArabic ? "تفاصيل أكثر. ضوضاء أقل. حرية أكبر." : "More detail. Less noise. More freedom."}</p><Link href="/shop/x7-pro" className="mt-8 inline-flex items-center gap-3 border-b border-[#080a0c] pb-2 text-[10px] font-bold uppercase tracking-[0.16em]">{isArabic ? "اكتشف X7 Pro" : "Discover X7 Pro"} <ArrowUpRight size={15} /></Link></div>
+            <div><p className="mb-4 text-[10px] font-bold uppercase tracking-[0.18em]">{isArabic ? "هندسة الصوت" : "Audio engineering"}</p><p className="max-w-xs text-3xl font-semibold leading-[0.95] tracking-[-0.05em]">{isArabic ? "تفاصيل أكثر. ضوضاء أقل. حرية أكبر." : "More detail. Less noise. More freedom."}</p><Link href={`/${locale}/shop/x7-pro`} className="mt-8 inline-flex items-center gap-3 border-b border-[#080a0c] pb-2 text-[10px] font-bold uppercase tracking-[0.16em]">{isArabic ? "اكتشف X7 Pro" : "Discover X7 Pro"} <ArrowUpRight size={15} /></Link></div>
           </div>
         </div>
       </section>
@@ -363,7 +363,7 @@ export default function Home() {
               <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#22d3ee]">{copy.mostWanted}</p>
               <h2 className="display-font text-5xl font-semibold uppercase sm:text-7xl">{copy.bestSellersTitle}</h2>
             </div>
-            <Link href="/shop" className="hidden items-center gap-2 text-[10px] uppercase tracking-[0.17em] text-white/60 transition hover:text-[#22d3ee] sm:flex">{isArabic ? "عرض كل المنتجات" : "View all products"} <ArrowUpRight size={15} /></Link>
+            <Link href={`/${locale}/shop`} className="hidden items-center gap-2 text-[10px] uppercase tracking-[0.17em] text-white/60 transition hover:text-[#22d3ee] sm:flex">{isArabic ? "عرض كل المنتجات" : "View all products"} <ArrowUpRight size={15} /></Link>
           </div>
           <div className="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
             {bestSellers.map((product) => {
@@ -377,7 +377,7 @@ export default function Home() {
                     <button aria-label={`${copy.addToCart}: ${product.name}`} onClick={() => addItem({ id: product.id, name: product.name, price: product.price, image: product.image })} className="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-center gap-2 bg-white px-4 py-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[#080a0c] transition duration-300 sm:translate-y-3 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"><ShoppingBag size={13} /> {copy.addToCart}</button>
                   </div>
                   <div className="pt-5">
-                    <Link href={`/shop/${product.id}`} className="text-base font-semibold tracking-[-0.02em] transition hover:text-[#22d3ee]">{product.name}</Link>
+                    <Link href={`/${locale}/shop/${product.id}`} className="text-base font-semibold tracking-[-0.02em] transition hover:text-[#22d3ee]">{product.name}</Link>
                     <div className="mt-2 flex items-center gap-2"><RatingStars rating={product.rating} /><span className="text-[10px] text-white/40">({product.reviews})</span></div>
                     <div className="mt-2 flex items-baseline gap-2"><span className="text-sm text-white/85">SAR {product.price}</span>{product.compareAt && <span className="text-xs text-white/35 line-through">SAR {product.compareAt}</span>}</div>
                   </div>
@@ -388,7 +388,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="story" className="mx-auto grid max-w-[1440px] gap-12 px-6 py-24 lg:grid-cols-[1fr_1fr] lg:items-end lg:px-12 lg:py-36"><div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#22d3ee]">{copy.why}</p><h2 className="display-font max-w-2xl text-5xl font-semibold uppercase leading-[0.9] sm:text-7xl">{isArabic ? <>الصوت يجب<br /><span className="text-white/35">أن يرافقك.</span></> : <>Sound should<br /><span className="text-white/35">follow you.</span></>}</h2></div><div className="max-w-md justify-self-end"><div className="mb-8 flex items-center gap-3 text-[#22d3ee]"><Volume2 size={19} strokeWidth={1.5} /><span className="text-[10px] uppercase tracking-[0.18em]">{isArabic ? "مصمم لكل تردد" : "Built for every frequency"}</span></div><p className="text-lg leading-8 text-white/55">{isArabic ? "من أول نغمة في الرياض إلى آخر ضوء على البحر الأحمر، تمنحك CELIBERY تفاصيل وعمقاً وحرية في كل لحظة." : "From the first note in Riyadh to the last light on the Red Sea, CELIBERY brings detail, depth, and freedom to every moment."}</p><Link href="/shop" className="mt-8 inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] transition hover:text-[#22d3ee]">{copy.philosophy} <ArrowUpRight size={15} /></Link></div></section>
+      <section id="story" className="mx-auto grid max-w-[1440px] gap-12 px-6 py-24 lg:grid-cols-[1fr_1fr] lg:items-end lg:px-12 lg:py-36"><div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#22d3ee]">{copy.why}</p><h2 className="display-font max-w-2xl text-5xl font-semibold uppercase leading-[0.9] sm:text-7xl">{isArabic ? <>الصوت يجب<br /><span className="text-white/35">أن يرافقك.</span></> : <>Sound should<br /><span className="text-white/35">follow you.</span></>}</h2></div><div className="max-w-md justify-self-end"><div className="mb-8 flex items-center gap-3 text-[#22d3ee]"><Volume2 size={19} strokeWidth={1.5} /><span className="text-[10px] uppercase tracking-[0.18em]">{isArabic ? "مصمم لكل تردد" : "Built for every frequency"}</span></div><p className="text-lg leading-8 text-white/55">{isArabic ? "من أول نغمة في الرياض إلى آخر ضوء على البحر الأحمر، تمنحك CELIBERY تفاصيل وعمقاً وحرية في كل لحظة." : "From the first note in Riyadh to the last light on the Red Sea, CELIBERY brings detail, depth, and freedom to every moment."}</p><Link href={`/${locale}/shop`} className="mt-8 inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] transition hover:text-[#22d3ee]">{copy.philosophy} <ArrowUpRight size={15} /></Link></div></section>
 
       <footer className="border-t border-white/10 px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-8 sm:flex-row sm:items-end"><div><div className="brand-mark mb-4" role="img" aria-label="CELIBERY"><Image src="/celibery-logo.svg" alt="CELIBERY" width={150} height={38} className="brand-logo" /></div><p className="text-xs text-white/40">Sound without limits.</p></div><div className="flex gap-6 text-[10px] uppercase tracking-[0.16em] text-white/45"><a href="#shop" className="transition hover:text-white">Shop</a><a href="#story" className="transition hover:text-white">Support</a><a href="#story" className="transition hover:text-white">Instagram</a></div></div></footer>
     </main>

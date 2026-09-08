@@ -1,6 +1,25 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function NotFound() {
+  const pathname = usePathname();
+  const isArabic = pathname?.startsWith("/ar");
+  const locale = isArabic ? "ar" : "en";
+
+  const copy = isArabic ? {
+    tagline: "صوت بلا حدود",
+    message: "الإشارة التي طلبتها غير متوفرة.",
+    home: "العودة إلى الرئيسية",
+    shop: "تسوق المجموعة",
+  } : {
+    tagline: "SOUND WITHOUT LIMITS",
+    message: "The signal you requested is not available.",
+    home: "Return home",
+    shop: "Shop collection",
+  };
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#080a0c] text-[#f3f5f5]">
       <section className="relative flex min-h-screen flex-col items-center justify-center px-6">
@@ -16,21 +35,21 @@ export default function NotFound() {
             <span className="h-px w-10 bg-[#22d3ee]" />
           </div>
           <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/55">
-            SOUND WITHOUT LIMITS
+            {copy.tagline}
           </p>
           <h1 className="display-font text-7xl font-semibold uppercase leading-none sm:text-8xl">
             404
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-sm leading-7 text-white/60">
-            The signal you requested is not available.
+            {copy.message}
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Link href="/" className="inline-flex items-center justify-center bg-[#22d3ee] px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#080a0c] transition hover:bg-white">
-              Return home
+            <Link href={`/${locale}`} className="inline-flex items-center justify-center bg-[#22d3ee] px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#080a0c] transition hover:bg-white">
+              {copy.home}
             </Link>
-            <Link href="/shop" className="inline-flex items-center justify-center border border-white/25 px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:border-[#22d3ee] hover:text-[#22d3ee]">
-              Shop collection
+            <Link href={`/${locale}/shop`} className="inline-flex items-center justify-center border border-white/25 px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:border-[#22d3ee] hover:text-[#22d3ee]">
+              {copy.shop}
             </Link>
           </div>
         </div>

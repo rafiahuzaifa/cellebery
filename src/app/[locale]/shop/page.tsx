@@ -73,7 +73,7 @@ const products = [
 
 type Product = (typeof products)[number];
 
-function ProductCard({ product, saved, onToggle }: { product: Product; saved: boolean; onToggle: () => void }) {
+function ProductCard({ product, saved, onToggle, locale }: { product: Product; saved: boolean; onToggle: () => void; locale: string }) {
   return (
     <article className="group">
       <div className="relative aspect-[0.92] overflow-hidden bg-[#151a1c]">
@@ -82,7 +82,7 @@ function ProductCard({ product, saved, onToggle }: { product: Product; saved: bo
         <button aria-label={`${saved ? "Remove" : "Add"} ${product.name} ${saved ? "from" : "to"} wishlist`} onClick={onToggle} className={`absolute right-4 top-4 grid size-9 place-items-center rounded-full border backdrop-blur-sm transition ${saved ? "border-[#22d3ee] bg-[#22d3ee] text-[#080a0c]" : "border-white/25 bg-[#080a0c]/40 text-white/75 hover:border-[#22d3ee] hover:text-[#22d3ee]"}`}>
           <Heart size={15} fill={saved ? "currentColor" : "none"} strokeWidth={1.5} />
         </button>
-          <Link href={`/shop/${product.id}`} className="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between bg-white px-4 py-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[#080a0c] transition duration-300 sm:translate-y-3 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100">
+          <Link href={`/${locale}/shop/${product.id}`} className="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between bg-white px-4 py-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[#080a0c] transition duration-300 sm:translate-y-3 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100">
           View product <ArrowUpRight size={15} />
         </Link>
       </div>
@@ -95,7 +95,7 @@ function ProductCard({ product, saved, onToggle }: { product: Product; saved: bo
 }
 
 function ShopPageContent() {
-  const { isArabic } = useLocale();
+  const { isArabic, locale } = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isSaved, toggleItem } = useWishlist();
@@ -141,7 +141,7 @@ function ShopPageContent() {
       : "/ChatGPT%20Image%20Aug%2027,%202026,%2005_22_17%20PM.png";
   const chooseFilter = (filter: string) => {
     setSelectedFilter(filter);
-    router.replace(filter === "All products" ? "/shop" : `/shop?category=${filter.toLowerCase()}`);
+    router.replace(filter === "All products" ? `/${locale}/shop` : `/${locale}/shop?category=${filter.toLowerCase()}`);
   };
 
   const filteredProducts = useMemo(() => {
@@ -166,9 +166,9 @@ function ShopPageContent() {
 
       <section className="border-y border-white/10 bg-[#0d1113] px-6 py-4 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"><div className="flex gap-2 overflow-x-auto pb-1">{translatedFilters.map((filter) => <button key={filter} onClick={() => chooseFilter(filterMap[filter])} className={`whitespace-nowrap border px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.15em] transition ${activeFilter === filterMap[filter] ? "border-[#22d3ee] bg-[#22d3ee] text-[#080a0c]" : "border-white/15 text-white/55 hover:border-white/40 hover:text-white"}`}>{filter}</button>)}</div><div className="flex gap-2"><label id="search" className="flex min-w-0 flex-1 items-center gap-2 border border-white/15 px-3 text-white/45 focus-within:border-[#22d3ee] lg:w-64"><Search size={15} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={labels.search} className="min-w-0 bg-transparent py-3 text-xs text-white outline-none placeholder:text-white/35" /></label><button onClick={() => setFiltersOpen((open) => !open)} aria-label={isArabic ? "فتح الفلاتر" : "Toggle filters"} className={`grid size-11 place-items-center border transition lg:hidden ${filtersOpen ? "border-[#22d3ee] text-[#22d3ee]" : "border-white/15 text-white/60"}`}><SlidersHorizontal size={16} /></button><select value={sort} onChange={(event) => setSort(event.target.value)} className="hidden border border-white/15 bg-[#0d1113] px-3 text-[10px] uppercase tracking-[0.12em] text-white/60 outline-none lg:block"><option>Featured</option><option>Price: low to high</option><option>Price: high to low</option></select></div>{filtersOpen && <div className="flex gap-2 lg:hidden"><select value={sort} onChange={(event) => setSort(event.target.value)} className="w-full border border-white/15 bg-[#0d1113] px-3 py-3 text-[10px] uppercase tracking-[0.12em] text-white/60 outline-none"><option>Featured</option><option>Price: low to high</option><option>Price: high to low</option></select><button aria-label={isArabic ? "إغلاق الفلاتر" : "Close filters"} onClick={() => setFiltersOpen(false)} className="grid size-11 place-items-center border border-white/15 text-white/60"><X size={16} /></button></div>}</div></section>
 
-      <section className="mx-auto max-w-[1440px] px-6 py-12 lg:px-12 lg:py-20"><div className="mb-8 flex items-center justify-between text-[10px] uppercase tracking-[0.15em] text-white/40"><span>{filteredProducts.length} {labels.results}</span><span className="text-[#22d3ee]">{labels.delivery}</span></div>{filteredProducts.length > 0 ? <div className="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} saved={isSaved(product.id)} onToggle={() => toggleItem({ id: product.id, name: product.name, price: product.price, image: product.image })} />)}</div> : <div className="border border-white/10 py-24 text-center"><p className="text-sm text-white/50">{isArabic ? "لا توجد منتجات تطابق بحثك." : "No products match your search."}</p><button onClick={() => { setQuery(""); chooseFilter("All products"); }} className="mt-5 text-[10px] font-bold uppercase tracking-[0.15em] text-[#22d3ee]">{labels.clear}</button></div>}</section>
+      <section className="mx-auto max-w-[1440px] px-6 py-12 lg:px-12 lg:py-20"><div className="mb-8 flex items-center justify-between text-[10px] uppercase tracking-[0.15em] text-white/40"><span>{filteredProducts.length} {labels.results}</span><span className="text-[#22d3ee]">{labels.delivery}</span></div>{filteredProducts.length > 0 ? <div className="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} saved={isSaved(product.id)} onToggle={() => toggleItem({ id: product.id, name: product.name, price: product.price, image: product.image })} locale={locale} />)}</div> : <div className="border border-white/10 py-24 text-center"><p className="text-sm text-white/50">{isArabic ? "لا توجد منتجات تطابق بحثك." : "No products match your search."}</p><button onClick={() => { setQuery(""); chooseFilter("All products"); }} className="mt-5 text-[10px] font-bold uppercase tracking-[0.15em] text-[#22d3ee]">{labels.clear}</button></div>}</section>
 
-      <footer className="border-t border-white/10 px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] justify-between gap-6 text-[10px] uppercase tracking-[0.15em] text-white/40"><span>CELIBERY / Sound without limits.</span><Link href="/">Back to home ↑</Link></div></footer>
+      <footer className="border-t border-white/10 px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] justify-between gap-6 text-[10px] uppercase tracking-[0.15em] text-white/40"><span>CELIBERY / Sound without limits.</span><Link href={`/${locale}`}>Back to home ↑</Link></div></footer>
     </main>
   );
 }
