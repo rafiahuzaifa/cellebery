@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useSyncExternalStore } from "react";
+import { createLocalStorageList } from "@/lib/local-storage-list";
 
 export type WishlistItem = { id: string; name: string; price: number; image?: string };
 
@@ -12,36 +13,20 @@ type WishlistContextValue = {
 };
 
 const WishlistContext = createContext<WishlistContextValue | null>(null);
+const store = createLocalStorageList<WishlistItem>("celibery-wishlist");
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<WishlistItem[]>([]);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    const stored = window.localStorage.getItem("celibery-wishlist");
-    if (stored) {
-      try {
-        setItems(JSON.parse(stored) as WishlistItem[]);
-      } catch {
-        // ignore corrupted storage
-      }
-    }
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (hydrated) window.localStorage.setItem("celibery-wishlist", JSON.stringify(items));
-  }, [items, hydrated]);
+  const items = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
 
   const isSaved = (id: string) => items.some((item) => item.id === id);
 
   const toggleItem = (item: WishlistItem) => {
-    setItems((current) => current.some((entry) => entry.id === item.id)
-      ? current.filter((entry) => entry.id !== item.id)
-      : [...current, item]);
+    store.set(items.some((entry) => entry.id === item.id)
+      ? items.filter((entry) => entry.id !== item.id)
+      : [...items, item]);
   };
 
-  const removeItem = (id: string) => setItems((current) => current.filter((item) => item.id !== id));
+  const removeItem = (id: string) => store.set(items.filter((item) => item.id !== id));
 
   return <WishlistContext.Provider value={{ items, isSaved, toggleItem, removeItem }}>{children}</WishlistContext.Provider>;
 }
