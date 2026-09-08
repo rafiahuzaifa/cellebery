@@ -208,3 +208,23 @@ a {
   opacity: 0.2;
   pointer-events: none;
 }
+
+.admin-input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0a0d0f;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.75rem;
+  color: #f3f5f5;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.admin-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.admin-input:focus {
+  border-color: var(--cyan, #22d3ee);
+}

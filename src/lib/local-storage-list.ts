@@ -3,7 +3,7 @@
 // empty reference (matching the server-rendered, pre-hydration markup)
 // while getSnapshot lazily hydrates from localStorage on the client. This
 // avoids both hydration mismatches and setState-in-effect.
-export function createLocalStorageList<T>(key: string) {
+export function createLocalStorageList<T>(key: string, seed: T[] = []) {
   const EMPTY: T[] = [];
   let items: T[] = EMPTY;
   let hydrated = false;
@@ -19,6 +19,9 @@ export function createLocalStorageList<T>(key: string) {
       } catch {
         // ignore corrupted storage
       }
+    } else if (seed.length > 0) {
+      items = seed;
+      window.localStorage.setItem(key, JSON.stringify(items));
     }
   };
 
