@@ -95,7 +95,7 @@ export default function Home() {
 
         <div id="top" className="relative z-10 mx-auto flex h-[calc(100%-100px)] max-w-[1440px] flex-col justify-center px-6 py-16 lg:px-12">
           <div className="grid min-h-[560px] items-center gap-8 lg:grid-cols-[minmax(520px,0.95fr)_minmax(420px,1.05fr)]">
-            <div className="relative hidden min-h-[460px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0d1113] shadow-2xl shadow-cyan-950/50 lg:block">
+            <div className="relative min-h-[460px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0d1113] shadow-2xl shadow-cyan-950/50 lg:block">
               <MediaVideo src="/Person_holding_Bluetooth_speaker_202609080042.mp4" poster="/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png" className="h-[460px] w-full" label={isArabic ? "تفعيل أو كتم صوت الفيديو" : "Toggle sound"} />
               <div className="absolute inset-0 bg-gradient-to-t from-[#080a0c]/55 via-transparent to-transparent" />
               <div className="absolute left-6 top-6 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9ff6ed]"><span className="inline-block h-px w-8 bg-[#9ff6ed]" />CELIBERY 01</div>
