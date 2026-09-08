@@ -8,7 +8,7 @@ import { useLocale } from "@/components/locale-provider";
 import { categoryOptions, translationStatus, type AdminProduct } from "@/lib/admin/catalog";
 import { useAdminProducts } from "@/lib/admin/product-store";
 
-const emptyTranslation = { name: "", shortDescription: "", description: "", seoTitle: "", seoDescription: "" };
+const emptyTranslation = { name: "", shortDescription: "", description: "", features: [] as string[], seoTitle: "", seoDescription: "" };
 
 function blankProduct(): AdminProduct {
   return {
@@ -22,6 +22,8 @@ function blankProduct(): AdminProduct {
     warrantyMonths: 12,
     status: "draft",
     image: "/products/headphones-classic.jpg",
+    rating: 4.8,
+    reviewCount: 0,
     updatedAt: new Date().toISOString().slice(0, 10),
     en: { ...emptyTranslation },
     ar: { ...emptyTranslation },
@@ -41,7 +43,13 @@ export function ProductForm({ initial }: { initial?: AdminProduct }) {
   const save = () => {
     const slugSource = product.en.name || product.sku || "product";
     const id = product.id || slugSource.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || `product-${Date.now()}`;
-    upsert({ ...product, id, updatedAt: new Date().toISOString().slice(0, 10) });
+    upsert({
+      ...product,
+      id,
+      updatedAt: new Date().toISOString().slice(0, 10),
+      en: { ...product.en, features: product.en.features.map((f) => f.trim()).filter(Boolean) },
+      ar: { ...product.ar, features: product.ar.features.map((f) => f.trim()).filter(Boolean) },
+    });
     router.push("/admin/products");
   };
 
@@ -81,6 +89,9 @@ export function ProductForm({ initial }: { initial?: AdminProduct }) {
                 <Field label="Full Description">
                   <textarea value={product.en.description} onChange={(e) => setProduct({ ...product, en: { ...product.en, description: e.target.value } })} rows={4} className="admin-input resize-none" />
                 </Field>
+                <Field label="Key features (one per line)">
+                  <textarea value={product.en.features.join("\n")} onChange={(e) => setProduct({ ...product, en: { ...product.en, features: e.target.value.split("\n") } })} rows={4} className="admin-input resize-none" placeholder={"Adaptive noise cancellation\n40 hours battery life"} />
+                </Field>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="SEO Title"><input value={product.en.seoTitle} onChange={(e) => setProduct({ ...product, en: { ...product.en, seoTitle: e.target.value } })} className="admin-input" /></Field>
                   <Field label="SEO Description"><input value={product.en.seoDescription} onChange={(e) => setProduct({ ...product, en: { ...product.en, seoDescription: e.target.value } })} className="admin-input" /></Field>
@@ -96,6 +107,9 @@ export function ProductForm({ initial }: { initial?: AdminProduct }) {
                 </Field>
                 <Field label="الوصف الكامل">
                   <textarea value={product.ar.description} onChange={(e) => setProduct({ ...product, ar: { ...product.ar, description: e.target.value } })} rows={4} className="admin-input resize-none text-right" />
+                </Field>
+                <Field label="أبرز المزايا (كل ميزة في سطر)">
+                  <textarea value={product.ar.features.join("\n")} onChange={(e) => setProduct({ ...product, ar: { ...product.ar, features: e.target.value.split("\n") } })} rows={4} className="admin-input resize-none text-right" placeholder={"إلغاء ضوضاء متكيف\nبطارية تدوم 40 ساعة"} />
                 </Field>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="عنوان SEO"><input value={product.ar.seoTitle} onChange={(e) => setProduct({ ...product, ar: { ...product.ar, seoTitle: e.target.value } })} className="admin-input text-right" /></Field>
@@ -130,6 +144,10 @@ export function ProductForm({ initial }: { initial?: AdminProduct }) {
                 <Field label={isArabic ? "حد المخزون المنخفض" : "Low stock threshold"}><input type="number" value={product.lowStockThreshold} onChange={(e) => setProduct({ ...product, lowStockThreshold: Number(e.target.value) })} className="admin-input" /></Field>
               </div>
               <Field label={isArabic ? "الضمان (أشهر)" : "Warranty (months)"}><input type="number" value={product.warrantyMonths} onChange={(e) => setProduct({ ...product, warrantyMonths: Number(e.target.value) })} className="admin-input" /></Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label={isArabic ? "التقييم" : "Rating"}><input type="number" min={0} max={5} step={0.1} value={product.rating} onChange={(e) => setProduct({ ...product, rating: Number(e.target.value) })} className="admin-input" /></Field>
+                <Field label={isArabic ? "عدد التقييمات" : "Review count"}><input type="number" min={0} value={product.reviewCount} onChange={(e) => setProduct({ ...product, reviewCount: Number(e.target.value) })} className="admin-input" /></Field>
+              </div>
             </div>
           </div>
 
