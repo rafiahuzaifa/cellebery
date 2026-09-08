@@ -43,6 +43,31 @@ export interface PaymentProvider {
   handleWebhook(payload: PaymentWebhook): Promise<{ ok: boolean; message: string }>;
 }
 
+/**
+ * Real Saudi gateways (Mada via Moyasar/Tap, etc.) plug in here later by
+ * implementing PaymentProvider and registering below — checkout code never
+ * changes, only PAYMENT_PROVIDER in the environment.
+ */
+class UnconfiguredPaymentProvider implements PaymentProvider {
+  constructor(public name: PaymentProviderName) {}
+
+  private fail(): never {
+    throw new Error(`Payment provider "${this.name}" is not configured. Set PAYMENT_PROVIDER_KEY/PAYMENT_PROVIDER_SECRET and implement its adapter, or use PAYMENT_PROVIDER=mock for development.`);
+  }
+
+  async createIntent(): Promise<PaymentIntent> {
+    this.fail();
+  }
+
+  async verify(): Promise<PaymentVerification> {
+    this.fail();
+  }
+
+  async handleWebhook(): Promise<{ ok: boolean; message: string }> {
+    this.fail();
+  }
+}
+
 export class MockPaymentProvider implements PaymentProvider {
   name: PaymentProviderName = "mock";
 
@@ -85,4 +110,12 @@ export class MockPaymentProvider implements PaymentProvider {
   }
 }
 
-export const paymentProvider = new MockPaymentProvider();
+function resolvePaymentProvider(): PaymentProvider {
+  const name = (process.env.PAYMENT_PROVIDER ?? "mock") as PaymentProviderName;
+  if (name === "mock") return new MockPaymentProvider();
+  // mada / tap / stripe / other: real adapters are not implemented yet.
+  // Swapping PAYMENT_PROVIDER back to "mock" keeps development unblocked.
+  return new UnconfiguredPaymentProvider(name);
+}
+
+export const paymentProvider = resolvePaymentProvider();
