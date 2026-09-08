@@ -41,7 +41,7 @@ export function LanguageToggle() {
   return (
     <div className="flex items-center gap-1 rounded-full border border-white/15 p-1 text-[9px] font-bold tracking-[0.12em]">
       <button aria-label="Switch to English" onClick={() => setLocale("en")} className={`rounded-full px-2 py-1 transition ${locale === "en" ? "bg-white text-[#080a0c]" : "text-white/45 hover:text-white"}`}>EN</button>
-      <button aria-label="Switch to Arabic" onClick={() => setLocale("ar")} className={`rounded-full px-2 py-1 transition ${locale === "ar" ? "bg-[#9ff6ed] text-[#080a0c]" : "text-white/45 hover:text-white"}`}>العربية</button>
+      <button aria-label="Switch to Arabic" onClick={() => setLocale("ar")} className={`rounded-full px-2 py-1 transition ${locale === "ar" ? "bg-[#22d3ee] text-[#080a0c]" : "text-white/45 hover:text-white"}`}>العربية</button>
     </div>
   );
 }

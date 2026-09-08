@@ -6,7 +6,7 @@
   --surface: #101416;
   --muted: #92999b;
   --line: rgba(255, 255, 255, 0.12);
-  --cyan: #9ff6ed;
+  --cyan: #22d3ee;
 }
 
 @theme inline {
@@ -75,7 +75,7 @@ a {
 }
 
 .brand-mark:hover {
-  color: var(--cyan, #9ff6ed);
+  color: var(--cyan, #22d3ee);
 }
 
 .media-video {

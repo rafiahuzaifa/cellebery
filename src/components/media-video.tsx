@@ -31,7 +31,7 @@ export function MediaVideo({ src, poster, className = "", label = "Toggle video 
         <source src={src} type="video/mp4" />
       </video>
       {showSoundButton && (
-        <button type="button" onClick={toggleSound} aria-label={label} className="absolute bottom-4 right-4 z-20 grid size-10 place-items-center rounded-full border border-white/30 bg-[#080a0c]/75 text-white backdrop-blur-md transition hover:border-[#9ff6ed] hover:text-[#9ff6ed]">
+        <button type="button" onClick={toggleSound} aria-label={label} className="absolute bottom-4 right-4 z-20 grid size-10 place-items-center rounded-full border border-white/30 bg-[#080a0c]/75 text-white backdrop-blur-md transition hover:border-[#22d3ee] hover:text-[#22d3ee]">
           {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
         </button>
       )}

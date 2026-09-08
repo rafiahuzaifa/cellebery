@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope, Noto_Kufi_Arabic } from "next/font/google";
 import { LocaleProvider } from "@/components/locale-provider";
 import { CartProvider } from "@/components/cart-provider";
+import { WishlistProvider } from "@/components/wishlist-provider";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -25,7 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${manrope.variable} ${arabic.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col"><LocaleProvider><CartProvider>{children}</CartProvider></LocaleProvider></body>
+      <body className="min-h-full flex flex-col"><LocaleProvider><WishlistProvider><CartProvider>{children}</CartProvider></WishlistProvider></LocaleProvider></body>
     </html>
   );
 }

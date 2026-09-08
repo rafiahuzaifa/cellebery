@@ -16,15 +16,24 @@ type CartContextValue = {
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(() => {
-    if (typeof window === "undefined") return [];
-    const stored = window.localStorage.getItem("celibery-cart");
-    return stored ? JSON.parse(stored) as CartItem[] : [];
-  });
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    window.localStorage.setItem("celibery-cart", JSON.stringify(items));
-  }, [items]);
+    const stored = window.localStorage.getItem("celibery-cart");
+    if (stored) {
+      try {
+        setItems(JSON.parse(stored) as CartItem[]);
+      } catch {
+        // ignore corrupted storage
+      }
+    }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (hydrated) window.localStorage.setItem("celibery-cart", JSON.stringify(items));
+  }, [items, hydrated]);
 
   const addItem = (item: Omit<CartItem, "quantity">) => {
     setItems((current) => {

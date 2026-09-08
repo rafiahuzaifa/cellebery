@@ -10,10 +10,10 @@ export default function NotFound() {
         </div>
 
         <div className="relative z-10 max-w-2xl text-center">
-          <div className="mb-8 flex items-center justify-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9ff6ed]">
-            <span className="h-px w-10 bg-[#9ff6ed]" />
+          <div className="mb-8 flex items-center justify-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[#22d3ee]">
+            <span className="h-px w-10 bg-[#22d3ee]" />
             CELIBERY
-            <span className="h-px w-10 bg-[#9ff6ed]" />
+            <span className="h-px w-10 bg-[#22d3ee]" />
           </div>
           <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/55">
             SOUND WITHOUT LIMITS
@@ -26,10 +26,10 @@ export default function NotFound() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Link href="/" className="inline-flex items-center justify-center bg-[#9ff6ed] px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#080a0c] transition hover:bg-white">
+            <Link href="/" className="inline-flex items-center justify-center bg-[#22d3ee] px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#080a0c] transition hover:bg-white">
               Return home
             </Link>
-            <Link href="/shop" className="inline-flex items-center justify-center border border-white/25 px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:border-[#9ff6ed] hover:text-[#9ff6ed]">
+            <Link href="/shop" className="inline-flex items-center justify-center border border-white/25 px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:border-[#22d3ee] hover:text-[#22d3ee]">
               Shop collection
             </Link>
           </div>
