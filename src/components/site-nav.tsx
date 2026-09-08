@@ -5,9 +5,11 @@ import { ArrowUpRight, Menu, Search, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LanguageToggle, useLocale } from "@/components/locale-provider";
+import { useCart } from "@/components/cart-provider";
 
 export function SiteNav({ overlay = false }: { overlay?: boolean }) {
   const { isArabic } = useLocale();
+  const { itemCount } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const links = isArabic
     ? [
@@ -43,7 +45,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
         </div>
         <div className="flex items-center gap-2">
           <Link href="/shop#search" aria-label={isArabic ? "البحث" : "Search"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed]`}><Search size={16} strokeWidth={1.5} /></Link>
-          <Link href="/shop#cart" aria-label={isArabic ? "السلة" : "Shopping bag"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed]`}><ShoppingBag size={16} strokeWidth={1.5} /></Link>
+          <Link href="/shop#cart" aria-label={isArabic ? "السلة" : "Shopping bag"} className={`relative grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#9ff6ed] hover:text-[#9ff6ed]`}><ShoppingBag size={16} strokeWidth={1.5} />{itemCount > 0 && <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-[#9ff6ed] text-[8px] font-bold text-[#080a0c]">{itemCount}</span>}</Link>
           <button aria-label={isArabic ? "فتح القائمة" : "Open navigation"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 lg:hidden`} onClick={() => setMenuOpen(true)}><Menu size={17} strokeWidth={1.5} /></button>
           <LanguageToggle />
         </div>

@@ -81,7 +81,7 @@ function ProductCard({ product, saved, onToggle }: { product: Product; saved: bo
         <button aria-label={`${saved ? "Remove" : "Add"} ${product.name} ${saved ? "from" : "to"} wishlist`} onClick={onToggle} className={`absolute right-4 top-4 grid size-9 place-items-center rounded-full border backdrop-blur-sm transition ${saved ? "border-[#9ff6ed] bg-[#9ff6ed] text-[#080a0c]" : "border-white/25 bg-[#080a0c]/40 text-white/75 hover:border-[#9ff6ed] hover:text-[#9ff6ed]"}`}>
           <Heart size={15} fill={saved ? "currentColor" : "none"} strokeWidth={1.5} />
         </button>
-          <Link href={`/shop/${product.id}`} className="absolute bottom-4 left-4 right-4 flex translate-y-3 items-center justify-between bg-white px-4 py-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[#080a0c] opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          <Link href={`/shop/${product.id}`} className="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-between bg-white px-4 py-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[#080a0c] transition duration-300 sm:translate-y-3 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100">
           View product <ArrowUpRight size={15} />
         </Link>
       </div>

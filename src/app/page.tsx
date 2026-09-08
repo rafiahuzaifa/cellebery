@@ -36,6 +36,18 @@ const stats = [
   ["5.3", "Bluetooth"],
 ];
 
+const mediaGallery = [
+  { type: "image", src: "/WhatsApp%20Image%202026-09-08%20at%2007.52.46.jpeg", className: "md:col-span-2" },
+  { type: "image", src: "/WhatsApp%20Image%202026-09-08%20at%2007.52.46%20(1).jpeg", className: "" },
+  { type: "video", src: "/CELIBERY_Bluetooth_speaker_comme%E2%80%A6_202609080042.mp4", className: "md:row-span-2" },
+  { type: "image", src: "/WhatsApp%20Image%202026-09-08%20at%2007.52.46%20(2).jpeg", className: "" },
+  { type: "image", src: "/WhatsApp%20Image%202026-09-08%20at%2007.52.47.jpeg", className: "" },
+  { type: "video", src: "/Friends_playing_football_with_sp%E2%80%A6_202609080042.mp4", className: "md:col-span-2" },
+  { type: "image", src: "/WhatsApp%20Image%202026-09-08%20at%2007.52.47%20(1).jpeg", className: "" },
+  { type: "image", src: "/WhatsApp%20Image%202026-09-08%20at%2007.52.48.jpeg", className: "" },
+  { type: "video", src: "/WhatsApp%20Video%202026-09-08%20at%2007.52.47.mp4", className: "md:col-span-2" },
+];
+
 export default function Home() {
   const { isArabic } = useLocale();
   const copy = isArabic ? {
@@ -154,6 +166,18 @@ export default function Home() {
           <div className="flex min-h-[360px] flex-col justify-between bg-[#9ff6ed] p-7 text-[#080a0c] lg:min-h-[520px] lg:p-10">
             <div className="flex items-center justify-between"><Headphones size={24} strokeWidth={1.25} /><span className="text-[10px] font-bold uppercase tracking-[0.18em]">CELIBERY / 01</span></div>
             <div><p className="mb-4 text-[10px] font-bold uppercase tracking-[0.18em]">{isArabic ? "هندسة الصوت" : "Audio engineering"}</p><p className="max-w-xs text-3xl font-semibold leading-[0.95] tracking-[-0.05em]">{isArabic ? "تفاصيل أكثر. ضوضاء أقل. حرية أكبر." : "More detail. Less noise. More freedom."}</p><Link href="/shop/x7-pro" className="mt-8 inline-flex items-center gap-3 border-b border-[#080a0c] pb-2 text-[10px] font-bold uppercase tracking-[0.16em]">{isArabic ? "اكتشف X7 Pro" : "Discover X7 Pro"} <ArrowUpRight size={15} /></Link></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-white/10 px-6 py-24 lg:px-12 lg:py-32">
+        <div className="mx-auto max-w-[1440px]">
+          <div className="mb-10 flex items-end justify-between gap-6">
+            <div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">CELIBERY / In the wild</p><h2 className="display-font max-w-xl text-5xl font-semibold uppercase leading-[0.9] sm:text-7xl">Sound<br /><span className="text-white/35">in motion.</span></h2></div>
+            <p className="hidden max-w-xs text-right text-xs leading-6 text-white/45 sm:block">Designed for real days, long nights, open roads, and every room in between.</p>
+          </div>
+          <div className="grid auto-rows-[minmax(190px,24vw)] gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {mediaGallery.map((media) => media.type === "video" ? <video key={media.src} className={`h-full w-full object-cover ${media.className}`} autoPlay muted loop playsInline preload="metadata"><source src={media.src} type="video/mp4" /></video> : <div key={media.src} className={`h-full w-full bg-cover bg-center ${media.className}`} style={{ backgroundImage: `url(${media.src})` }} />)}
           </div>
         </div>
       </section>

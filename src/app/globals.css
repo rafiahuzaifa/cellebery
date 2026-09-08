@@ -46,13 +46,23 @@ a {
 }
 
 .brand-mark {
-  width: 176px;
-  height: 38px;
+  width: clamp(132px, 15vw, 176px);
+  height: clamp(30px, 3.3vw, 38px);
   display: block;
-  background-image: url("/ChatGPT%20Image%20Aug%2027,%202026,%2005_22_17%20PM.png");
-  background-repeat: no-repeat;
-  background-size: 700px auto;
-  background-position: -27px -18px;
+  color: currentColor;
+  position: relative;
+}
+
+.brand-mark::after {
+  content: "CELIBERY";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center start;
+  color: currentColor;
+  font-size: clamp(1rem, 1.8vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: 0.14em;
 }
 
 .grain {
