@@ -40,7 +40,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
 
   return (
     <>
-      <nav className={`${navPosition} z-40 mx-auto flex max-w-[1440px] items-center justify-between px-6 py-7 lg:px-12 ${textTone}`}>
+      <nav className={`${navPosition} z-50 mx-auto flex max-w-[1440px] items-center justify-between px-6 py-7 lg:px-12 ${textTone}`}>
         <Link href="/" aria-label="CELIBERY home" className="brand-mark shrink-0 text-white">
           <Image src="/logo1.png" alt="CELIBERY" width={150} height={40} className="brand-logo" />
         </Link>
