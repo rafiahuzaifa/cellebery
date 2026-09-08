@@ -87,13 +87,13 @@ const bestSellers = [
 ];
 
 const mediaGallery = [
-  { type: "image", src: "/gallery-image-01.jpeg", className: "" },
-  { type: "image", src: "/gallery-image-02.jpeg", className: "" },
+  { type: "image", src: "/lifestyle/travel.jpg", className: "" },
+  { type: "image", src: "/products/earbuds-hero.jpg", className: "" },
   { type: "video", src: "/CELIBERY_Bluetooth_speaker_comme%E2%80%A6_202609080042.mp4", className: "gallery-tile--tall" },
-  { type: "image", src: "/gallery-image-03.jpeg", className: "" },
-  { type: "image", src: "/gallery-image-04.jpeg", className: "" },
-  { type: "video", src: "/Friends_playing_football_with_sp%E2%80%A6_202609080042.mp4", className: "gallery-tile--wide" },
-  { type: "image", src: "/gallery-image-05.jpeg", className: "" },
+  { type: "image", src: "/lifestyle/work.jpg", className: "" },
+  { type: "image", src: "/products/speaker-hero.jpg", className: "" },
+  { type: "video", src: "/Friends_playing_football_with_sp%E2%80%A6_202609080042.mp4", className: "" },
+  { type: "image", src: "/lifestyle/home.jpg", className: "" },
   { type: "video", src: "/WhatsApp%20Video%202026-09-08%20at%2007.52.47.mp4", className: "gallery-tile--wide" },
 ];
 
