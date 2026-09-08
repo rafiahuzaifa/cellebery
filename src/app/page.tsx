@@ -96,7 +96,7 @@ export default function Home() {
         <div id="top" className="relative z-10 mx-auto flex h-[calc(100%-100px)] max-w-[1440px] flex-col justify-end px-6 pb-12 lg:px-12 lg:pb-20">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl">
             <div className="mb-5 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]"><span className="inline-block h-px w-10 bg-[#9ff6ed]" />{isArabic ? "جيل جديد من الصوت" : "New era of sound"}</div>
-            <h1 className="display-font max-w-xl text-7xl font-semibold uppercase leading-[0.82] sm:text-8xl lg:text-[9.5rem]">
+            <h1 className="display-font max-w-[680px] text-[clamp(4rem,8vw,6.6rem)] font-semibold uppercase leading-[0.82] tracking-[-0.045em]">
               {isArabic ? <>
                 <span className="block">صوت</span>
                 <span className="block">بلا</span>

@@ -66,8 +66,8 @@ a {
 }
 
 .brand-logo {
-  width: clamp(160px, 14vw, 220px);
-  height: clamp(44px, 4vw, 60px);
+  width: clamp(130px, 10vw, 180px);
+  height: clamp(36px, 3vw, 44px);
   display: block;
   object-fit: contain;
   filter: drop-shadow(0 0 8px rgba(159, 246, 237, 0.45));
