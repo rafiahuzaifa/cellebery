@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { SiteNav } from "@/components/site-nav";
@@ -89,21 +90,31 @@ export default function Home() {
   return (
     <main className="overflow-hidden bg-[#080a0c] text-[#f3f5f5]">
       <section className="relative min-h-[720px] h-screen max-h-[980px] overflow-hidden border-b border-white/10">
-        <MediaVideo src="/Person_holding_Bluetooth_speaker_202609080042.mp4" poster="/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png" className="absolute inset-0 h-full w-full opacity-50" label={isArabic ? "تفعيل أو كتم صوت الفيديو" : "Toggle hero video sound"} />
-        <div
-          className="absolute inset-0 bg-linear-to-r from-[#080a0c] via-[#080a0c]/65 to-[#080a0c]/10"
-        />
+        <div className="absolute inset-0 opacity-55" style={{ backgroundImage: "linear-gradient(180deg, rgba(8,10,12,.04), rgba(8,10,12,.76)), url('/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png')", backgroundSize: "cover", backgroundPosition: "center" }} />
+        <div className="absolute inset-0 bg-linear-to-r from-[#080a0c] via-[#080a0c]/65 to-[#080a0c]/10" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_36%,rgba(159,246,237,0.12),transparent_18%),radial-gradient(circle_at_50%_50%,rgba(159,246,237,0.06),transparent_28%)]" />
         <div className="grain absolute inset-0" />
         <SiteNav overlay />
 
         <div id="top" className="relative z-10 mx-auto flex h-[calc(100%-100px)] max-w-[1440px] flex-col justify-end px-6 pb-12 lg:px-12 lg:pb-20">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl">
-            <p className="mb-5 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]"><Sparkles size={13} /> {copy.eyebrow}</p>
-            <h1 className="display-font max-w-xl text-7xl font-semibold uppercase leading-[0.85] sm:text-8xl lg:text-[9.5rem]">{isArabic ? <>صوت<br />{copy.heroLast}</> : <>Sound<br />without<br /><span className="text-white/45">{copy.heroLast}</span></>}</h1>
+            <p className="mb-5 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]" style={{ transform: 'translateY(8px)' }}><Sparkles size={13} /> {copy.eyebrow}</p>
+            <h1 className="display-font max-w-xl text-7xl font-semibold uppercase leading-[0.82] sm:text-8xl lg:text-[9.5rem]">
+              {isArabic ? <>
+                <span className="block">صوت</span>
+                <span className="block">بلا</span>
+                <span className="block">حدود</span>
+              </> : <>
+                <span className="block">SOUND</span>
+                <span className="block text-white/45">WITHOUT</span>
+                <span className="block text-white/90">LIMITS</span>
+              </>}
+            </h1>
             <div className="mt-9 flex flex-col gap-5 sm:flex-row sm:items-center">
-              <Link href="/shop" className="group inline-flex w-fit items-center gap-8 bg-[#9ff6ed] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white">{copy.explore} <ArrowUpRight size={15} className="transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link>
-              <a href="#story" className="inline-flex w-fit items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/75 transition hover:text-[#9ff6ed]">{copy.discover} <ArrowDownRight size={15} /></a>
+              <Link href="/shop" className="group inline-flex w-fit items-center gap-8 bg-[#9ff6ed] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white">{isArabic ? "استكشف المجموعة" : "EXPLORE COLLECTION"} <ArrowUpRight size={15} className="transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link>
+              <a href="#story" className="inline-flex w-fit items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/75 transition hover:text-[#9ff6ed]">{isArabic ? "اكتشف CELIBERY" : "DISCOVER CELIBERY"} <ArrowDownRight size={15} /></a>
             </div>
+            <p className="mt-8 max-w-lg text-xs font-medium uppercase tracking-[0.16em] text-white/60">{isArabic ? "صوت فاخر مصمم للحياة اليومية." : "Premium audio engineered for everyday life."}</p>
           </motion.div>
           <div className="mt-12 flex items-end justify-between border-t border-white/20 pt-4 text-[10px] uppercase tracking-[0.17em] text-white/45">
             <span>{copy.country}</span><span className="hidden sm:block">{copy.subline}</span><span className="flex items-center gap-2">{copy.scroll} <ArrowDownRight size={13} /></span>
@@ -118,16 +129,49 @@ export default function Home() {
       </section>
 
       <section id="shop" className="mx-auto max-w-[1440px] px-6 py-24 lg:px-12 lg:py-36">
-        <div className="mb-12 flex items-end justify-between gap-5"><div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{copy.collection}</p><h2 className="display-font text-5xl font-semibold uppercase sm:text-7xl">{isArabic ? <>اختر<br />صوتك.</> : <>Choose<br />your sound.</>}</h2></div><Link href="/shop" className="hidden items-center gap-2 text-[10px] uppercase tracking-[0.17em] text-white/60 transition hover:text-[#9ff6ed] sm:flex">{isArabic ? "عرض كل المنتجات" : "View all products"} <ArrowUpRight size={15} /></Link></div>
+        <div className="mb-12 flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{copy.collection}</p>
+            <h2 className="display-font text-5xl font-semibold uppercase sm:text-7xl">{isArabic ? <>اختر<br />صوتك.</> : <>Choose<br />your sound.</>}</h2>
+          </div>
+          <Link href="/shop" className="hidden items-center gap-2 text-[10px] uppercase tracking-[0.17em] text-white/60 transition hover:text-[#9ff6ed] sm:flex">{isArabic ? "عرض كل المنتجات" : "View all products"} <ArrowUpRight size={15} /></Link>
+        </div>
+
         <div className="grid gap-4 md:grid-cols-3">
-          {categories.map((category, index) => <motion.a whileHover={{ y: -5 }} transition={{ duration: 0.25 }} href={`/shop?category=${category.label.toLowerCase()}`} key={category.label} className="group relative aspect-[0.82] overflow-hidden bg-[#151a1c] p-6 sm:p-8"><div className="full-media absolute inset-0 opacity-65 transition duration-700 group-hover:opacity-90" style={{ backgroundImage: `linear-gradient(180deg, rgba(8,10,12,.12), #080a0c 95%), url(${category.image})` }} /><div className="relative flex h-full flex-col justify-between"><span className="flex size-9 items-center justify-center rounded-full border border-white/30 text-xs text-white/60">0{index + 1}</span><div><h3 className="display-font text-4xl font-semibold uppercase">{category.label}</h3><p className="mt-2 text-sm text-white/55">{category.detail}</p><span className="mt-7 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9ff6ed] opacity-0 transition group-hover:opacity-100">Explore <ArrowUpRight size={14} /></span></div></div></motion.a>)}
+          {categories.map((category, index) => (
+            <motion.a whileHover={{ y: -5 }} transition={{ duration: 0.25 }} href={`/shop?category=${category.label.toLowerCase()}`} key={category.label} className="group relative aspect-[0.82] overflow-hidden bg-[#151a1c] p-6 sm:p-8">
+              <div className="full-media absolute inset-0 opacity-65 transition duration-700 group-hover:opacity-90" style={{ backgroundImage: `linear-gradient(180deg, rgba(8,10,12,.12), #080a0c 95%), url(${category.image})` }} />
+              <div className="absolute inset-0 border border-white/10 transition group-hover:border-[#9ff6ed]/60" />
+              <div className="relative flex h-full flex-col justify-between">
+                <span className="flex size-9 items-center justify-center rounded-full border border-white/30 text-xs text-white/60">0{index + 1}</span>
+                <div>
+                  <h3 className="display-font text-4xl font-semibold uppercase">{category.label}</h3>
+                  <p className="mt-2 text-sm text-white/55">{category.detail}</p>
+                  <span className="mt-7 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9ff6ed] opacity-0 transition group-hover:opacity-100">Explore <ArrowUpRight size={14} /></span>
+                </div>
+              </div>
+            </motion.a>
+          ))}
         </div>
       </section>
 
       <section id="featured" className="relative border-y border-white/10 bg-[#101416] px-6 py-24 lg:px-12 lg:py-32">
         <div className="mx-auto grid max-w-[1440px] items-center gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
-          <div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{copy.featured}</p><h2 className="display-font text-6xl font-semibold uppercase leading-[0.88] sm:text-8xl">{isArabic ? <>اسمع<br />كل<br /><span className="text-white/35">تفصيل.</span></> : <>Hear<br />every<br /><span className="text-white/35">detail.</span></>}</h2><p className="mt-8 max-w-sm text-sm leading-7 text-white/55">{copy.featuredBody}</p><div className="mt-10 flex items-center gap-5"><Link href="/shop/x7-pro" className="inline-flex items-center gap-6 bg-white px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-[#9ff6ed]">{copy.discoverX7} <ArrowUpRight size={15} /></Link><span className="text-sm text-white/45">SAR 499</span></div></div>
-          <div className="relative aspect-[1.1] overflow-hidden bg-[#171d1e]"><div className="full-media absolute inset-0 opacity-80" style={{ backgroundImage: "linear-gradient(90deg, rgba(16,20,22,.1), rgba(16,20,22,.3)), url('/ChatGPT%20Image%20Aug%2027,%202026,%2005_22_17%20PM.png')" }} /><div className="absolute bottom-6 left-6 flex gap-2">{stats.map(([value, label]) => <div key={value} className="border border-white/20 bg-[#080a0c]/75 px-3 py-3 backdrop-blur-md"><p className="text-sm font-semibold text-[#9ff6ed]">{value}</p><p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-white/55">{label}</p></div>)}</div></div>
+          <div>
+            <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{copy.featured}</p>
+            <h2 className="display-font text-6xl font-semibold uppercase leading-[0.88] sm:text-8xl">{isArabic ? <>اسمع<br />كل<br /><span className="text-white/35">تفصيل.</span></> : <>Hear<br />every<br /><span className="text-white/35">detail.</span></>}</h2>
+            <p className="mt-8 max-w-sm text-sm leading-7 text-white/55">{copy.featuredBody}</p>
+            <div className="mt-10 flex items-center gap-5">
+              <Link href="/shop/x7-pro" className="inline-flex items-center gap-6 bg-white px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-[#9ff6ed]">{copy.discoverX7} <ArrowUpRight size={15} /></Link>
+              <span className="text-sm text-white/45">SAR 499</span>
+            </div>
+          </div>
+          <div className="relative aspect-[1.1] overflow-hidden bg-[#171d1e]">
+            <div className="full-media absolute inset-0 opacity-80" style={{ backgroundImage: "linear-gradient(90deg, rgba(16,20,22,.1), rgba(16,20,22,.3)), url('/ChatGPT%20Image%20Aug%2027,%202026,%2005_22_17%20PM.png')" }} />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#080a0c]/70 via-transparent to-transparent" />
+            <div className="absolute bottom-6 left-6 flex gap-2">{stats.map(([value, label]) => <div key={value} className="border border-white/20 bg-[#080a0c]/75 px-3 py-3 backdrop-blur-md"><p className="text-sm font-semibold text-[#9ff6ed]">{value}</p><p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-white/55">{label}</p></div>)}</div>
+            <div className="absolute right-6 top-6 flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-[9px] font-bold uppercase tracking-[0.2em] text-white/75 backdrop-blur-sm"><span>01</span><span className="text-white/40">/</span><span>X7 Pro</span></div>
+          </div>
         </div>
       </section>
 
@@ -168,7 +212,7 @@ export default function Home() {
 
       <section id="story" className="mx-auto grid max-w-[1440px] gap-12 px-6 py-24 lg:grid-cols-[1fr_1fr] lg:items-end lg:px-12 lg:py-36"><div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]">{copy.why}</p><h2 className="display-font max-w-2xl text-5xl font-semibold uppercase leading-[0.9] sm:text-7xl">{isArabic ? <>الصوت يجب<br /><span className="text-white/35">أن يرافقك.</span></> : <>Sound should<br /><span className="text-white/35">follow you.</span></>}</h2></div><div className="max-w-md justify-self-end"><div className="mb-8 flex items-center gap-3 text-[#9ff6ed]"><Volume2 size={19} strokeWidth={1.5} /><span className="text-[10px] uppercase tracking-[0.18em]">{isArabic ? "مصمم لكل تردد" : "Built for every frequency"}</span></div><p className="text-lg leading-8 text-white/55">{isArabic ? "من أول نغمة في الرياض إلى آخر ضوء على البحر الأحمر، تمنحك CELIBERY تفاصيل وعمقاً وحرية في كل لحظة." : "From the first note in Riyadh to the last light on the Red Sea, CELIBERY brings detail, depth, and freedom to every moment."}</p><Link href="/shop" className="mt-8 inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] transition hover:text-[#9ff6ed]">{copy.philosophy} <ArrowUpRight size={15} /></Link></div></section>
 
-      <footer className="border-t border-white/10 px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-8 sm:flex-row sm:items-end"><div><div className="brand-mark mb-4" role="img" aria-label="CELIBERY" /><p className="text-xs text-white/40">Sound without limits.</p></div><div className="flex gap-6 text-[10px] uppercase tracking-[0.16em] text-white/45"><a href="#shop" className="transition hover:text-white">Shop</a><a href="#story" className="transition hover:text-white">Support</a><a href="#story" className="transition hover:text-white">Instagram</a></div></div></footer>
+      <footer className="border-t border-white/10 px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-8 sm:flex-row sm:items-end"><div><div className="brand-mark mb-4" role="img" aria-label="CELIBERY"><Image src="/logo.png" alt="CELIBERY" width={150} height={40} className="brand-logo" /></div><p className="text-xs text-white/40">Sound without limits.</p></div><div className="flex gap-6 text-[10px] uppercase tracking-[0.16em] text-white/45"><a href="#shop" className="transition hover:text-white">Shop</a><a href="#story" className="transition hover:text-white">Support</a><a href="#story" className="transition hover:text-white">Instagram</a></div></div></footer>
     </main>
   );
 }

@@ -62,7 +62,7 @@ export class MockPaymentProvider implements PaymentProvider {
     };
   }
 
-  async verify({ orderId, provider = "mock" }: {
+  async verify({ orderId, provider = "mock", reference }: {
     provider: PaymentProviderName;
     orderId: string;
     reference?: string;
