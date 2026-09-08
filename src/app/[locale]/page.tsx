@@ -163,28 +163,28 @@ export default function Home() {
 
   return (
     <main className="overflow-hidden bg-[#080a0c] text-[#f3f5f5]">
-      <section className="relative min-h-[760px] h-screen max-h-[980px] overflow-hidden border-b border-white/10">
+      <section className="relative min-h-screen overflow-hidden border-b border-white/10">
         <div className="absolute inset-0 opacity-55" style={{ backgroundImage: "linear-gradient(180deg, rgba(8,10,12,.04), rgba(8,10,12,.76)), url('/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png')", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(3px)", transform: "scale(1.06)" }} />
         <div className="absolute inset-0 bg-linear-to-r from-[#080a0c] via-[#080a0c]/65 to-[#080a0c]/10" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_36%,rgba(34,211,238,0.12),transparent_18%),radial-gradient(circle_at_50%_50%,rgba(34,211,238,0.06),transparent_28%)]" />
         <div className="grain absolute inset-0" />
         <SiteNav overlay />
 
-        <div id="top" className="relative z-10 mx-auto flex h-[calc(100%-100px)] max-w-[1440px] flex-col justify-center px-6 py-16 lg:px-12">
-          <div className="grid min-h-[560px] items-center gap-8 lg:grid-cols-[minmax(520px,0.95fr)_minmax(420px,1.05fr)]">
-            <div className="relative min-h-[460px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0d1113] shadow-2xl shadow-cyan-950/50 lg:block">
-              <MediaVideo src="/Person_holding_Bluetooth_speaker_202609080042.mp4" poster="/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png" className="h-[460px] w-full" label={isArabic ? "تفعيل أو كتم صوت الفيديو" : "Toggle sound"} />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#080a0c]/55 via-transparent to-transparent" />
-              <div className="absolute left-6 top-6 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[#22d3ee]"><span className="inline-block h-px w-8 bg-[#22d3ee]" />CELIBERY 01</div>
-              <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
+        <div id="top" className="relative z-10 mx-auto max-w-[1440px] px-6 pb-16 pt-28 sm:pt-32 lg:px-12 lg:pb-20 lg:pt-40">
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(480px,0.95fr)_minmax(420px,1.05fr)] lg:gap-8">
+            <div className="relative order-2 aspect-video w-full overflow-hidden rounded-[2rem] border border-white/10 bg-[#0d1113] shadow-2xl shadow-cyan-950/50 lg:order-1 lg:aspect-auto lg:h-[520px]">
+              <MediaVideo src="/Person_holding_Bluetooth_speaker_202609080042.mp4" poster="/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png" className="absolute inset-0" label={isArabic ? "تفعيل أو كتم صوت الفيديو" : "Toggle sound"} />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#080a0c]/55 via-transparent to-transparent" />
+              <div className="pointer-events-none absolute left-6 top-6 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[#22d3ee]"><span className="inline-block h-px w-8 bg-[#22d3ee]" />CELIBERY 01</div>
+              <div className="pointer-events-none absolute bottom-6 left-6 right-6 flex items-center justify-between">
                 <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/70">X7 Pro / 360°</span>
                 <span className="grid size-10 place-items-center rounded-full border border-white/30 text-[#22d3ee]"><ArrowUpRight size={16} /></span>
               </div>
             </div>
 
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="relative z-20 max-w-2xl lg:justify-self-end">
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="relative z-20 order-1 max-w-2xl lg:order-2 lg:justify-self-end">
               <div className="mb-5 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#22d3ee]"><span className="inline-block h-px w-10 bg-[#22d3ee]" />{isArabic ? "جيل جديد من الصوت" : "New era of sound"}</div>
-              <h1 className="display-font max-w-[680px] text-[clamp(4rem,8vw,6.6rem)] font-semibold uppercase leading-[0.82] tracking-[-0.045em]">
+              <h1 className="display-font max-w-[680px] text-[clamp(3rem,8vw,6.6rem)] font-semibold uppercase leading-[0.82] tracking-[-0.045em]">
                 {isArabic ? <>
                   <span className="block">صوت</span>
                   <span className="block">بلا</span>
@@ -200,7 +200,7 @@ export default function Home() {
                 <Link href={`/${locale}/shop`} className="group inline-flex w-fit items-center gap-8 bg-[#22d3ee] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white">{isArabic ? "استكشف المجموعة" : "EXPLORE COLLECTION"} <ArrowUpRight size={15} className="transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link>
                 <a href="#story" className="inline-flex w-fit items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/75 transition hover:text-[#22d3ee]">{isArabic ? "اكتشف CELIBERY" : "DISCOVER CELIBERY"} <ArrowDownRight size={15} /></a>
               </div>
-              <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-4 sm:flex sm:flex-wrap sm:gap-7">
+              <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-4 sm:flex sm:flex-wrap sm:gap-6">
                 {heroFeatures.map(({ icon: Icon, en, ar }) => (
                   <div key={en} className="flex items-center gap-2.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white/60">
                     <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#22d3ee]/50 text-[#22d3ee]"><Icon size={12} strokeWidth={1.75} /></span>
@@ -210,7 +210,7 @@ export default function Home() {
               </div>
             </motion.div>
           </div>
-          <div className="mt-12 flex items-end justify-between border-t border-white/20 pt-4 text-[10px] uppercase tracking-[0.17em] text-white/45">
+          <div className="mt-14 flex flex-col gap-3 border-t border-white/20 pt-5 text-[10px] uppercase tracking-[0.17em] text-white/45 sm:flex-row sm:items-end sm:justify-between">
             <span>{copy.country}</span><span className="hidden sm:block">{copy.subline}</span><span className="flex items-center gap-2">{copy.scroll} <ArrowDownRight size={13} /></span>
           </div>
         </div>

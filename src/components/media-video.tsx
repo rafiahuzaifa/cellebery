@@ -1,7 +1,7 @@
 "use client";
 
 import { Volume2, VolumeX } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type MediaVideoProps = {
   src: string;
@@ -15,6 +15,24 @@ export function MediaVideo({ src, poster, className = "", label = "Toggle video 
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
 
+  // With several of these on one page, letting every <video autoPlay>
+  // fire at mount hits browsers' simultaneous-autoplay limits and some
+  // silently never start. Only ask a video to play once it's actually
+  // in view, and pause it again once it scrolls away.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) void video.play().catch(() => {});
+        else video.pause();
+      },
+      { threshold: 0.25 }
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
   const toggleSound = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -25,9 +43,9 @@ export function MediaVideo({ src, poster, className = "", label = "Toggle video 
   };
 
   return (
-    <div className={`media-video relative z-0 overflow-hidden bg-[#151a1c] ${className}`}>
-      <div className="media-video-backdrop absolute inset-0 bg-cover bg-center opacity-35 blur-xl scale-110" style={{ backgroundImage: poster ? `url(${poster})` : undefined }} />
-      <video ref={videoRef} className="media-video-player relative z-10 h-full w-full object-cover" autoPlay muted loop playsInline preload="metadata" poster={poster}>
+    <div className={`media-video ${className}`}>
+      <div className="media-video-backdrop bg-cover bg-center opacity-35 blur-xl scale-110" style={{ backgroundImage: poster ? `url(${poster})` : undefined }} />
+      <video ref={videoRef} className="media-video-player object-cover" muted loop playsInline preload="metadata" poster={poster}>
         <source src={src} type="video/mp4" />
       </video>
       {showSoundButton && (
