@@ -14,6 +14,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
   const { itemCount } = useCart();
   const { items: wishlistItems } = useWishlist();
   const [menuOpen, setMenuOpen] = useState(false);
+  // Full set (shown in the mobile/tablet drawer, where vertical space is cheap).
   const links = isArabic
     ? [
         ["المتجر", `/${locale}/shop`],
@@ -33,6 +34,11 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
         ["New arrivals", `/${locale}/shop?sort=newest`],
         ["Our story", `/${locale}#story`],
       ];
+  // Trimmed set for the inline desktop row, so it reliably fits on one line
+  // from the standard lg (1024px) breakpoint instead of wrapping into the
+  // hero — Accessories/New arrivals stay one click away via the Shop page's
+  // own filters and the drawer above.
+  const primaryLinks = [links[0], links[1], links[2], links[3], links[6]];
   const textTone = overlay ? "text-white" : "text-white/80";
   const borderTone = overlay ? "border-white/15" : "border-white/15";
   const navPosition = overlay ? "absolute inset-x-0 top-0" : "relative";
@@ -50,20 +56,20 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
         <Link href={`/${locale}`} aria-label="CELIBERY home" className="brand-mark shrink-0 text-white">
           <Image src="/celibery-logo.svg" alt="CELIBERY" width={150} height={38} className="brand-logo" priority />
         </Link>
-        <div className="hidden items-center gap-6 text-[10px] font-semibold uppercase tracking-[0.16em] xl:flex">
-          {links.map(([label, href], index) => <Link key={label} className={index === 0 ? "text-white" : "text-white/60 transition hover:text-[#22d3ee]"} href={href}>{label}</Link>)}
+        <div className="hidden items-center gap-5 text-[10px] font-semibold uppercase tracking-[0.14em] lg:flex">
+          {primaryLinks.map(([label, href], index) => <Link key={label} className={index === 0 ? "text-white" : "text-white/60 transition hover:text-[#22d3ee]"} href={href}>{label}</Link>)}
         </div>
         <div className="flex items-center gap-2">
           <Link href={`/${locale}/shop#search`} aria-label={isArabic ? "البحث" : "Search"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee]`}><Search size={16} strokeWidth={1.5} /></Link>
           <Link href={`/${locale}/wishlist`} aria-label={isArabic ? "المفضلة" : "Wishlist"} className={`relative hidden size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee] sm:grid`}><Heart size={16} strokeWidth={1.5} />{wishlistItems.length > 0 && <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-[#22d3ee] text-[8px] font-bold text-[#080a0c]">{wishlistItems.length}</span>}</Link>
           <Link href={`/${locale}/cart`} aria-label={isArabic ? "السلة" : "Shopping bag"} className={`relative grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee]`}><ShoppingBag size={16} strokeWidth={1.5} />{itemCount > 0 && <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-[#22d3ee] text-[8px] font-bold text-[#080a0c]">{itemCount}</span>}</Link>
-          <button aria-label={isArabic ? "فتح القائمة" : "Open navigation"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 xl:hidden`} onClick={() => setMenuOpen(true)}><Menu size={17} strokeWidth={1.5} /></button>
+          <button aria-label={isArabic ? "فتح القائمة" : "Open navigation"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 lg:hidden`} onClick={() => setMenuOpen(true)}><Menu size={17} strokeWidth={1.5} /></button>
           <LanguageToggle />
         </div>
       </nav>
 
       <AnimatePresence>
-        {menuOpen && <motion.div className="fixed inset-0 z-50 overflow-y-auto bg-[#080a0c] p-6 xl:hidden" initial={{ opacity: 0, y: "-4%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "-4%" }} transition={{ duration: 0.25, ease: "easeOut" }}>
+        {menuOpen && <motion.div className="fixed inset-0 z-50 overflow-y-auto bg-[#080a0c] p-6 lg:hidden" initial={{ opacity: 0, y: "-4%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "-4%" }} transition={{ duration: 0.25, ease: "easeOut" }}>
           <div className="flex items-center justify-between border-b border-white/10 pb-6"><Link href={`/${locale}`} aria-label="CELIBERY home" className="brand-mark shrink-0 text-white" onClick={() => setMenuOpen(false)}><Image src="/celibery-logo.svg" alt="CELIBERY" width={150} height={38} className="brand-logo" priority /></Link><button aria-label={isArabic ? "إغلاق القائمة" : "Close navigation"} className="grid size-10 place-items-center rounded-full border border-white/15 text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee]" onClick={() => setMenuOpen(false)}><X size={18} /></button></div>
           <div className="mt-14 flex flex-col">{links.map(([label, href], index) => <Link key={label} href={href} onClick={() => setMenuOpen(false)} className="flex items-center justify-between border-b border-white/10 py-5 text-2xl font-light tracking-[-0.04em] transition-colors hover:text-[#22d3ee]"><span className="flex items-center gap-4"><span className="text-[10px] font-semibold tracking-[0.18em] text-[#22d3ee]">0{index + 1}</span>{label}</span><ArrowUpRight size={15} className="text-white/30" /></Link>)}</div>
           <p className="mt-12 text-[10px] uppercase tracking-[0.18em] text-white/35">CELIBERY / Saudi Arabia / 2026</p>
