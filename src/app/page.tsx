@@ -86,33 +86,50 @@ export default function Home() {
 
   return (
     <main className="overflow-hidden bg-[#080a0c] text-[#f3f5f5]">
-      <section className="relative min-h-[720px] h-screen max-h-[980px] overflow-hidden border-b border-white/10">
+      <section className="relative min-h-[760px] h-screen max-h-[980px] overflow-hidden border-b border-white/10">
         <div className="absolute inset-0 opacity-55" style={{ backgroundImage: "linear-gradient(180deg, rgba(8,10,12,.04), rgba(8,10,12,.76)), url('/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png')", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(3px)", transform: "scale(1.06)" }} />
         <div className="absolute inset-0 bg-linear-to-r from-[#080a0c] via-[#080a0c]/65 to-[#080a0c]/10" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_36%,rgba(159,246,237,0.12),transparent_18%),radial-gradient(circle_at_50%_50%,rgba(159,246,237,0.06),transparent_28%)]" />
         <div className="grain absolute inset-0" />
         <SiteNav overlay />
 
-        <div id="top" className="relative z-10 mx-auto flex h-[calc(100%-100px)] max-w-[1440px] flex-col justify-end px-6 pb-12 lg:px-12 lg:pb-20">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="relative z-20 max-w-2xl">
-            <div className="mb-5 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]"><span className="inline-block h-px w-10 bg-[#9ff6ed]" />{isArabic ? "جيل جديد من الصوت" : "New era of sound"}</div>
-            <h1 className="display-font max-w-[680px] text-[clamp(4rem,8vw,6.6rem)] font-semibold uppercase leading-[0.82] tracking-[-0.045em]">
-              {isArabic ? <>
-                <span className="block">صوت</span>
-                <span className="block">بلا</span>
-                <span className="block">حدود</span>
-              </> : <>
-                <span className="block">SOUND</span>
-                <span className="block text-white/45">WITHOUT</span>
-                <span className="block text-white/90">LIMITS</span>
-              </>}
-            </h1>
-            <div className="mt-9 flex flex-col gap-5 sm:flex-row sm:items-center">
-              <Link href="/shop" className="group inline-flex w-fit items-center gap-8 bg-[#9ff6ed] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white">{isArabic ? "استكشف المجموعة" : "EXPLORE COLLECTION"} <ArrowUpRight size={15} className="transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link>
-              <a href="#story" className="inline-flex w-fit items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/75 transition hover:text-[#9ff6ed]">{isArabic ? "اكتشف CELIBERY" : "DISCOVER CELIBERY"} <ArrowDownRight size={15} /></a>
+        <div id="top" className="relative z-10 mx-auto flex h-[calc(100%-100px)] max-w-[1440px] flex-col justify-center px-6 py-16 lg:px-12">
+          <div className="grid min-h-[560px] items-center gap-8 lg:grid-cols-[minmax(520px,0.95fr)_minmax(420px,1.05fr)]">
+            <div className="relative hidden min-h-[460px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0d1113] shadow-2xl shadow-cyan-950/50 lg:block">
+              <MediaVideo src="/Person_holding_Bluetooth_speaker_202609080042.mp4" poster="/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png" className="h-[460px] w-full" label={isArabic ? "تفعيل أو كتم صوت الفيديو" : "Toggle sound"} />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#080a0c]/55 via-transparent to-transparent" />
+              <div className="absolute left-6 top-6 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[#9ff6ed]"><span className="inline-block h-px w-8 bg-[#9ff6ed]" />CELIBERY 01</div>
+              <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/70">X7 Pro / 360°</span>
+                <span className="grid size-10 place-items-center rounded-full border border-white/30 text-[#9ff6ed]"><ArrowUpRight size={16} /></span>
+              </div>
             </div>
-            <p className="mt-8 max-w-lg text-xs font-medium uppercase tracking-[0.16em] text-white/60">{isArabic ? "صوت فاخر مصمم للحياة اليومية." : "Premium audio engineered for everyday life."}</p>
-          </motion.div>
+
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="relative z-20 max-w-2xl lg:justify-self-end">
+              <div className="mb-5 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]"><span className="inline-block h-px w-10 bg-[#9ff6ed]" />{isArabic ? "جيل جديد من الصوت" : "New era of sound"}</div>
+              <h1 className="display-font max-w-[680px] text-[clamp(4rem,8vw,6.6rem)] font-semibold uppercase leading-[0.82] tracking-[-0.045em]">
+                {isArabic ? <>
+                  <span className="block">صوت</span>
+                  <span className="block">بلا</span>
+                  <span className="block">حدود</span>
+                </> : <>
+                  <span className="block">SOUND</span>
+                  <span className="block text-white/45">WITHOUT</span>
+                  <span className="block text-white/90">LIMITS</span>
+                </>}
+              </h1>
+              <p className="mt-8 max-w-xl text-sm font-medium uppercase leading-7 tracking-[0.16em] text-white/60">{isArabic ? "صوت فاخر مصمم للحياة اليومية." : "Premium audio engineered for everyday life."}</p>
+              <div className="mt-9 flex flex-col gap-5 sm:flex-row sm:items-center">
+                <Link href="/shop" className="group inline-flex w-fit items-center gap-8 bg-[#9ff6ed] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white">{isArabic ? "استكشف المجموعة" : "EXPLORE COLLECTION"} <ArrowUpRight size={15} className="transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link>
+                <a href="#story" className="inline-flex w-fit items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/75 transition hover:text-[#9ff6ed]">{isArabic ? "اكتشف CELIBERY" : "DISCOVER CELIBERY"} <ArrowDownRight size={15} /></a>
+              </div>
+              <div className="mt-12 flex flex-wrap gap-5 text-[9px] font-bold uppercase tracking-[0.2em] text-white/50">
+                <span className="border-l border-[#9ff6ed]/70 pl-3">40h Battery</span>
+                <span className="border-l border-[#9ff6ed]/70 pl-3">Spatial Audio</span>
+                <span className="border-l border-[#9ff6ed]/70 pl-3">Adaptive ANC</span>
+              </div>
+            </motion.div>
+          </div>
           <div className="mt-12 flex items-end justify-between border-t border-white/20 pt-4 text-[10px] uppercase tracking-[0.17em] text-white/45">
             <span>{copy.country}</span><span className="hidden sm:block">{copy.subline}</span><span className="flex items-center gap-2">{copy.scroll} <ArrowDownRight size={13} /></span>
           </div>
