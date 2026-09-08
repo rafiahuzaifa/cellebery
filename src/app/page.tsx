@@ -93,32 +93,28 @@ export default function Home() {
         <div className="grain absolute inset-0" />
         <SiteNav overlay />
 
-        <div id="top" className="relative z-10 mx-auto flex h-[calc(100%-100px)] max-w-[1440px] items-center px-6 py-16 lg:px-12">
-          <div className="grid w-full items-center gap-8 lg:grid-cols-[minmax(420px,0.95fr)_minmax(420px,1.05fr)]">
-            <div className="relative min-h-[420px] lg:min-h-[560px]">
-              <MediaVideo src="/Person_holding_Bluetooth_speaker_202609080042.mp4" poster="/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png" className="absolute inset-0 h-full w-full rounded-[2rem] border border-white/15 opacity-85 shadow-[0_0_60px_rgba(159,246,237,0.14)]" label="Toggle sound" showSoundButton={false} />
-              <div className="absolute inset-0 rounded-[2rem] border border-[#9ff6ed]/30 bg-gradient-to-t from-[#080a0c]/40 via-transparent to-[#9ff6ed]/10" />
+        <div id="top" className="relative z-10 mx-auto flex h-[calc(100%-100px)] max-w-[1440px] flex-col justify-end px-6 pb-12 lg:px-12 lg:pb-20">
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl">
+            <div className="mb-5 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]"><span className="inline-block h-px w-10 bg-[#9ff6ed]" />{isArabic ? "جيل جديد من الصوت" : "New era of sound"}</div>
+            <h1 className="display-font max-w-xl text-7xl font-semibold uppercase leading-[0.82] sm:text-8xl lg:text-[9.5rem]">
+              {isArabic ? <>
+                <span className="block">صوت</span>
+                <span className="block">بلا</span>
+                <span className="block">حدود</span>
+              </> : <>
+                <span className="block">SOUND</span>
+                <span className="block text-white/45">WITHOUT</span>
+                <span className="block text-white/90">LIMITS</span>
+              </>}
+            </h1>
+            <div className="mt-9 flex flex-col gap-5 sm:flex-row sm:items-center">
+              <Link href="/shop" className="group inline-flex w-fit items-center gap-8 bg-[#9ff6ed] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white">{isArabic ? "استكشف المجموعة" : "EXPLORE COLLECTION"} <ArrowUpRight size={15} className="transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link>
+              <a href="#story" className="inline-flex w-fit items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/75 transition hover:text-[#9ff6ed]">{isArabic ? "اكتشف CELIBERY" : "DISCOVER CELIBERY"} <ArrowDownRight size={15} /></a>
             </div>
-
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl lg:pl-8">
-              <div className="mb-5 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ff6ed]"><span className="inline-block h-px w-10 bg-[#9ff6ed]" />{isArabic ? "جيل جديد من الصوت" : "New era of sound"}</div>
-              <h1 className="display-font max-w-xl text-7xl font-semibold uppercase leading-[0.82] sm:text-8xl lg:text-[8rem]">
-                {isArabic ? <>
-                  <span className="block">صوت</span>
-                  <span className="block">بلا</span>
-                  <span className="block">حدود</span>
-                </> : <>
-                  <span className="block">SOUND</span>
-                  <span className="block text-white/45">WITHOUT</span>
-                  <span className="block text-white/90">LIMITS</span>
-                </>}
-              </h1>
-              <div className="mt-9 flex flex-col gap-5 sm:flex-row sm:items-center">
-                <Link href="/shop" className="group inline-flex w-fit items-center gap-8 bg-[#9ff6ed] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white">{isArabic ? "استكشف المجموعة" : "EXPLORE COLLECTION"} <ArrowUpRight size={15} className="transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link>
-                <a href="#story" className="inline-flex w-fit items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/75 transition hover:text-[#9ff6ed]">{isArabic ? "اكتشف CELIBERY" : "DISCOVER CELIBERY"} <ArrowDownRight size={15} /></a>
-              </div>
-              <p className="mt-8 max-w-lg text-xs font-medium uppercase tracking-[0.16em] text-white/60">{isArabic ? "صوت فاخر مصمم للحياة اليومية." : "Premium audio engineered for everyday life."}</p>
-            </motion.div>
+            <p className="mt-8 max-w-lg text-xs font-medium uppercase tracking-[0.16em] text-white/60">{isArabic ? "صوت فاخر مصمم للحياة اليومية." : "Premium audio engineered for everyday life."}</p>
+          </motion.div>
+          <div className="mt-12 flex items-end justify-between border-t border-white/20 pt-4 text-[10px] uppercase tracking-[0.17em] text-white/45">
+            <span>{copy.country}</span><span className="hidden sm:block">{copy.subline}</span><span className="flex items-center gap-2">{copy.scroll} <ArrowDownRight size={13} /></span>
           </div>
         </div>
       </section>
