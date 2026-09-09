@@ -1,17 +1,7 @@
-"use client";
+import { getAdminCustomers } from "@/actions/customers";
+import { CustomersTable } from "@/components/admin/customers-table";
 
-import { useLocale } from "@/components/locale-provider";
-import { AdminComingSoon } from "@/components/admin/coming-soon";
-
-export default function AdminCustomersPage() {
-  const { isArabic } = useLocale();
-  return (
-    <AdminComingSoon
-      isArabic={isArabic}
-      titleEn="Customers"
-      titleAr="العملاء"
-      noteEn="Customer accounts arrive once Auth.js is wired up in the next phase — this table will list registered users, order history, and lifetime value from the database."
-      noteAr="ستظهر حسابات العملاء بعد ربط نظام تسجيل الدخول Auth.js في المرحلة القادمة."
-    />
-  );
+export default async function AdminCustomersPage() {
+  const customers = await getAdminCustomers();
+  return <CustomersTable customers={customers} />;
 }
