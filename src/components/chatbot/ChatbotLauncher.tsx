@@ -84,7 +84,7 @@ export function ChatbotLauncher() {
           whileTap={{ scale: 0.95 }}
           title={isArabic ? "اسأل مساعد CELIBERY" : "Ask CELIBERY AI"}
           aria-label={isArabic ? "اسأل مساعد CELIBERY" : "Ask CELIBERY AI"}
-          className="group fixed bottom-5 right-5 z-40 flex size-14 items-center justify-center rounded-full border border-white/10 bg-[#101416]/90 text-[#22d3ee] shadow-lg shadow-black/40 backdrop-blur-sm transition hover:border-[#22d3ee]/50 rtl:right-auto rtl:left-5 sm:bottom-6 sm:right-6 sm:size-15 rtl:sm:left-6"
+          className="group fixed bottom-5 right-5 z-40 flex size-14 items-center justify-center rounded-full border border-white/10 bg-[#101416]/90 text-[#22d3ee] shadow-lg shadow-black/40 backdrop-blur-sm transition hover:border-[#22d3ee]/50 rtl:right-auto rtl:left-5 md:bottom-6 md:right-6 md:size-15 rtl:md:left-6"
           style={{ marginBottom: "env(safe-area-inset-bottom)" }}
         >
           <span className="absolute inset-0 rounded-full bg-[#22d3ee]/15 motion-safe:animate-ping [animation-duration:3s]" />

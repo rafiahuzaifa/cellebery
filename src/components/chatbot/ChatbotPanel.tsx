@@ -124,7 +124,7 @@ export function ChatbotPanel({
       dir={isArabic ? "rtl" : "ltr"}
       role="dialog"
       aria-label="CELIBERY AI"
-      className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-[#0a0d0f] text-[#f3f5f5] sm:inset-auto sm:bottom-6 sm:right-6 sm:h-[min(680px,calc(100vh-104px))] sm:w-[400px] sm:rounded-3xl sm:border sm:border-white/10 sm:shadow-2xl sm:shadow-black/50 rtl:sm:right-auto rtl:sm:left-6"
+      className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-[#0a0d0f] text-[#f3f5f5] md:inset-auto md:bottom-6 md:right-6 md:h-[min(680px,calc(100vh-104px))] md:w-[min(420px,calc(100vw-48px))] md:rounded-3xl md:border md:border-white/10 md:shadow-2xl md:shadow-black/50 lg:h-[min(760px,calc(100vh-120px))] lg:w-[440px] rtl:md:right-auto rtl:md:left-6"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ChatHeader
