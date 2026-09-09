@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { AlertCircle, ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
 import { useLocale } from "@/components/locale-provider";
-import { categoryOptions, translationStatus, type AdminProduct } from "@/lib/admin/catalog";
+import { categoryOptions, translationStatus, useCaseOptions, type AdminProduct } from "@/lib/admin/catalog";
 import { upsertAdminProductAction } from "@/actions/products";
 
 const emptyTranslation = { name: "", shortDescription: "", description: "", features: [] as string[], seoTitle: "", seoDescription: "" };
@@ -25,6 +25,9 @@ function blankProduct(): AdminProduct {
     rating: 4.8,
     reviewCount: 0,
     updatedAt: new Date().toISOString().slice(0, 10),
+    useCases: [],
+    tags: [],
+    specs: {},
     en: { ...emptyTranslation },
     ar: { ...emptyTranslation },
   };
@@ -176,6 +179,60 @@ export function ProductForm({ initial }: { initial?: AdminProduct }) {
                   <option value="active">{isArabic ? "منشور" : "Active"}</option>
                   <option value="archived">{isArabic ? "مؤرشف" : "Archived"}</option>
                 </select>
+              </Field>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-[#101416] p-5">
+            <h2 className="mb-1 text-sm font-semibold text-white/85">{isArabic ? "بيانات مساعد CELIBERY AI" : "CELIBERY AI data"}</h2>
+            <p className="mb-4 text-[11px] text-white/35">{isArabic ? "تُستخدم لمحرك التوصيات وإجابات المواصفات في المحادثة." : "Used by the chatbot's recommendation engine and spec-question answers."}</p>
+            <div className="space-y-4">
+              <Field label={isArabic ? "حالات الاستخدام" : "Use cases"}>
+                <div className="flex flex-wrap gap-2">
+                  {useCaseOptions.map((option) => {
+                    const active = product.useCases.includes(option.value);
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setProduct({
+                          ...product,
+                          useCases: active ? product.useCases.filter((v) => v !== option.value) : [...product.useCases, option.value],
+                        })}
+                        className={`rounded-full border px-3 py-1.5 text-[11px] font-medium transition ${active ? "border-[#22d3ee] bg-[#22d3ee]/10 text-[#22d3ee]" : "border-white/15 text-white/50"}`}
+                      >
+                        {isArabic ? option.ar : option.en}
+                      </button>
+                    );
+                  })}
+                </div>
+              </Field>
+              <Field label={isArabic ? "الوسوم (مفصولة بفواصل)" : "Tags (comma-separated)"}>
+                <input
+                  value={product.tags.join(", ")}
+                  onChange={(e) => setProduct({ ...product, tags: e.target.value.split(",").map((v) => v.trim()).filter(Boolean) })}
+                  className="admin-input"
+                  placeholder="anc, wireless, over-ear"
+                />
+              </Field>
+              <Field label={isArabic ? "المواصفات (مفتاح: قيمة لكل سطر)" : "Specifications (key: value, one per line)"}>
+                <textarea
+                  value={Object.entries(product.specs).map(([key, value]) => `${key}: ${value}`).join("\n")}
+                  onChange={(e) => {
+                    const specs: Record<string, string> = {};
+                    for (const line of e.target.value.split("\n")) {
+                      const separatorIndex = line.indexOf(":");
+                      if (separatorIndex === -1) continue;
+                      const key = line.slice(0, separatorIndex).trim();
+                      const value = line.slice(separatorIndex + 1).trim();
+                      if (key && value) specs[key] = value;
+                    }
+                    setProduct({ ...product, specs });
+                  }}
+                  rows={5}
+                  className="admin-input resize-none font-mono text-xs"
+                  placeholder={"battery: 40 hours\nanc: Adaptive\ncomfort: true"}
+                />
               </Field>
             </div>
           </div>

@@ -84,6 +84,8 @@ model User {
   notifications Notification[]
   accounts      Account[]
   sessions      Session[]
+  chatSessions  ChatSession[]
+  supportTickets SupportTicket[]
 }
 
 model Account {
@@ -159,6 +161,8 @@ model Product {
   orderItems     OrderItem[]
   reviews        Review[]
   promotions     PromotionProduct[]
+  useCases       String[]               @default([])
+  tags           String[]               @default([])
   createdAt      DateTime               @default(now())
   updatedAt      DateTime               @updatedAt
   publishedAt    DateTime?
@@ -513,9 +517,12 @@ model BlogTranslation {
 
 model FAQ {
   id           String           @id @default(cuid())
+  category     String           @default("General")
   sortOrder    Int              @default(0)
   active       Boolean          @default(true)
   translations FAQTranslation[]
+
+  @@index([category, sortOrder])
 }
 
 model FAQTranslation {
@@ -592,4 +599,95 @@ model ShippingMethod {
   orders        Order[]
 
   @@index([zoneId])
+}
+
+enum ChatMessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+model ChatSession {
+  id             String          @id @default(cuid())
+  userId         String?
+  guestKey       String?         @unique
+  title          String?
+  language       String          @default("en")
+  productContext String?
+  context        Json?
+  user           User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  messages       ChatMessage[]
+  events         ChatEvent[]
+  supportTickets SupportTicket[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([userId, updatedAt])
+  @@index([guestKey])
+}
+
+model ChatMessage {
+  id        String          @id @default(cuid())
+  sessionId String
+  role      ChatMessageRole
+  content   String          @db.Text
+  metadata  Json?
+  session   ChatSession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  createdAt DateTime        @default(now())
+
+  @@index([sessionId, createdAt])
+}
+
+model KnowledgeArticle {
+  id           String                         @id @default(cuid())
+  slug         String                         @unique
+  category     String
+  priority     Int                            @default(0)
+  published    Boolean                        @default(true)
+  translations KnowledgeArticleTranslation[]
+  createdAt    DateTime                       @default(now())
+  updatedAt    DateTime                       @updatedAt
+
+  @@index([category, priority])
+}
+
+model KnowledgeArticleTranslation {
+  id        String           @id @default(cuid())
+  articleId String
+  locale    String
+  title     String
+  body      String           @db.Text
+  article   KnowledgeArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([articleId, locale])
+  @@index([locale, title])
+}
+
+model SupportTicket {
+  id            String       @id @default(cuid())
+  userId        String?
+  guestEmail    String?
+  subject       String
+  category      String
+  priority      String       @default("normal")
+  status        String       @default("OPEN")
+  chatSessionId String?
+  user          User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  chatSession   ChatSession? @relation(fields: [chatSessionId], references: [id], onDelete: SetNull)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model ChatEvent {
+  id        String      @id @default(cuid())
+  sessionId String
+  type      String
+  metadata  Json?
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+
+  @@index([type, createdAt])
+  @@index([sessionId, createdAt])
 }

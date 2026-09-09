@@ -4,6 +4,7 @@ import { manrope, arabic } from "@/lib/fonts";
 import { LocaleProvider, type Locale } from "@/components/locale-provider";
 import { CartProvider } from "@/components/cart-provider";
 import { WishlistProvider } from "@/components/wishlist-provider";
+import { ChatbotLauncher } from "@/components/chatbot/ChatbotLauncher";
 import "@/app/globals.css";
 
 const LOCALES: Locale[] = ["en", "ar"];
@@ -31,7 +32,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       <body className="min-h-full flex flex-col">
         <LocaleProvider initialLocale={activeLocale}>
           <WishlistProvider>
-            <CartProvider>{children}</CartProvider>
+            <CartProvider>
+              {children}
+              <ChatbotLauncher />
+            </CartProvider>
           </WishlistProvider>
         </LocaleProvider>
       </body>

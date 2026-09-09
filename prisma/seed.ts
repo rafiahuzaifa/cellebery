@@ -57,6 +57,8 @@ type ProductSeed = {
   lowStockThreshold: number;
   images: { url: string; alt: string; sortOrder: number }[];
   specs: { key: string; value: string }[];
+  useCases?: string[];
+  tags?: string[];
   en: { name: string; shortDescription: string; description: string; features: string[] };
   ar: { name: string; shortDescription: string; description: string; features: string[] };
 };
@@ -85,7 +87,11 @@ const products: ProductSeed[] = [
       { key: "anc", value: "Adaptive" },
       { key: "water_resistance", value: "IPX5" },
       { key: "driver_size", value: "40mm" },
+      { key: "foldable", value: "true" },
+      { key: "comfort", value: "true" },
     ],
+    useCases: ["travel", "work", "movies"],
+    tags: ["anc", "wireless", "over-ear"],
     en: {
       name: "CELIBERY X7 Pro",
       shortDescription: "Immersive sound. All-day freedom.",
@@ -119,7 +125,11 @@ const products: ProductSeed[] = [
       { key: "anc", value: "None" },
       { key: "water_resistance", value: "IPX4" },
       { key: "driver_size", value: "40mm" },
+      { key: "comfort", value: "true" },
+      { key: "bass", value: "true" },
     ],
+    useCases: ["music"],
+    tags: ["wireless", "over-ear", "bass"],
     en: {
       name: "CELIBERY X5 Core",
       shortDescription: "Deep bass. Dependable everyday sound.",
@@ -154,7 +164,10 @@ const products: ProductSeed[] = [
       { key: "anc", value: "None" },
       { key: "water_resistance", value: "IPX5" },
       { key: "driver_size", value: "10mm" },
+      { key: "microphone", value: "true" },
     ],
+    useCases: ["work", "fitness"],
+    tags: ["wireless", "earbuds", "water-resistant"],
     en: {
       name: "CELIBERY Air One",
       shortDescription: "Small form. Big sound.",
@@ -188,7 +201,10 @@ const products: ProductSeed[] = [
       { key: "anc", value: "Adaptive" },
       { key: "water_resistance", value: "IPX5" },
       { key: "driver_size", value: "11mm" },
+      { key: "hi_fi_sound", value: "true" },
     ],
+    useCases: ["travel", "music", "movies", "fitness"],
+    tags: ["anc", "wireless", "earbuds", "water-resistant"],
     en: {
       name: "CELIBERY Air Pro",
       shortDescription: "Spatial audio. Adaptive silence.",
@@ -222,7 +238,10 @@ const products: ProductSeed[] = [
       { key: "bluetooth", value: "5.3" },
       { key: "water_resistance", value: "IPX7" },
       { key: "connectivity", value: "360-degree sound" },
+      { key: "hi_fi_sound", value: "true" },
     ],
+    useCases: ["music", "fitness"],
+    tags: ["waterproof", "portable"],
     en: {
       name: "CELIBERY Pulse Mini",
       shortDescription: "Turn every moment into an experience.",
@@ -255,7 +274,10 @@ const products: ProductSeed[] = [
       { key: "bluetooth", value: "5.3" },
       { key: "water_resistance", value: "IPX7" },
       { key: "connectivity", value: "Powerful bass" },
+      { key: "bass", value: "true" },
     ],
+    useCases: ["music", "fitness"],
+    tags: ["waterproof", "portable", "bass"],
     en: {
       name: "CELIBERY Pulse Max",
       shortDescription: "Powerful bass, made for outdoors.",
@@ -368,6 +390,8 @@ async function main() {
         reviewCount: product.reviewCount,
         warrantyMonths: product.warrantyMonths,
         categoryId,
+        useCases: product.useCases ?? [],
+        tags: product.tags ?? [],
         publishedAt: new Date(),
       },
       create: {
@@ -380,6 +404,8 @@ async function main() {
         reviewCount: product.reviewCount,
         warrantyMonths: product.warrantyMonths,
         categoryId,
+        useCases: product.useCases ?? [],
+        tags: product.tags ?? [],
         publishedAt: new Date(),
       },
     });

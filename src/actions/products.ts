@@ -13,6 +13,7 @@ const PRODUCT_INCLUDE = {
   category: true,
   inventory: true,
   images: { orderBy: { sortOrder: "asc" as const }, take: 1 },
+  specifications: { where: { locale: "en" } },
 } satisfies Prisma.ProductInclude;
 
 type ProductWithRelations = Prisma.ProductGetPayload<{ include: typeof PRODUCT_INCLUDE }>;
@@ -33,6 +34,9 @@ function toAdminProduct(product: ProductWithRelations): AdminProduct {
     seoDescription: row.seoDescription ?? "",
   } : emptyTranslation();
 
+  const specs: Record<string, string> = {};
+  for (const spec of product.specifications) specs[spec.key] = spec.value;
+
   return {
     id: product.slug,
     sku: product.sku,
@@ -47,6 +51,9 @@ function toAdminProduct(product: ProductWithRelations): AdminProduct {
     rating: Number(product.rating),
     reviewCount: product.reviewCount,
     updatedAt: product.updatedAt.toISOString().slice(0, 10),
+    useCases: product.useCases,
+    tags: product.tags,
+    specs,
     en: toTranslation(en),
     ar: toTranslation(ar),
   };
@@ -98,6 +105,8 @@ export async function upsertAdminProductAction(input: AdminProduct): Promise<{ e
         reviewCount: input.reviewCount,
         warrantyMonths: input.warrantyMonths,
         categoryId: category.id,
+        useCases: input.useCases,
+        tags: input.tags,
         publishedAt: input.status === "active" ? new Date() : undefined,
       },
       create: {
@@ -110,6 +119,8 @@ export async function upsertAdminProductAction(input: AdminProduct): Promise<{ e
         reviewCount: input.reviewCount,
         warrantyMonths: input.warrantyMonths,
         categoryId: category.id,
+        useCases: input.useCases,
+        tags: input.tags,
         publishedAt: input.status === "active" ? new Date() : null,
       },
     });
@@ -134,6 +145,14 @@ export async function upsertAdminProductAction(input: AdminProduct): Promise<{ e
       await prisma.productImage.update({ where: { id: existingImage.id }, data: { url: input.image } });
     } else {
       await prisma.productImage.create({ data: { productId: product.id, url: input.image, sortOrder: 0 } });
+    }
+
+    await prisma.productSpecification.deleteMany({ where: { productId: product.id, locale: "en" } });
+    const specEntries = Object.entries(input.specs).filter(([key, value]) => key.trim() && value.trim());
+    if (specEntries.length > 0) {
+      await prisma.productSpecification.createMany({
+        data: specEntries.map(([key, value]) => ({ productId: product.id, key: key.trim(), value: value.trim(), locale: "en" })),
+      });
     }
   } catch (error) {
     if (error instanceof Error && error.message.includes("Unique constraint")) {
