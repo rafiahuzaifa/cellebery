@@ -5,7 +5,9 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
 import type { Role } from "@prisma/client";
 
-const STAFF_ROLES: Role[] = ["SUPER_ADMIN", "ADMIN", "MANAGER", "INVENTORY_MANAGER", "ORDER_MANAGER", "CONTENT_MANAGER"];
+/** Staff-only enforcement lives at the route layer (src/app/admin/(protected)/layout.tsx),
+ * not here — authorize() only proves who someone is; it never decides what they can access. */
+export const STAFF_ROLES: Role[] = ["SUPER_ADMIN", "ADMIN", "MANAGER", "INVENTORY_MANAGER", "ORDER_MANAGER", "CONTENT_MANAGER"];
 
 declare module "next-auth" {
   interface Session {
@@ -39,7 +41,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user?.passwordHash) return null;
-        if (!STAFF_ROLES.includes(user.role)) return null;
 
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;

@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
+import { ArrowUpRight, Heart, Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { LanguageToggle, useLocale } from "@/components/locale-provider";
 import { useCart } from "@/components/cart-provider";
@@ -13,6 +14,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
   const { isArabic, locale } = useLocale();
   const { itemCount } = useCart();
   const { items: wishlistItems } = useWishlist();
+  const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   // Full set (shown in the mobile/tablet drawer, where vertical space is cheap).
   const links = isArabic
@@ -61,6 +63,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
         </div>
         <div className="flex items-center gap-2">
           <Link href={`/${locale}/shop#search`} aria-label={isArabic ? "البحث" : "Search"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee]`}><Search size={16} strokeWidth={1.5} /></Link>
+          <Link href={session?.user ? `/${locale}/account` : `/${locale}/account/login`} aria-label={isArabic ? "حسابي" : "My account"} className={`hidden size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee] sm:grid`}><User size={16} strokeWidth={1.5} /></Link>
           <Link href={`/${locale}/wishlist`} aria-label={isArabic ? "المفضلة" : "Wishlist"} className={`relative hidden size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee] sm:grid`}><Heart size={16} strokeWidth={1.5} />{wishlistItems.length > 0 && <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-[#22d3ee] text-[8px] font-bold text-[#080a0c]">{wishlistItems.length}</span>}</Link>
           <Link href={`/${locale}/cart`} aria-label={isArabic ? "السلة" : "Shopping bag"} className={`relative grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 transition hover:border-[#22d3ee] hover:text-[#22d3ee]`}><ShoppingBag size={16} strokeWidth={1.5} />{itemCount > 0 && <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-[#22d3ee] text-[8px] font-bold text-[#080a0c]">{itemCount}</span>}</Link>
           <button aria-label={isArabic ? "فتح القائمة" : "Open navigation"} className={`grid size-10 place-items-center rounded-full border ${borderTone} text-white/75 lg:hidden`} onClick={() => setMenuOpen(true)}><Menu size={17} strokeWidth={1.5} /></button>
