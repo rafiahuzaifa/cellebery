@@ -97,7 +97,7 @@ export function ShopPageContent({ products }: { products: AdminProduct[] }) {
   const activeFilter = categoryParam && categoryOptions.some((c) => c.value === categoryParam) ? categoryParam : selectedFilter;
   const frequencyImage = categoryOptions.find((c) => c.value === activeFilter)
     ? products.find((p) => p.category === activeFilter)?.image
-    : undefined;
+    : products[0]?.image;
 
   const chooseFilter = (filter: string) => {
     setSelectedFilter(filter);
