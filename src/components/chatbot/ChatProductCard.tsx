@@ -7,17 +7,19 @@ export function ChatProductCard({
   locale,
   isArabic,
   onAddToCart,
+  onView,
 }: {
   product: ChatProductCardData;
   locale: string;
   isArabic: boolean;
   onAddToCart: (product: ChatProductCardData) => void;
+  onView?: (product: ChatProductCardData) => void;
 }) {
   const price = product.salePrice ?? product.price;
 
   return (
     <div className="w-64 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-[#101416]">
-      <Link href={`/${locale}/shop/${product.slug}`} className="block">
+      <Link href={`/${locale}/shop/${product.slug}`} className="block" onClick={() => onView?.(product)}>
         <div className="aspect-square bg-[#151a1c] bg-cover bg-center" style={{ backgroundImage: `url(${product.image})` }} />
       </Link>
       <div className="p-3">
@@ -32,7 +34,7 @@ export function ChatProductCard({
         </div>
         {!product.inStock && <p className="mt-1 text-[10px] text-red-300">{isArabic ? "غير متوفر حالياً" : "Out of stock"}</p>}
         <div className="mt-3 flex gap-2">
-          <Link href={`/${locale}/shop/${product.slug}`} className="flex-1 rounded-lg border border-white/15 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.08em] text-white/75 transition hover:border-white/40">
+          <Link href={`/${locale}/shop/${product.slug}`} onClick={() => onView?.(product)} className="flex-1 rounded-lg border border-white/15 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.08em] text-white/75 transition hover:border-white/40">
             {isArabic ? "عرض المنتج" : "View"}
           </Link>
           <button

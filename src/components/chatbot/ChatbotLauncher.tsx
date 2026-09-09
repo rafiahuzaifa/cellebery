@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
 import { useLocale } from "@/components/locale-provider";
 import { getPublicProductBySlug } from "@/actions/products";
+import { trackChatEvent } from "@/lib/chatbot/track-event";
 import { ChatbotPanel } from "./ChatbotPanel";
 
 const GUEST_KEY_STORAGE = "celibery-chat-guest-key";
@@ -68,8 +69,8 @@ export function ChatbotLauncher() {
             guestKey={guestKey}
             productContext={productContext}
             productName={productName}
-            onMinimize={() => setOpen(false)}
-            onClose={() => setOpen(false)}
+            onMinimize={() => { setOpen(false); trackChatEvent(guestKey, "chat_closed"); }}
+            onClose={() => { setOpen(false); trackChatEvent(guestKey, "chat_closed"); }}
           />
         )}
       </AnimatePresence>
@@ -77,7 +78,7 @@ export function ChatbotLauncher() {
       {!open && (
         <motion.button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={() => { setOpen(true); trackChatEvent(guestKey, "chat_opened"); }}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           whileHover={{ scale: 1.05 }}

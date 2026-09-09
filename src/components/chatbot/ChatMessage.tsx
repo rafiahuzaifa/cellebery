@@ -12,6 +12,7 @@ export function ChatMessage({
   locale,
   isArabic,
   onAddToCart,
+  onViewProduct,
   onQuickAction,
   onRequestHandoff,
   disabled,
@@ -20,6 +21,7 @@ export function ChatMessage({
   locale: string;
   isArabic: boolean;
   onAddToCart: (product: ChatProductCardData) => void;
+  onViewProduct?: (product: ChatProductCardData) => void;
   onQuickAction: (text: string) => void;
   onRequestHandoff: () => void;
   disabled?: boolean;
@@ -40,7 +42,7 @@ export function ChatMessage({
       {message.products && message.products.length > 0 && (
         <div className="flex w-full gap-3 overflow-x-auto pb-1">
           {message.products.map((product) => (
-            <ChatProductCard key={product.slug} product={product} locale={locale} isArabic={isArabic} onAddToCart={onAddToCart} />
+            <ChatProductCard key={product.slug} product={product} locale={locale} isArabic={isArabic} onAddToCart={onAddToCart} onView={onViewProduct} />
           ))}
         </div>
       )}

@@ -76,12 +76,26 @@ export async function POST(request: Request) {
       sessionId: session.id,
       role: "ASSISTANT",
       content: response.message,
-      metadata: { intent: response.intent, products: response.products, actions: response.actions } as object,
+      metadata: {
+        intent: response.intent,
+        products: response.products,
+        actions: response.actions,
+        comparison: response.comparison,
+        orderStatus: response.orderStatus,
+        suggestedReplies: response.suggestedReplies,
+        needsHumanHandoff: response.needsHumanHandoff,
+      } as object,
     },
   });
 
   if (response.products.length > 0) {
     await prisma.chatEvent.create({ data: { sessionId: session.id, type: "product_recommended", metadata: { slugs: response.products.map((p) => p.slug) } } });
+  }
+  if (response.comparison) {
+    await prisma.chatEvent.create({ data: { sessionId: session.id, type: "comparison_started", metadata: { slugs: response.comparison.products.map((p) => p.slug) } } });
+  }
+  if (response.intent === "order_status") {
+    await prisma.chatEvent.create({ data: { sessionId: session.id, type: "order_lookup", metadata: { found: Boolean(response.orderStatus) } } });
   }
   if (response.needsHumanHandoff) {
     await prisma.chatEvent.create({ data: { sessionId: session.id, type: "support_handoff" } });

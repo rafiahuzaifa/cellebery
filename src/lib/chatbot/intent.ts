@@ -10,25 +10,6 @@ const PRODUCT_QUESTION_WORDS = ["does it", "does this", "is it", "how long does"
 const PRODUCT_DISCOVERY_WORDS = ["headphone", "earbud", "speaker", "recommend", "suggest", "need", "looking for", "best for", "want", "سماعات", "سماعة", "مكبر", "أوصي", "أحتاج", "أبحث عن"];
 const GREETING_WORDS = ["hi", "hello", "hey", "salam", "assalam", "مرحبا", "السلام عليكم", "أهلا"];
 
-function includesAny(message: string, words: string[]): boolean {
-  return words.some((word) => message.includes(word));
-}
-
-export function classifyIntent(rawMessage: string, hasPreviousPreferences: boolean): ChatIntent {
-  const message = rawMessage.toLowerCase();
-
-  if (includesAny(message, HANDOFF_WORDS)) return "support_handoff";
-  if (includesAny(message, ORDER_WORDS)) return "order_status";
-  if (includesAny(message, COMPARE_WORDS)) return "comparison";
-  if (includesAny(message, CART_WORDS)) return "cart_action";
-  if (includesAny(message, WARRANTY_WORDS)) return "warranty_returns";
-  if (includesAny(message, SHIPPING_WORDS)) return "shipping";
-  if (includesAny(message, PRODUCT_QUESTION_WORDS)) return "product_question";
-  if (includesAny(message, PRODUCT_DISCOVERY_WORDS) || hasPreviousPreferences) return "product_discovery";
-  if (includesAny(message, GREETING_WORDS) && message.trim().split(/\s+/).length <= 4) return "greeting";
-  return "unknown";
-}
-
 const CATEGORY_MAP: [string, ExtractedPreferences["category"]][] = [
   ["headphones", "headphones"], ["headphone", "headphones"], ["سماعات رأس", "headphones"], ["سماعة رأس", "headphones"],
   ["earbuds", "earbuds"], ["earbud", "earbuds"], ["سماعات أذن", "earbuds"], ["سماعة أذن", "earbuds"], ["سماعات لاسلكية", "earbuds"],
@@ -54,6 +35,37 @@ const PRIORITY_MAP: [string, string][] = [
   ["water", "water_resistance"], ["waterproof", "water_resistance"], ["مقاومة للماء", "water_resistance"], ["مقاوم للماء", "water_resistance"],
   ["value", "value"], ["cheap", "value"], ["budget", "value"], ["قيمة", "value"], ["رخيص", "value"],
 ];
+
+// The exact short quick-reply chip labels shown mid-discovery ("Battery life", "Noise
+// cancellation", ...). These can textually overlap PRODUCT_QUESTION_WORDS (e.g. "battery
+// life" is both a spec question and a priority chip) — when they arrive as a short reply
+// inside an active discovery flow, context makes them a priority selection, not a question.
+const DISCOVERY_CONTINUATION_WORDS = [...CATEGORY_MAP, ...USE_CASE_MAP, ...PRIORITY_MAP].map(([keyword]) => keyword);
+
+function includesAny(message: string, words: string[]): boolean {
+  return words.some((word) => message.includes(word));
+}
+
+export function classifyIntent(rawMessage: string, hasPreviousPreferences: boolean): ChatIntent {
+  const message = rawMessage.toLowerCase();
+  const wordCount = message.trim().split(/\s+/).length;
+
+  if (includesAny(message, HANDOFF_WORDS)) return "support_handoff";
+  if (includesAny(message, ORDER_WORDS)) return "order_status";
+  if (includesAny(message, COMPARE_WORDS)) return "comparison";
+  if (includesAny(message, CART_WORDS)) return "cart_action";
+  if (includesAny(message, WARRANTY_WORDS)) return "warranty_returns";
+  if (includesAny(message, SHIPPING_WORDS)) return "shipping";
+
+  if (hasPreviousPreferences && wordCount <= 4 && !message.includes("?") && includesAny(message, DISCOVERY_CONTINUATION_WORDS)) {
+    return "product_discovery";
+  }
+
+  if (includesAny(message, PRODUCT_QUESTION_WORDS)) return "product_question";
+  if (includesAny(message, PRODUCT_DISCOVERY_WORDS) || hasPreviousPreferences) return "product_discovery";
+  if (includesAny(message, GREETING_WORDS) && wordCount <= 4) return "greeting";
+  return "unknown";
+}
 
 export function extractPreferences(rawMessage: string, previous: ExtractedPreferences): ExtractedPreferences {
   const message = rawMessage.toLowerCase();

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/locale-provider";
 import { useCart } from "@/components/cart-provider";
+import { trackChatEvent } from "@/lib/chatbot/track-event";
 import type { ChatProductCardData, StructuredResponse } from "@/lib/ai/types";
 import type { ChatUIMessage } from "./types";
 import { ChatHeader } from "./ChatHeader";
@@ -21,6 +22,11 @@ function toUIMessage(raw: SessionMessage): ChatUIMessage {
     role: raw.role,
     content: raw.content,
     products: metadata.products,
+    comparison: metadata.comparison,
+    orderStatus: metadata.orderStatus,
+    // Suggested replies and the handoff card are only meaningful on the latest turn —
+    // restoring them on every historical message would let a stale "Compare them" chip
+    // re-trigger an old conversation branch after reload.
   };
 }
 
@@ -64,6 +70,7 @@ export function ChatbotPanel({
     for (const action of response.actions) {
       if (action.type === "add_to_cart") {
         addItem({ id: action.slug, name: action.name, price: action.price, image: action.image });
+        trackChatEvent(guestKey, "product_added_to_cart", { slug: action.slug });
       }
     }
   };
@@ -104,6 +111,11 @@ export function ChatbotPanel({
 
   const handleAddToCart = (product: ChatProductCardData) => {
     addItem({ id: product.slug, name: product.name, price: product.salePrice ?? product.price, image: product.image });
+    trackChatEvent(guestKey, "product_added_to_cart", { slug: product.slug });
+  };
+
+  const handleViewProduct = (product: ChatProductCardData) => {
+    trackChatEvent(guestKey, "product_clicked", { slug: product.slug });
   };
 
   const handleClear = async () => {
@@ -144,6 +156,7 @@ export function ChatbotPanel({
             locale={locale}
             isArabic={isArabic}
             onAddToCart={handleAddToCart}
+            onViewProduct={handleViewProduct}
             onQuickAction={send}
             onRequestHandoff={() => send(isArabic ? "أريد التحدث مع فريق الدعم" : "I'd like to talk to a human")}
             disabled={sending}
