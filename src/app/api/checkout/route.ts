@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { paymentProvider } from "@/lib/payments/payment-provider";
+import { emailProvider } from "@/lib/email/provider";
+import { validateCoupon } from "@/lib/coupons";
 import { prisma } from "@/lib/db/prisma";
 
 const checkoutSchema = z.object({
@@ -20,12 +22,12 @@ const checkoutSchema = z.object({
   }),
   paymentMethod: z.enum(["card", "apple", "cod"]),
   couponCode: z.string().trim().optional(),
+  locale: z.enum(["en", "ar"]).default("en"),
 });
 
 const FREE_SHIPPING_THRESHOLD = 399;
 const STANDARD_SHIPPING = 25;
 const VAT_RATE = 0.15;
-const MOCK_COUPON_DISCOUNT_RATE = 0.1;
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -40,7 +42,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Validation failed", issues: z.treeifyError(parsed.error) }, { status: 400 });
   }
 
-  const { items, customer, address, paymentMethod, couponCode } = parsed.data;
+  const { items, customer, address, paymentMethod, couponCode, locale } = parsed.data;
 
   // Never trust client-submitted prices — recompute every line from the
   // database, not whatever the cart sent.
@@ -74,8 +76,18 @@ export async function POST(request: Request) {
 
   const subtotal = lineItems.reduce((sum, item) => sum + item.lineTotal, 0);
 
+  let discount = 0;
+  let couponId: string | null = null;
+  if (couponCode) {
+    const validation = await validateCoupon(couponCode, subtotal, customer.email);
+    if (!validation.valid) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
+    discount = validation.discount;
+    couponId = validation.couponId;
+  }
+
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING;
-  const discount = couponCode ? Math.round(subtotal * MOCK_COUPON_DISCOUNT_RATE) : 0;
   const vat = Math.round((subtotal - discount) * VAT_RATE);
   const total = subtotal + shipping + vat - discount;
 
@@ -132,6 +144,7 @@ export async function POST(request: Request) {
         number: orderNumber,
         userId: user.id,
         addressId: shippingAddress.id,
+        couponId: couponId ?? undefined,
         status: orderStatus,
         subtotal,
         discount,
@@ -150,8 +163,32 @@ export async function POST(request: Request) {
       await tx.inventory.updateMany({ where: { productId: item.productId }, data: { stock: { decrement: item.quantity } } });
     }
 
+    if (couponId) {
+      await tx.coupon.update({ where: { id: couponId }, data: { usageCount: { increment: 1 } } });
+    }
+
     return createdOrder;
   });
+
+  // Best-effort — checkout must succeed even if the email provider is unconfigured
+  // or the send fails for any reason.
+  try {
+    await emailProvider.sendOrderConfirmation({
+      to: customer.email,
+      customerName: customer.name,
+      orderNumber: order.number,
+      locale,
+      items: lineItems.map((item) => ({ name: item.name, quantity: item.quantity, unitPrice: item.unitPrice })),
+      subtotal,
+      shipping,
+      discount,
+      vat,
+      total,
+      currency: "SAR",
+    });
+  } catch {
+    // swallow — never fail checkout over an email problem
+  }
 
   return NextResponse.json({
     orderNumber: order.number,

@@ -25,6 +25,9 @@ export default function CartPage() {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [promo, setPromo] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
+  const [promoDiscount, setPromoDiscount] = useState(0);
+  const [promoError, setPromoError] = useState<string | null>(null);
+  const [checkingPromo, setCheckingPromo] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -51,6 +54,7 @@ export default function CartPage() {
           address: { region: city, city, street: address },
           paymentMethod,
           couponCode: promoApplied ? promo : undefined,
+          locale,
         }),
       });
       const data = await response.json();
@@ -65,6 +69,37 @@ export default function CartPage() {
       setSubmitting(false);
     }
   };
+
+  const applyPromo = async () => {
+    const code = promo.trim();
+    if (!code || checkingPromo) return;
+    setCheckingPromo(true);
+    setPromoError(null);
+    try {
+      const currentSubtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const response = await fetch("/api/coupons/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, subtotal: currentSubtotal, email }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.valid) {
+        setPromoApplied(false);
+        setPromoDiscount(0);
+        setPromoError(data?.error ?? (isArabic ? "رمز الخصم غير صالح." : "This coupon code is not valid."));
+        return;
+      }
+      setPromoApplied(true);
+      setPromoDiscount(data.discount);
+    } catch {
+      setPromoApplied(false);
+      setPromoDiscount(0);
+      setPromoError(isArabic ? "تعذر التحقق من الرمز. حاول مرة أخرى." : "Couldn't check that code. Please try again.");
+    } finally {
+      setCheckingPromo(false);
+    }
+  };
+
   const labels = isArabic ? {
     eyebrow: "السلة / الدفع",
     title: "أكمل طلبك.",
@@ -139,7 +174,7 @@ export default function CartPage() {
 
   const subtotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
   const shipping = subtotal >= 399 || subtotal === 0 ? 0 : 25;
-  const discount = promoApplied ? Math.round(subtotal * 0.1) : 0;
+  const discount = promoApplied ? Math.min(promoDiscount, subtotal) : 0;
   const vat = Math.round((subtotal - discount) * 0.15);
   const total = subtotal + shipping + vat - discount;
 
@@ -162,7 +197,7 @@ export default function CartPage() {
           <div className="mt-8 grid gap-3 border-t border-white/10 pt-6 sm:grid-cols-3"><div className="flex gap-3 text-[10px] uppercase leading-4 tracking-[0.1em] text-white/50"><Truck size={16} className="shrink-0 text-[#22d3ee]" /> Fast Saudi delivery</div><div className="flex gap-3 text-[10px] uppercase leading-4 tracking-[0.1em] text-white/50"><ShieldCheck size={16} className="shrink-0 text-[#22d3ee]" /> Two-year warranty</div><div className="flex gap-3 text-[10px] uppercase leading-4 tracking-[0.1em] text-white/50"><LockKeyhole size={16} className="shrink-0 text-[#22d3ee]" /> Protected checkout</div></div>
         </div>
 
-        <div className="h-fit border border-white/10 bg-[#101416] p-5 sm:p-7 lg:sticky lg:top-8"><h2 className="text-lg font-semibold">{labels.summary}</h2><div className="mt-6 flex gap-2"><input value={promo} onChange={(event) => setPromo(event.target.value)} placeholder={labels.promo} className="min-w-0 flex-1 border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /><button onClick={() => setPromoApplied(Boolean(promo.trim()))} className="border border-white/15 px-4 text-[10px] font-bold uppercase tracking-[0.12em] text-[#22d3ee]">{promoApplied ? labels.applied : labels.apply}</button></div><div className="mt-6 space-y-3 border-t border-white/10 pt-5 text-xs text-white/55"><div className="flex justify-between"><span>{labels.subtotal}</span><span>SAR {subtotal}</span></div><div className="flex justify-between"><span>{labels.shipping}</span><span>{shipping === 0 ? labels.free : `SAR ${shipping}`}</span></div>{discount > 0 && <div className="flex justify-between text-[#22d3ee]"><span>Discount</span><span>- SAR {discount}</span></div>}<div className="flex justify-between"><span>{labels.vat}</span><span>SAR {vat}</span></div><div className="flex justify-between border-t border-white/10 pt-4 text-base text-white"><span>{labels.total}</span><span>SAR {total}</span></div></div>
+        <div className="h-fit border border-white/10 bg-[#101416] p-5 sm:p-7 lg:sticky lg:top-8"><h2 className="text-lg font-semibold">{labels.summary}</h2><div className="mt-6 flex gap-2"><input value={promo} onChange={(event) => { setPromo(event.target.value); setPromoApplied(false); setPromoError(null); }} placeholder={labels.promo} className="min-w-0 flex-1 border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /><button onClick={applyPromo} disabled={checkingPromo || !promo.trim()} className="border border-white/15 px-4 text-[10px] font-bold uppercase tracking-[0.12em] text-[#22d3ee] disabled:cursor-not-allowed disabled:opacity-50">{checkingPromo ? (isArabic ? "جارٍ التحقق..." : "Checking...") : promoApplied ? labels.applied : labels.apply}</button></div>{promoError && <p className="mt-2 text-[11px] text-red-300">{promoError}</p>}<div className="mt-6 space-y-3 border-t border-white/10 pt-5 text-xs text-white/55"><div className="flex justify-between"><span>{labels.subtotal}</span><span>SAR {subtotal}</span></div><div className="flex justify-between"><span>{labels.shipping}</span><span>{shipping === 0 ? labels.free : `SAR ${shipping}`}</span></div>{discount > 0 && <div className="flex justify-between text-[#22d3ee]"><span>Discount</span><span>- SAR {discount}</span></div>}<div className="flex justify-between"><span>{labels.vat}</span><span>SAR {vat}</span></div><div className="flex justify-between border-t border-white/10 pt-4 text-base text-white"><span>{labels.total}</span><span>SAR {total}</span></div></div>
           <div className="mt-8 border-t border-white/10 pt-7"><p className="mb-4 text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">{labels.delivery}</p><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1"><input required value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder={labels.name} className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /><input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={labels.email} className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /><input required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={`${labels.phone} (+966)`} className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /><input required value={address} onChange={(e) => setAddress(e.target.value)} placeholder={labels.address} className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee] sm:col-span-2 lg:col-span-1" /><div className="relative"><select required value={city} onChange={(e) => setCity(e.target.value)} className="w-full appearance-none border border-white/15 bg-[#101416] px-3 py-3 text-xs text-white/60 outline-none focus:border-[#22d3ee]"><option value="">{labels.city}</option>{SAUDI_CITIES.map((option) => <option key={option} value={option}>{option}</option>)}</select><ChevronDown size={14} className="pointer-events-none absolute right-3 top-3.5 text-white/40" /></div></div></div>
           <div className="mt-8 border-t border-white/10 pt-7"><p className="mb-4 text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">{labels.payment}</p><div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1"><button onClick={() => setPaymentMethod("card")} className={`flex items-center gap-3 border px-3 py-3 text-left text-xs transition ${paymentMethod === "card" ? "border-[#22d3ee] bg-[#22d3ee]/10 text-white" : "border-white/15 text-white/50"}`}><CreditCard size={16} /> {labels.card}</button><button onClick={() => setPaymentMethod("apple")} className={`flex items-center gap-3 border px-3 py-3 text-left text-xs transition ${paymentMethod === "apple" ? "border-[#22d3ee] bg-[#22d3ee]/10 text-white" : "border-white/15 text-white/50"}`}><Smartphone size={16} /> {labels.apple}</button><button onClick={() => setPaymentMethod("cod")} className={`flex items-center gap-3 border px-3 py-3 text-left text-xs transition ${paymentMethod === "cod" ? "border-[#22d3ee] bg-[#22d3ee]/10 text-white" : "border-white/15 text-white/50"}`}><Truck size={16} /> {labels.cod}</button></div>{paymentMethod === "card" && <div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-1"><input placeholder={labels.cardNumber} inputMode="numeric" className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee] sm:col-span-3 lg:col-span-1" /><input placeholder={labels.expiry} className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /><input placeholder={labels.cvc} className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /></div>}</div>
           {submitError && <p className="mt-6 flex items-center gap-2 border border-red-500/25 bg-red-500/10 px-3 py-2.5 text-xs text-red-300"><AlertCircle size={14} className="shrink-0" /> {submitError}</p>}
