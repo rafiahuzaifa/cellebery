@@ -8,6 +8,7 @@ import {
   BookOpen,
   LayoutDashboard,
   LayoutTemplate,
+  LogOut,
   Megaphone,
   Package,
   Search,
@@ -19,6 +20,7 @@ import {
   Users,
 } from "lucide-react";
 import { useLocale, LanguageToggle } from "@/components/locale-provider";
+import { signOutAction } from "@/lib/auth/actions";
 
 const NAV = [
   { href: "/admin", icon: LayoutDashboard, en: "Dashboard", ar: "لوحة التحكم" },
@@ -35,9 +37,14 @@ const NAV = [
   { href: "/admin/settings", icon: Settings, en: "Settings", ar: "الإعدادات" },
 ] as const;
 
-export function AdminShell({ children }: { children: React.ReactNode }) {
+type AdminUser = { name?: string | null; email?: string | null; role: string };
+
+export function AdminShell({ children, user }: { children: React.ReactNode; user: AdminUser }) {
   const { isArabic } = useLocale();
   const pathname = usePathname();
+  const displayName = user.name || user.email || "Admin";
+  const initial = displayName.charAt(0).toUpperCase();
+  const roleLabel = user.role.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 
   return (
     <div className="min-h-screen bg-[#080a0c] text-[#f3f5f5]" dir={isArabic ? "rtl" : "ltr"}>
@@ -73,10 +80,15 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             </label>
             <div className="flex items-center gap-3">
               <LanguageToggle />
-              <div className="flex items-center gap-2 rounded-full border border-white/12 py-1 pe-3 ps-1.5">
-                <span className="grid size-6 place-items-center rounded-full bg-[#22d3ee] text-[10px] font-bold text-[#080a0c]">A</span>
-                <span className="text-[11px] font-medium text-white/70">Admin</span>
+              <div className="flex items-center gap-2 rounded-full border border-white/12 py-1 pe-3 ps-1.5" title={roleLabel}>
+                <span className="grid size-6 place-items-center rounded-full bg-[#22d3ee] text-[10px] font-bold text-[#080a0c]">{initial}</span>
+                <span className="max-w-28 truncate text-[11px] font-medium text-white/70">{displayName}</span>
               </div>
+              <form action={signOutAction}>
+                <button type="submit" aria-label={isArabic ? "تسجيل الخروج" : "Sign out"} className="grid size-9 place-items-center rounded-full border border-white/12 text-white/60 transition hover:border-red-400/50 hover:text-red-300">
+                  <LogOut size={15} strokeWidth={1.6} />
+                </button>
+              </form>
             </div>
           </header>
           <main className="flex-1 px-5 py-6 lg:px-8 lg:py-8">{children}</main>
