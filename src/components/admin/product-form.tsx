@@ -1,12 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { ArrowLeft, Save } from "lucide-react";
+import { useState, useTransition } from "react";
+import { AlertCircle, ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
 import { useLocale } from "@/components/locale-provider";
 import { categoryOptions, translationStatus, type AdminProduct } from "@/lib/admin/catalog";
-import { useAdminProducts } from "@/lib/admin/product-store";
+import { upsertAdminProductAction } from "@/actions/products";
 
 const emptyTranslation = { name: "", shortDescription: "", description: "", features: [] as string[], seoTitle: "", seoDescription: "" };
 
@@ -33,24 +33,29 @@ function blankProduct(): AdminProduct {
 export function ProductForm({ initial }: { initial?: AdminProduct }) {
   const { isArabic } = useLocale();
   const router = useRouter();
-  const { upsert } = useAdminProducts();
   const [product, setProduct] = useState<AdminProduct>(initial ?? blankProduct());
   const [activeTab, setActiveTab] = useState<"en" | "ar">("en");
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   const isNew = !initial;
 
   const status = translationStatus(product);
 
   const save = () => {
-    const slugSource = product.en.name || product.sku || "product";
-    const id = product.id || slugSource.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || `product-${Date.now()}`;
-    upsert({
-      ...product,
-      id,
-      updatedAt: new Date().toISOString().slice(0, 10),
-      en: { ...product.en, features: product.en.features.map((f) => f.trim()).filter(Boolean) },
-      ar: { ...product.ar, features: product.ar.features.map((f) => f.trim()).filter(Boolean) },
+    setError(null);
+    startTransition(async () => {
+      const result = await upsertAdminProductAction({
+        ...product,
+        en: { ...product.en, features: product.en.features.map((f) => f.trim()).filter(Boolean) },
+        ar: { ...product.ar, features: product.ar.features.map((f) => f.trim()).filter(Boolean) },
+      });
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+      router.push("/admin/products");
+      router.refresh();
     });
-    router.push("/admin/products");
   };
 
   return (
@@ -60,10 +65,16 @@ export function ProductForm({ initial }: { initial?: AdminProduct }) {
           <Link href="/admin/products" className="mb-3 inline-flex items-center gap-2 text-[11px] text-white/50 transition hover:text-white"><ArrowLeft size={13} /> {isArabic ? "المنتجات" : "Products"}</Link>
           <h1 className="text-2xl font-semibold tracking-[-0.02em]">{isNew ? (isArabic ? "منتج جديد" : "New product") : (isArabic ? "تعديل المنتج" : "Edit product")}</h1>
         </div>
-        <button onClick={save} className="flex items-center gap-2 rounded-lg bg-[#22d3ee] px-4 py-2.5 text-xs font-semibold text-[#080a0c] transition hover:bg-white">
-          <Save size={14} /> {isArabic ? "حفظ" : "Save"}
+        <button onClick={save} disabled={isPending} className="flex items-center gap-2 rounded-lg bg-[#22d3ee] px-4 py-2.5 text-xs font-semibold text-[#080a0c] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60">
+          <Save size={14} /> {isPending ? (isArabic ? "جارٍ الحفظ..." : "Saving...") : (isArabic ? "حفظ" : "Save")}
         </button>
       </div>
+
+      {error && (
+        <p className="flex items-center gap-2 rounded-lg border border-red-500/25 bg-red-500/10 px-3 py-2.5 text-xs text-red-300">
+          <AlertCircle size={14} className="shrink-0" /> {error}
+        </p>
+      )}
 
       <div className="grid gap-5 lg:grid-cols-[1.6fr_1fr]">
         <div className="space-y-5">

@@ -1,17 +1,34 @@
-"use client";
+"use server";
 
-import { useSyncExternalStore } from "react";
-import { createLocalStorageList } from "@/lib/local-storage-list";
+import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/db/prisma";
+import type { Prisma } from "@prisma/client";
+
+export type HomepageSectionType =
+  | "hero"
+  | "featured"
+  | "categories"
+  | "technology"
+  | "best-sellers"
+  | "promotions"
+  | "lifestyle"
+  | "reviews"
+  | "blog"
+  | "newsletter";
+
+export type HomepageSectionCopy = { title: string; subtitle: string; ctaLabel: string };
 
 export type HomepageSection = {
   id: string;
-  type: "hero" | "featured" | "categories" | "technology" | "best-sellers" | "promotions" | "lifestyle" | "reviews" | "blog" | "newsletter";
+  type: HomepageSectionType;
   enabled: boolean;
-  en: { title: string; subtitle: string; ctaLabel: string };
-  ar: { title: string; subtitle: string; ctaLabel: string };
+  en: HomepageSectionCopy;
+  ar: HomepageSectionCopy;
 };
 
-const seedSections: HomepageSection[] = [
+type SectionSettings = { en: HomepageSectionCopy; ar: HomepageSectionCopy };
+
+const SEED_SECTIONS: HomepageSection[] = [
   { id: "hero", type: "hero", enabled: true, en: { title: "Sound without limits", subtitle: "Premium audio engineered for everyday life.", ctaLabel: "Explore collection" }, ar: { title: "صوت بلا حدود", subtitle: "صوت فاخر مصمم لحياتك اليومية.", ctaLabel: "استكشف المجموعة" } },
   { id: "featured", type: "featured", enabled: true, en: { title: "Hear every detail", subtitle: "The signature series / X7 Pro", ctaLabel: "Discover X7 Pro" }, ar: { title: "اسمع كل تفصيل", subtitle: "السلسلة المميزة / X7 Pro", ctaLabel: "اكتشف X7 Pro" } },
   { id: "categories", type: "categories", enabled: true, en: { title: "Choose your sound", subtitle: "Headphones, earbuds, and speakers.", ctaLabel: "View all products" }, ar: { title: "اختر صوتك", subtitle: "سماعات الرأس والأذن ومكبرات الصوت.", ctaLabel: "عرض كل المنتجات" } },
@@ -24,23 +41,60 @@ const seedSections: HomepageSection[] = [
   { id: "newsletter", type: "newsletter", enabled: true, en: { title: "Stay in the loop", subtitle: "New drops and offers, straight to your inbox.", ctaLabel: "Subscribe" }, ar: { title: "ابق على اطلاع", subtitle: "أحدث الإصدارات والعروض في بريدك.", ctaLabel: "اشترك" } },
 ];
 
-const store = createLocalStorageList<HomepageSection>("celibery-homepage-sections", seedSections);
+const EMPTY_COPY: HomepageSectionCopy = { title: "", subtitle: "", ctaLabel: "" };
 
-export function useHomepageSections() {
-  const sections = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
-
-  const toggle = (id: string) => store.set(sections.map((section) => section.id === id ? { ...section, enabled: !section.enabled } : section));
-
-  const move = (id: string, direction: -1 | 1) => {
-    const index = sections.findIndex((section) => section.id === id);
-    const swapWith = index + direction;
-    if (swapWith < 0 || swapWith >= sections.length) return;
-    const next = [...sections];
-    [next[index], next[swapWith]] = [next[swapWith], next[index]];
-    store.set(next);
+function toHomepageSection(row: { id: string; type: string; enabled: boolean; settings: Prisma.JsonValue }): HomepageSection {
+  const settings = (row.settings ?? {}) as Partial<SectionSettings>;
+  return {
+    id: row.id,
+    type: row.type as HomepageSectionType,
+    enabled: row.enabled,
+    en: settings.en ?? EMPTY_COPY,
+    ar: settings.ar ?? EMPTY_COPY,
   };
+}
 
-  const update = (section: HomepageSection) => store.set(sections.map((entry) => entry.id === section.id ? section : entry));
+function revalidateHomepage() {
+  revalidatePath("/admin/homepage");
+  revalidatePath("/[locale]", "layout");
+}
 
-  return { sections, toggle, move, update };
+export async function getHomepageSections(): Promise<HomepageSection[]> {
+  const count = await prisma.homepageSection.count();
+  if (count === 0) {
+    // Parallel SSG workers (one per locale) can race here — skipDuplicates
+    // makes the seed idempotent instead of throwing on a concurrent insert.
+    await prisma.homepageSection.createMany({
+      data: SEED_SECTIONS.map((section, index) => ({
+        id: section.id,
+        type: section.type,
+        enabled: section.enabled,
+        sortOrder: index,
+        settings: { en: section.en, ar: section.ar } satisfies SectionSettings,
+      })),
+      skipDuplicates: true,
+    });
+  }
+  const rows = await prisma.homepageSection.findMany({ orderBy: { sortOrder: "asc" } });
+  return rows.map(toHomepageSection);
+}
+
+export async function updateHomepageSectionAction(section: HomepageSection): Promise<void> {
+  await prisma.homepageSection.update({
+    where: { id: section.id },
+    data: { enabled: section.enabled, settings: { en: section.en, ar: section.ar } satisfies SectionSettings },
+  });
+  revalidateHomepage();
+}
+
+export async function toggleHomepageSectionAction(id: string): Promise<void> {
+  const section = await prisma.homepageSection.findUnique({ where: { id } });
+  if (!section) return;
+  await prisma.homepageSection.update({ where: { id }, data: { enabled: !section.enabled } });
+  revalidateHomepage();
+}
+
+export async function reorderHomepageSectionsAction(orderedIds: string[]): Promise<void> {
+  await prisma.$transaction(orderedIds.map((id, index) => prisma.homepageSection.update({ where: { id }, data: { sortOrder: index } })));
+  revalidateHomepage();
 }

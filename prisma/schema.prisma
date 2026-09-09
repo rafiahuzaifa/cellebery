@@ -306,10 +306,10 @@ model Address {
   phone          String
   region         String
   city           String
-  district       String
+  district       String?
   street         String
-  buildingNumber String
-  postalCode     String
+  buildingNumber String?
+  postalCode     String?
   additional     String?
   isDefault      Boolean  @default(false)
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
