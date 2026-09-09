@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPublicProducts } from "@/actions/products";
+import { getPublicBlogPosts } from "@/actions/blog";
 
 const LOCALES = ["en", "ar"] as const;
 
@@ -9,11 +10,15 @@ function siteUrl(): string {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
-  const products = await getPublicProducts();
+  const [products, postsByLocale] = await Promise.all([
+    getPublicProducts(),
+    Promise.all(LOCALES.map((locale) => getPublicBlogPosts(locale))),
+  ]);
 
   const staticEntries: MetadataRoute.Sitemap = LOCALES.flatMap((locale) => [
     { url: `${base}/${locale}`, changeFrequency: "daily", priority: 1 },
     { url: `${base}/${locale}/shop`, changeFrequency: "daily", priority: 0.9 },
+    { url: `${base}/${locale}/blog`, changeFrequency: "weekly", priority: 0.6 },
   ]);
 
   const productEntries: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
@@ -25,5 +30,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   );
 
-  return [...staticEntries, ...productEntries];
+  const blogEntries: MetadataRoute.Sitemap = LOCALES.flatMap((locale, index) =>
+    postsByLocale[index].map((post) => ({
+      url: `${base}/${locale}/blog/${post.slug}`,
+      lastModified: post.publishedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+  );
+
+  return [...staticEntries, ...productEntries, ...blogEntries];
 }

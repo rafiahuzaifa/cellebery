@@ -25,6 +25,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
         ["مكبرات الصوت", `/${locale}/shop?category=speakers`],
         ["الإكسسوارات", `/${locale}/shop?category=accessories`],
         ["وصل حديثاً", `/${locale}/shop?sort=newest`],
+        ["المجلة", `/${locale}/blog`],
         ["قصتنا", `/${locale}#story`],
       ]
     : [
@@ -34,13 +35,14 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
         ["Speakers", `/${locale}/shop?category=speakers`],
         ["Accessories", `/${locale}/shop?category=accessories`],
         ["New arrivals", `/${locale}/shop?sort=newest`],
+        ["Journal", `/${locale}/blog`],
         ["Our story", `/${locale}#story`],
       ];
   // Trimmed set for the inline desktop row, so it reliably fits on one line
   // from the standard lg (1024px) breakpoint instead of wrapping into the
-  // hero — Accessories/New arrivals stay one click away via the Shop page's
-  // own filters and the drawer above.
-  const primaryLinks = [links[0], links[1], links[2], links[3], links[6]];
+  // hero — Accessories/New arrivals/Journal stay one click away via the Shop
+  // page's own filters and the drawer above.
+  const primaryLinks = [links[0], links[1], links[2], links[3], links[7]];
   const textTone = overlay ? "text-white" : "text-white/80";
   const borderTone = overlay ? "border-white/15" : "border-white/15";
   const navPosition = overlay ? "absolute inset-x-0 top-0" : "relative";

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getPublicProductBySlug } from "@/actions/products";
+import { getPublicProductReviews } from "@/actions/reviews";
 import { ProductDetail } from "@/components/shop/product-detail";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/shop/[slug]">): Promise<Metadata> {
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/shop/[sl
 
 export default async function ProductPage({ params }: PageProps<"/[locale]/shop/[slug]">) {
   const { slug, locale } = await params;
-  const product = await getPublicProductBySlug(slug);
+  const [product, reviews] = await Promise.all([getPublicProductBySlug(slug), getPublicProductReviews(slug)]);
 
   if (!product) return <ProductDetail product={null} locale={locale} />;
 
@@ -48,7 +49,7 @@ export default async function ProductPage({ params }: PageProps<"/[locale]/shop/
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <ProductDetail product={product} locale={locale} />
+      <ProductDetail product={product} locale={locale} reviews={reviews} />
     </>
   );
 }

@@ -6,6 +6,8 @@ import { useLocale } from "@/components/locale-provider";
 import { SiteNav } from "@/components/site-nav";
 import { useCart } from "@/components/cart-provider";
 import { categoryOptions, type AdminProduct } from "@/lib/admin/catalog";
+import { ProductReviews } from "@/components/shop/product-reviews";
+import type { PublicReview } from "@/actions/reviews";
 import { useState } from "react";
 
 function RatingStars({ rating }: { rating: number }) {
@@ -16,7 +18,7 @@ function RatingStars({ rating }: { rating: number }) {
   );
 }
 
-export function ProductDetail({ product, locale }: { product: AdminProduct | null; locale: string }) {
+export function ProductDetail({ product, locale, reviews = [] }: { product: AdminProduct | null; locale: string; reviews?: PublicReview[] }) {
   const { isArabic } = useLocale();
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
@@ -109,6 +111,7 @@ export function ProductDetail({ product, locale }: { product: AdminProduct | nul
           </div>
         </section>
       )}
+      <ProductReviews reviews={reviews} slug={product.id} locale={locale} isArabic={isArabic} />
       <footer className="px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] justify-between text-[10px] uppercase tracking-[0.15em] text-white/40"><span>CELIBERY / Sound without limits.</span><Link href={`/${locale}/shop`}>{labels.back} ↑</Link></div></footer>
     </main>
   );

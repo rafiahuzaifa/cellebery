@@ -173,6 +173,10 @@ export function CartPageContent({ initialName, initialEmail, initialPhone }: { i
   };
 
   const subtotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
+  // Estimate for display only — checkout (src/app/api/checkout/route.ts) always
+  // recomputes shipping from the real, admin-managed ShippingMethod data before
+  // charging anything, so the actual total can never be wrong even if an admin
+  // changes pricing after this estimate was rendered.
   const shipping = subtotal >= 399 || subtotal === 0 ? 0 : 25;
   const discount = promoApplied ? Math.min(promoDiscount, subtotal) : 0;
   const vat = Math.round((subtotal - discount) * 0.15);

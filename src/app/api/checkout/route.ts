@@ -25,9 +25,11 @@ const checkoutSchema = z.object({
   locale: z.enum(["en", "ar"]).default("en"),
 });
 
-const FREE_SHIPPING_THRESHOLD = 399;
-const STANDARD_SHIPPING = 25;
 const VAT_RATE = 0.15;
+// Only used if no shipping zone/method is configured in the database at all —
+// keeps checkout from hard-failing on an empty admin setup, not a real policy.
+const FALLBACK_SHIPPING_PRICE = 25;
+const FALLBACK_FREE_THRESHOLD = 399;
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -87,7 +89,22 @@ export async function POST(request: Request) {
     couponId = validation.couponId;
   }
 
-  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING;
+  // Real shipping data, not a hardcoded constant — matches whatever the admin
+  // has configured for this region under /admin/shipping (cheapest active
+  // method in the matching zone, falling back to any active zone).
+  const matchedZone = await prisma.shippingZone.findFirst({
+    where: { active: true, regions: { has: address.region } },
+    include: { methods: { where: { active: true }, orderBy: { price: "asc" }, take: 1 } },
+  });
+  const anyZone = matchedZone ?? await prisma.shippingZone.findFirst({
+    where: { active: true },
+    include: { methods: { where: { active: true }, orderBy: { price: "asc" }, take: 1 } },
+  });
+  const shippingMethod = anyZone?.methods[0];
+  const shippingPrice = shippingMethod ? Number(shippingMethod.price) : FALLBACK_SHIPPING_PRICE;
+  const freeThreshold = shippingMethod?.freeThreshold != null ? Number(shippingMethod.freeThreshold) : FALLBACK_FREE_THRESHOLD;
+
+  const shipping = subtotal >= freeThreshold ? 0 : shippingPrice;
   const vat = Math.round((subtotal - discount) * VAT_RATE);
   const total = subtotal + shipping + vat - discount;
 
