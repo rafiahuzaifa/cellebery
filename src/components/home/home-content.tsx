@@ -3,23 +3,21 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { SiteNav } from "@/components/site-nav";
 import { MediaVideo } from "@/components/media-video";
+import { HeroCarousel } from "@/components/home/hero-carousel";
 import { useLocale } from "@/components/locale-provider";
 import { useCart } from "@/components/cart-provider";
 import { useWishlist } from "@/components/wishlist-provider";
 import type { AdminProduct } from "@/lib/admin/catalog";
 import type { HomepageSection } from "@/actions/homepage";
+import type { PublicHeroSlide } from "@/actions/hero-campaigns";
 import { useState } from "react";
 import {
-  ArrowDownRight,
   ArrowUpRight,
   Award,
-  Battery,
   Briefcase,
   Check,
   Clock,
-  Droplets,
   Dumbbell,
   Ear,
   Heart,
@@ -33,20 +31,12 @@ import {
   Speaker,
   Star,
   Volume2,
-  Waves,
 } from "lucide-react";
 
 const categories = [
   { label: "Headphones", filterValue: "headphones", detail: "Immersive. Powerful. Personal.", image: "/products/headphones-classic.jpg", icon: Headphones },
   { label: "Earbuds", filterValue: "earbuds", detail: "Small form. Big sound.", image: "/products/earbuds-case.jpg", icon: Ear },
   { label: "Speakers", filterValue: "speakers", detail: "Turn every moment up.", image: "/products/speaker-hero.jpg", icon: Speaker },
-];
-
-const heroFeatures = [
-  { icon: Waves, en: "Hi-Fi Sound", ar: "صوت عالي الدقة" },
-  { icon: ShieldCheck, en: "Active Cancellation", ar: "إلغاء ضوضاء نشط" },
-  { icon: Battery, en: "Long Battery Life", ar: "بطارية تدوم طويلاً" },
-  { icon: Droplets, en: "IPX5 Waterproof", ar: "مقاومة للماء IPX5" },
 ];
 
 const whyItems = [
@@ -82,14 +72,6 @@ function RatingStars({ rating }: { rating: number }) {
       ))}
     </span>
   );
-}
-
-/** Splits an admin-edited title into the hero's stacked-line treatment. */
-function heroLines(title: string) {
-  const words = title.trim().split(/\s+/).filter(Boolean);
-  if (words.length <= 1) return [words[0] ?? ""];
-  if (words.length === 2) return words;
-  return [words[0], words.slice(1, -1).join(" "), words[words.length - 1]];
 }
 
 function NewsletterSection({ section, isArabic }: { section: HomepageSection; isArabic: boolean }) {
@@ -131,7 +113,7 @@ function GenericBanner({ section, isArabic, locale }: { section: HomepageSection
   );
 }
 
-export function HomeContent({ products: allProducts, sections }: { products: AdminProduct[]; sections: HomepageSection[] }) {
+export function HomeContent({ products: allProducts, sections, heroSlides }: { products: AdminProduct[]; sections: HomepageSection[]; heroSlides: PublicHeroSlide[] }) {
   const { isArabic, locale } = useLocale();
   const { addItem } = useCart();
   const { isSaved, toggleItem } = useWishlist();
@@ -140,25 +122,12 @@ export function HomeContent({ products: allProducts, sections }: { products: Adm
   const featuredProduct = activeProducts.find((p) => p.id === "x7-pro") ?? activeProducts[0];
   const bestSellers = [...activeProducts].sort((a, b) => b.rating - a.rating).slice(0, 4);
 
-  const sectionByType = new Map(sections.map((s) => [s.type, s]));
-  const heroSection = sectionByType.get("hero");
-  const heroTitle = heroSection ? (isArabic ? heroSection.ar.title : heroSection.en.title) : (isArabic ? "صوت بلا حدود" : "Sound without limits");
-  const heroSubtitle = heroSection ? (isArabic ? heroSection.ar.subtitle : heroSection.en.subtitle) : (isArabic ? "صوت فاخر مصمم للحياة اليومية." : "Premium audio engineered for everyday life.");
-  const heroCta = heroSection ? (isArabic ? heroSection.ar.ctaLabel : heroSection.en.ctaLabel) : (isArabic ? "استكشف المجموعة" : "EXPLORE COLLECTION");
-  const [heroLine1, heroLine2, heroLine3] = heroLines(heroTitle);
-
   const copy = isArabic ? {
-    country: "المملكة العربية السعودية / ٢٠٢٦",
-    scroll: "مرر للاستكشاف",
-    discover: "اكتشف CELIBERY",
     addToCart: "أضف إلى السلة",
     discoverX7: "اكتشف X7 Pro",
     viewAll: "عرض كل المنتجات",
     off: "خصم",
   } : {
-    country: "Saudi Arabia / 2026",
-    scroll: "Scroll to explore",
-    discover: "DISCOVER CELIBERY",
     addToCart: "Add to cart",
     discoverX7: "Discover X7 Pro",
     viewAll: "View all products",
@@ -345,52 +314,9 @@ export function HomeContent({ products: allProducts, sections }: { products: Adm
 
   return (
     <main className="overflow-hidden bg-[#080a0c] text-[#f3f5f5]">
-      <section className="relative min-h-screen overflow-hidden border-b border-white/10">
-        <div className="absolute inset-0 opacity-55" style={{ backgroundImage: "linear-gradient(180deg, rgba(8,10,12,.04), rgba(8,10,12,.76)), url('/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png')", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(3px)", transform: "scale(1.06)" }} />
-        <div className="absolute inset-0 bg-linear-to-r from-[#080a0c] via-[#080a0c]/65 to-[#080a0c]/10" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_36%,rgba(34,211,238,0.12),transparent_18%),radial-gradient(circle_at_50%_50%,rgba(34,211,238,0.06),transparent_28%)]" />
-        <div className="grain absolute inset-0" />
-        <SiteNav overlay />
-
-        <div id="top" className="relative z-10 mx-auto max-w-[1440px] px-6 pb-16 pt-28 sm:pt-32 lg:px-12 lg:pb-20 lg:pt-40">
-          <div className="grid items-center gap-10 lg:grid-cols-[minmax(480px,0.95fr)_minmax(420px,1.05fr)] lg:gap-8">
-            <div className="relative order-2 aspect-video w-full overflow-hidden rounded-[2rem] border border-white/10 bg-[#0d1113] shadow-2xl shadow-cyan-950/50 lg:order-1 lg:aspect-auto lg:h-[520px]">
-              <MediaVideo src="/Person_holding_Bluetooth_speaker_202609080042.mp4" poster="/ChatGPT%20Image%20Aug%2027,%202026,%2005_23_32%20PM.png" className="absolute inset-0" label={isArabic ? "تفعيل أو كتم صوت الفيديو" : "Toggle sound"} />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#080a0c]/55 via-transparent to-transparent" />
-              <div className="pointer-events-none absolute left-6 top-6 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[#22d3ee]"><span className="inline-block h-px w-8 bg-[#22d3ee]" />CELIBERY 01</div>
-              <div className="pointer-events-none absolute bottom-6 left-6 right-6 flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/70">X7 Pro / 360°</span>
-                <span className="grid size-10 place-items-center rounded-full border border-white/30 text-[#22d3ee]"><ArrowUpRight size={16} /></span>
-              </div>
-            </div>
-
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="relative z-20 order-1 max-w-2xl lg:order-2 lg:justify-self-end">
-              <div className="mb-5 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#22d3ee]"><span className="inline-block h-px w-10 bg-[#22d3ee]" />{isArabic ? "جيل جديد من الصوت" : "New era of sound"}</div>
-              <h1 className="display-font max-w-[680px] text-[clamp(3rem,8vw,6.6rem)] font-semibold uppercase leading-[0.82] tracking-[-0.045em]">
-                {heroLine1 && <span className="block">{heroLine1}</span>}
-                {heroLine2 && <span className="block text-white/45">{heroLine2}</span>}
-                {heroLine3 && <span className="block text-white/90">{heroLine3}</span>}
-              </h1>
-              <p className="mt-8 max-w-xl text-sm font-medium uppercase leading-7 tracking-[0.16em] text-white/60">{heroSubtitle}</p>
-              <div className="mt-9 flex flex-col gap-5 sm:flex-row sm:items-center">
-                <Link href={`/${locale}/shop`} className="group inline-flex w-fit items-center gap-8 bg-[#22d3ee] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white">{heroCta} <ArrowUpRight size={15} className="transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link>
-                <a href="#story" className="inline-flex w-fit items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/75 transition hover:text-[#22d3ee]">{copy.discover} <ArrowDownRight size={15} /></a>
-              </div>
-              <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-4 sm:flex sm:flex-wrap sm:gap-6">
-                {heroFeatures.map(({ icon: Icon, en, ar }) => (
-                  <div key={en} className="flex items-center gap-2.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white/60">
-                    <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#22d3ee]/50 text-[#22d3ee]"><Icon size={12} strokeWidth={1.75} /></span>
-                    {isArabic ? ar : en}
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-          <div className="mt-14 flex flex-col gap-3 border-t border-white/20 pt-5 text-[10px] uppercase tracking-[0.17em] text-white/45 sm:flex-row sm:items-end sm:justify-between">
-            <span>{copy.country}</span><span className="hidden sm:block">{heroSubtitle}</span><span className="flex items-center gap-2">{copy.scroll} <ArrowDownRight size={13} /></span>
-          </div>
-        </div>
-      </section>
+      <div id="top">
+        <HeroCarousel slides={heroSlides} locale={locale} isArabic={isArabic} />
+      </div>
 
       <section className="border-b border-white/10 bg-[#0d1113] px-6 py-5 lg:px-12">
         <div className="mx-auto grid max-w-[1440px] grid-cols-2 gap-5 text-[10px] uppercase tracking-[0.16em] text-white/55 sm:grid-cols-4">

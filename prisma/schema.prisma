@@ -67,24 +67,24 @@ enum InventoryAdjustmentType {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  email         String         @unique
-  passwordHash  String?
-  name          String?
-  phone         String?
-  role          Role           @default(CUSTOMER)
-  locale        String         @default("en")
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  addresses     Address[]
-  carts         Cart[]
-  wishlist      Wishlist?
-  orders        Order[]
-  reviews       Review[]
-  notifications Notification[]
-  accounts      Account[]
-  sessions      Session[]
-  chatSessions  ChatSession[]
+  id             String          @id @default(cuid())
+  email          String          @unique
+  passwordHash   String?
+  name           String?
+  phone          String?
+  role           Role            @default(CUSTOMER)
+  locale         String          @default("en")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  addresses      Address[]
+  carts          Cart[]
+  wishlist       Wishlist?
+  orders         Order[]
+  reviews        Review[]
+  notifications  Notification[]
+  accounts       Account[]
+  sessions       Session[]
+  chatSessions   ChatSession[]
   supportTickets SupportTicket[]
 }
 
@@ -161,6 +161,7 @@ model Product {
   orderItems     OrderItem[]
   reviews        Review[]
   promotions     PromotionProduct[]
+  heroCampaigns  HeroCampaign[]
   useCases       String[]               @default([])
   tags           String[]               @default([])
   createdAt      DateTime               @default(now())
@@ -490,6 +491,34 @@ model HomepageSection {
   updatedAt DateTime @updatedAt
 }
 
+model HeroCampaign {
+  id              String    @id @default(cuid())
+  title           String
+  titleAr         String
+  description     String
+  descriptionAr   String
+  desktopVideo    String?
+  mobileVideo     String?
+  posterImage     String
+  ctaText         String
+  ctaTextAr       String
+  ctaLink         String
+  secondaryText   String?
+  secondaryTextAr String?
+  secondaryLink   String?
+  features        Json?
+  productId       String?
+  product         Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  sortOrder       Int       @default(0)
+  isActive        Boolean   @default(true)
+  startDate       DateTime?
+  endDate         DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
 model BlogPost {
   id            String            @id @default(cuid())
   slug          String            @unique
@@ -639,14 +668,14 @@ model ChatMessage {
 }
 
 model KnowledgeArticle {
-  id           String                         @id @default(cuid())
-  slug         String                         @unique
+  id           String                        @id @default(cuid())
+  slug         String                        @unique
   category     String
-  priority     Int                            @default(0)
-  published    Boolean                        @default(true)
+  priority     Int                           @default(0)
+  published    Boolean                       @default(true)
   translations KnowledgeArticleTranslation[]
-  createdAt    DateTime                       @default(now())
-  updatedAt    DateTime                       @updatedAt
+  createdAt    DateTime                      @default(now())
+  updatedAt    DateTime                      @updatedAt
 
   @@index([category, priority])
 }
