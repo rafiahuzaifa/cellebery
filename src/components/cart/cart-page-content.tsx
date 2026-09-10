@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AlertCircle, ArrowLeft, ArrowUpRight, Check, ChevronDown, CreditCard, LockKeyhole, Minus, Plus, ShieldCheck, Smartphone, Trash2, Truck } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SiteNav } from "@/components/site-nav";
 import { useCart } from "@/components/cart-provider";
 import { useLocale } from "@/components/locale-provider";
@@ -21,6 +22,7 @@ const SAUDI_CITIES = ["Riyadh", "Jeddah", "Dammam", "Khobar", "Makkah", "Madinah
 
 export function CartPageContent({ initialName, initialEmail, initialPhone }: { initialName: string; initialEmail: string; initialPhone: string }) {
   const { isArabic, locale } = useLocale();
+  const router = useRouter();
   const { items, itemCount, updateQuantity, removeItem, clearCart } = useCart();
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [promo, setPromo] = useState("");
@@ -61,7 +63,15 @@ export function CartPageContent({ initialName, initialEmail, initialPhone }: { i
       if (!response.ok) {
         throw new Error(data?.error ?? (isArabic ? "تعذر إتمام الطلب. حاول مرة أخرى." : "Could not complete the order. Please try again."));
       }
-      setConfirmation(data as CheckoutConfirmation);
+      const result = data as CheckoutConfirmation;
+      if (result.payment.checkoutUrl) {
+        // Card/Apple Pay: order is created but not yet paid — hand off to
+        // the hosted payment form instead of showing a confirmation.
+        clearCart();
+        router.push(result.payment.checkoutUrl);
+        return;
+      }
+      setConfirmation(result);
       clearCart();
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : (isArabic ? "حدث خطأ غير متوقع." : "Something went wrong."));
@@ -124,9 +134,6 @@ export function CartPageContent({ initialName, initialEmail, initialPhone }: { i
     card: "بطاقة بنكية",
     apple: "Apple Pay",
     cod: "الدفع عند الاستلام",
-    cardNumber: "رقم البطاقة",
-    expiry: "تاريخ الانتهاء",
-    cvc: "CVC",
     pay: "تأكيد ودفع الطلب",
     secure: "دفع آمن ومشفر",
     promo: "رمز الخصم",
@@ -159,9 +166,6 @@ export function CartPageContent({ initialName, initialEmail, initialPhone }: { i
     card: "Bank card",
     apple: "Apple Pay",
     cod: "Cash on delivery",
-    cardNumber: "Card number",
-    expiry: "Expiry date",
-    cvc: "CVC",
     pay: "Confirm and pay",
     secure: "Secure encrypted checkout",
     promo: "Discount code",
@@ -203,7 +207,7 @@ export function CartPageContent({ initialName, initialEmail, initialPhone }: { i
 
         <div className="h-fit border border-white/10 bg-[#101416] p-5 sm:p-7 lg:sticky lg:top-8"><h2 className="text-lg font-semibold">{labels.summary}</h2><div className="mt-6 flex gap-2"><input value={promo} onChange={(event) => { setPromo(event.target.value); setPromoApplied(false); setPromoError(null); }} placeholder={labels.promo} className="min-w-0 flex-1 border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /><button onClick={applyPromo} disabled={checkingPromo || !promo.trim()} className="border border-white/15 px-4 text-[10px] font-bold uppercase tracking-[0.12em] text-[#22d3ee] disabled:cursor-not-allowed disabled:opacity-50">{checkingPromo ? (isArabic ? "جارٍ التحقق..." : "Checking...") : promoApplied ? labels.applied : labels.apply}</button></div>{promoError && <p className="mt-2 text-[11px] text-red-300">{promoError}</p>}<div className="mt-6 space-y-3 border-t border-white/10 pt-5 text-xs text-white/55"><div className="flex justify-between"><span>{labels.subtotal}</span><span>SAR {subtotal}</span></div><div className="flex justify-between"><span>{labels.shipping}</span><span>{shipping === 0 ? labels.free : `SAR ${shipping}`}</span></div>{discount > 0 && <div className="flex justify-between text-[#22d3ee]"><span>Discount</span><span>- SAR {discount}</span></div>}<div className="flex justify-between"><span>{labels.vat}</span><span>SAR {vat}</span></div><div className="flex justify-between border-t border-white/10 pt-4 text-base text-white"><span>{labels.total}</span><span>SAR {total}</span></div></div>
           <div className="mt-8 border-t border-white/10 pt-7"><p className="mb-4 text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">{labels.delivery}</p><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1"><input required value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder={labels.name} className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /><input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={labels.email} className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /><input required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={`${labels.phone} (+966)`} className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /><input required value={address} onChange={(e) => setAddress(e.target.value)} placeholder={labels.address} className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee] sm:col-span-2 lg:col-span-1" /><div className="relative"><select required value={city} onChange={(e) => setCity(e.target.value)} className="w-full appearance-none border border-white/15 bg-[#101416] px-3 py-3 text-xs text-white/60 outline-none focus:border-[#22d3ee]"><option value="">{labels.city}</option>{SAUDI_CITIES.map((option) => <option key={option} value={option}>{option}</option>)}</select><ChevronDown size={14} className="pointer-events-none absolute right-3 top-3.5 text-white/40" /></div></div></div>
-          <div className="mt-8 border-t border-white/10 pt-7"><p className="mb-4 text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">{labels.payment}</p><div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1"><button onClick={() => setPaymentMethod("card")} className={`flex items-center gap-3 border px-3 py-3 text-left text-xs transition ${paymentMethod === "card" ? "border-[#22d3ee] bg-[#22d3ee]/10 text-white" : "border-white/15 text-white/50"}`}><CreditCard size={16} /> {labels.card}</button><button onClick={() => setPaymentMethod("apple")} className={`flex items-center gap-3 border px-3 py-3 text-left text-xs transition ${paymentMethod === "apple" ? "border-[#22d3ee] bg-[#22d3ee]/10 text-white" : "border-white/15 text-white/50"}`}><Smartphone size={16} /> {labels.apple}</button><button onClick={() => setPaymentMethod("cod")} className={`flex items-center gap-3 border px-3 py-3 text-left text-xs transition ${paymentMethod === "cod" ? "border-[#22d3ee] bg-[#22d3ee]/10 text-white" : "border-white/15 text-white/50"}`}><Truck size={16} /> {labels.cod}</button></div>{paymentMethod === "card" && <div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-1"><input placeholder={labels.cardNumber} inputMode="numeric" className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee] sm:col-span-3 lg:col-span-1" /><input placeholder={labels.expiry} className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /><input placeholder={labels.cvc} className="border border-white/15 bg-transparent px-3 py-3 text-xs outline-none placeholder:text-white/30 focus:border-[#22d3ee]" /></div>}</div>
+          <div className="mt-8 border-t border-white/10 pt-7"><p className="mb-4 text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">{labels.payment}</p><div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1"><button onClick={() => setPaymentMethod("card")} className={`flex items-center gap-3 border px-3 py-3 text-left text-xs transition ${paymentMethod === "card" ? "border-[#22d3ee] bg-[#22d3ee]/10 text-white" : "border-white/15 text-white/50"}`}><CreditCard size={16} /> {labels.card}</button><button onClick={() => setPaymentMethod("apple")} className={`flex items-center gap-3 border px-3 py-3 text-left text-xs transition ${paymentMethod === "apple" ? "border-[#22d3ee] bg-[#22d3ee]/10 text-white" : "border-white/15 text-white/50"}`}><Smartphone size={16} /> {labels.apple}</button><button onClick={() => setPaymentMethod("cod")} className={`flex items-center gap-3 border px-3 py-3 text-left text-xs transition ${paymentMethod === "cod" ? "border-[#22d3ee] bg-[#22d3ee]/10 text-white" : "border-white/15 text-white/50"}`}><Truck size={16} /> {labels.cod}</button></div>{(paymentMethod === "card" || paymentMethod === "apple") && <p className="mt-3 text-[11px] leading-5 text-white/40">{isArabic ? "ستدخل بيانات الدفع بأمان في الخطوة التالية." : "You'll enter your payment details securely on the next step."}</p>}</div>
           {submitError && <p className="mt-6 flex items-center gap-2 border border-red-500/25 bg-red-500/10 px-3 py-2.5 text-xs text-red-300"><AlertCircle size={14} className="shrink-0" /> {submitError}</p>}
           <button onClick={submitOrder} disabled={!canSubmit || submitting} className="mt-8 flex w-full items-center justify-between bg-[#22d3ee] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.16em] text-[#080a0c] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">{submitting ? (isArabic ? "جارٍ المعالجة..." : "Processing...") : labels.pay}<ArrowUpRight size={16} /></button><p className="mt-4 flex items-center justify-center gap-2 text-center text-[10px] uppercase tracking-[0.12em] text-white/35"><LockKeyhole size={12} /> {labels.secure}</p>
         </div>

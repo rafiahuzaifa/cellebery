@@ -1,4 +1,6 @@
-export type PaymentProviderName = "mock" | "mada" | "stripe" | "tap" | "other";
+import { MoyasarPaymentProvider } from "@/lib/payments/providers/moyasar";
+
+export type PaymentProviderName = "mock" | "cod" | "moyasar" | "stripe" | "tap" | "other";
 
 export type PaymentIntent = {
   provider: PaymentProviderName;
@@ -44,9 +46,10 @@ export interface PaymentProvider {
 }
 
 /**
- * Real Saudi gateways (Mada via Moyasar/Tap, etc.) plug in here later by
- * implementing PaymentProvider and registering below — checkout code never
- * changes, only PAYMENT_PROVIDER in the environment.
+ * Real gateways plug in here by implementing PaymentProvider and
+ * registering below — checkout code never changes, only PAYMENT_PROVIDER
+ * in the environment. Moyasar (Mada/cards/Apple Pay) is wired up below;
+ * others (Tap, Stripe) fall through to this unconfigured stub until built.
  */
 class UnconfiguredPaymentProvider implements PaymentProvider {
   constructor(public name: PaymentProviderName) {}
@@ -113,7 +116,12 @@ export class MockPaymentProvider implements PaymentProvider {
 function resolvePaymentProvider(): PaymentProvider {
   const name = (process.env.PAYMENT_PROVIDER ?? "mock") as PaymentProviderName;
   if (name === "mock") return new MockPaymentProvider();
-  // mada / tap / stripe / other: real adapters are not implemented yet.
+  if (name === "moyasar") {
+    const secretKey = process.env.MOYASAR_SECRET_KEY;
+    if (secretKey) return new MoyasarPaymentProvider(secretKey);
+    return new UnconfiguredPaymentProvider(name);
+  }
+  // tap / stripe / other: real adapters are not implemented yet.
   // Swapping PAYMENT_PROVIDER back to "mock" keeps development unblocked.
   return new UnconfiguredPaymentProvider(name);
 }

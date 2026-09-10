@@ -71,6 +71,9 @@ export function OrdersTable({ orders }: { orders: AdminOrder[] }) {
             <tr key={order.id}>
               <td className="px-4 py-3 font-medium text-white/85">
                 <Link href={`/admin/orders/${order.id}`} className="hover:text-[#22d3ee]">{order.number}</Link>
+                {order.status === "PENDING" && order.paymentStatus === "PENDING" && (
+                  <span className="ml-2 rounded-full bg-amber-500/10 px-2 py-0.5 text-[9px] font-semibold uppercase text-amber-300">{isArabic ? "بانتظار الدفع" : "Awaiting payment"}</span>
+                )}
               </td>
               <td className="px-4 py-3 text-white/60">{order.customerName}</td>
               <td className="px-4 py-3 text-white/60">{order.city || "—"}</td>

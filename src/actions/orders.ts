@@ -12,6 +12,7 @@ export type AdminOrder = {
   city: string;
   total: number;
   status: OrderStatus;
+  paymentStatus: string | null;
   createdAt: string;
   itemCount: number;
 };
@@ -32,6 +33,7 @@ const ORDER_LIST_INCLUDE = {
   address: true,
   items: true,
   user: true,
+  payment: true,
 } satisfies import("@prisma/client").Prisma.OrderInclude;
 
 type OrderWithRelations = import("@prisma/client").Prisma.OrderGetPayload<{ include: typeof ORDER_LIST_INCLUDE }>;
@@ -45,6 +47,7 @@ function toAdminOrder(order: OrderWithRelations): AdminOrder {
     city: order.address?.city ?? "",
     total: Number(order.total),
     status: order.status,
+    paymentStatus: order.payment?.status ?? null,
     createdAt: order.createdAt.toISOString(),
     itemCount: order.items.reduce((sum, item) => sum + item.quantity, 0),
   };

@@ -110,31 +110,47 @@ export async function POST(request: Request) {
 
   const orderNumber = `CEL-${Date.now().toString(36).toUpperCase()}`;
 
-  const intent = await paymentProvider.createIntent({
-    orderId: orderNumber,
-    amount: total,
-    currency: "SAR",
-  });
+  // Cash on delivery never touches a payment gateway at all — skip it
+  // entirely so a misconfigured PAYMENT_PROVIDER can't break COD checkout.
+  let intent;
+  if (paymentMethod === "cod") {
+    intent = { provider: "cod" as const, orderId: orderNumber, amount: total, currency: "SAR", status: "pending" as const };
+  } else {
+    try {
+      intent = await paymentProvider.createIntent({ orderId: orderNumber, amount: total, currency: "SAR" });
+    } catch {
+      return NextResponse.json({ error: "This payment method isn't available right now. Please choose Cash on Delivery or try again shortly." }, { status: 503 });
+    }
+  }
 
-  // Cash on delivery has no gateway to verify against — the order is
-  // confirmed and payment is collected on delivery. Everything else goes
-  // through the configured provider's verification step immediately (the
-  // mock provider always approves; a real gateway would report its actual
-  // outcome here).
+  // Cash on delivery and the mock provider settle instantly (no real
+  // gateway round-trip needed), so the order is created already
+  // confirmed/paid, stock is decremented immediately, and the customer sees
+  // a confirmation right away. A real gateway (card/Apple Pay via Moyasar)
+  // can't settle inside this single request — the customer still has to
+  // complete the card form or 3D Secure — so that path creates the order as
+  // PENDING with no stock decremented yet and hands the client a page to
+  // finish payment on; the order only becomes CONFIRMED once
+  // finalizeOrderPayment() verifies the real payment server-side (see the
+  // callback and webhook routes under /api/payments/moyasar).
+  const instant = paymentMethod === "cod" || paymentProvider.name === "mock";
+
   let paymentStatus: "PENDING" | "PAID" | "FAILED" = "PENDING";
   let orderStatus: "PENDING" | "CONFIRMED" = "PENDING";
   let paymentReference = intent.paymentReference ?? null;
 
-  if (paymentMethod === "cod") {
-    orderStatus = "CONFIRMED";
-  } else {
-    const verification = await paymentProvider.verify({ provider: intent.provider, orderId: orderNumber, reference: intent.paymentReference });
-    paymentReference = verification.reference ?? paymentReference;
-    if (verification.status === "paid") {
-      paymentStatus = "PAID";
+  if (instant) {
+    if (paymentMethod === "cod") {
       orderStatus = "CONFIRMED";
-    } else if (verification.status === "failed") {
-      return NextResponse.json({ error: "Payment failed. Please try again or choose a different payment method." }, { status: 402 });
+    } else {
+      const verification = await paymentProvider.verify({ provider: intent.provider, orderId: orderNumber, reference: intent.paymentReference });
+      paymentReference = verification.reference ?? paymentReference;
+      if (verification.status === "paid") {
+        paymentStatus = "PAID";
+        orderStatus = "CONFIRMED";
+      } else if (verification.status === "failed") {
+        return NextResponse.json({ error: "Payment failed. Please try again or choose a different payment method." }, { status: 402 });
+      }
     }
   }
 
@@ -176,35 +192,41 @@ export async function POST(request: Request) {
       },
     });
 
-    for (const item of lineItems) {
-      await tx.inventory.updateMany({ where: { productId: item.productId }, data: { stock: { decrement: item.quantity } } });
-    }
-
-    if (couponId) {
-      await tx.coupon.update({ where: { id: couponId }, data: { usageCount: { increment: 1 } } });
+    // Card/Apple Pay orders aren't paid for yet at this point — stock is
+    // only committed once finalizeOrderPayment() confirms real payment, so
+    // an abandoned card form never falsely reserves inventory.
+    if (instant) {
+      for (const item of lineItems) {
+        await tx.inventory.updateMany({ where: { productId: item.productId }, data: { stock: { decrement: item.quantity } } });
+      }
+      if (couponId) {
+        await tx.coupon.update({ where: { id: couponId }, data: { usageCount: { increment: 1 } } });
+      }
     }
 
     return createdOrder;
   });
 
-  // Best-effort — checkout must succeed even if the email provider is unconfigured
-  // or the send fails for any reason.
-  try {
-    await emailProvider.sendOrderConfirmation({
-      to: customer.email,
-      customerName: customer.name,
-      orderNumber: order.number,
-      locale,
-      items: lineItems.map((item) => ({ name: item.name, quantity: item.quantity, unitPrice: item.unitPrice })),
-      subtotal,
-      shipping,
-      discount,
-      vat,
-      total,
-      currency: "SAR",
-    });
-  } catch {
-    // swallow — never fail checkout over an email problem
+  if (instant) {
+    // Best-effort — checkout must succeed even if the email provider is unconfigured
+    // or the send fails for any reason.
+    try {
+      await emailProvider.sendOrderConfirmation({
+        to: customer.email,
+        customerName: customer.name,
+        orderNumber: order.number,
+        locale,
+        items: lineItems.map((item) => ({ name: item.name, quantity: item.quantity, unitPrice: item.unitPrice })),
+        subtotal,
+        shipping,
+        discount,
+        vat,
+        total,
+        currency: "SAR",
+      });
+    } catch {
+      // swallow — never fail checkout over an email problem
+    }
   }
 
   return NextResponse.json({
@@ -219,6 +241,8 @@ export async function POST(request: Request) {
     discount,
     total,
     currency: "SAR",
-    payment: { ...intent, status: paymentStatus === "PAID" ? "paid" : "pending" },
+    payment: instant
+      ? { provider: intent.provider, status: paymentStatus === "PAID" ? "paid" : "pending" }
+      : { provider: intent.provider, status: "pending", checkoutUrl: `/${locale}/checkout/pay/${order.number}` },
   });
 }
