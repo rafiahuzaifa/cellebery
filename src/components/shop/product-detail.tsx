@@ -72,8 +72,8 @@ export function ProductDetail({ product, locale, reviews = [] }: { product: Admi
       <header className="border-b border-white/10"><SiteNav /></header>
       <section className="mx-auto grid max-w-[1440px] gap-12 px-6 py-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-24 lg:px-12 lg:py-20">
         <div className="relative aspect-square overflow-hidden border border-white/10 bg-[#151a1c] shadow-2xl shadow-cyan-950/20">
-          <div className="absolute inset-0 bg-cover bg-center opacity-90 transition duration-700 hover:scale-105" style={{ backgroundImage: `linear-gradient(135deg, rgba(8,10,12,.02), rgba(8,10,12,.48)), url(${product.image})` }} />
-          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#080a0c]/80 to-transparent" />
+          <div className="product-media absolute inset-0 transition duration-700 hover:scale-105" style={{ backgroundImage: `url(${product.image})` }} />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-[#080a0c]/70 to-transparent" />
           <span className="absolute bottom-6 left-6 border border-[#22d3ee]/40 bg-[#080a0c]/70 px-3 py-2 text-[9px] uppercase tracking-[0.16em] text-[#22d3ee] backdrop-blur-sm">{labels.designed}</span>
           {product.salePrice && <span className="absolute right-6 top-6 rounded-full bg-[#22d3ee] px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[#080a0c]">{Math.round(100 - (product.salePrice / product.price) * 100)}% {isArabic ? "خصم" : "OFF"}</span>}
         </div>

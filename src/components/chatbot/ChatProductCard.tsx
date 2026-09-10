@@ -20,7 +20,7 @@ export function ChatProductCard({
   return (
     <div className="w-64 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-[#101416]">
       <Link href={`/${locale}/shop/${product.slug}`} className="block" onClick={() => onView?.(product)}>
-        <div className="aspect-square bg-[#151a1c] bg-cover bg-center" style={{ backgroundImage: `url(${product.image})` }} />
+        <div className="aspect-square bg-[#151a1c] bg-contain bg-center bg-no-repeat" style={{ backgroundImage: `url(${product.image})` }} />
       </Link>
       <div className="p-3">
         <p className="truncate text-sm font-semibold text-white/90">{product.name}</p>

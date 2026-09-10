@@ -185,7 +185,8 @@ export function HomeContent({ products: allProducts, sections }: { products: Adm
             <div className="grid gap-4 md:grid-cols-3">
               {categories.map((category) => (
                 <motion.a whileHover={{ y: -5 }} transition={{ duration: 0.25 }} href={`/${locale}/shop?category=${category.filterValue}`} key={category.label} className="group relative aspect-[0.82] overflow-hidden bg-[#151a1c] p-6 sm:p-8">
-                  <div className="full-media absolute inset-0 opacity-65 transition duration-700 group-hover:opacity-90" style={{ backgroundImage: `linear-gradient(180deg, rgba(8,10,12,.12), #080a0c 95%), url(${category.image})` }} />
+                  <div className="product-media absolute inset-0 opacity-80 transition duration-700 group-hover:opacity-100" style={{ backgroundImage: `url(${category.image})` }} />
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#080a0c] to-transparent" />
                   <div className="absolute inset-0 border border-white/10 transition group-hover:border-[#22d3ee]/60" />
                   <div className="relative flex h-full flex-col justify-between">
                     <span className="flex size-10 items-center justify-center rounded-full border border-white/30 bg-[#080a0c]/50 text-[#22d3ee] backdrop-blur-sm"><category.icon size={16} strokeWidth={1.5} /></span>
@@ -225,7 +226,7 @@ export function HomeContent({ products: allProducts, sections }: { products: Adm
                 </div>
               </div>
               <div className="relative aspect-[1.1] overflow-hidden bg-[#171d1e]">
-                <div className="full-media absolute inset-0 opacity-90" style={{ backgroundImage: `url(${featuredProduct.image})` }} />
+                <div className="product-media absolute inset-0 opacity-95" style={{ backgroundImage: `url(${featuredProduct.image})` }} />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#080a0c]/70 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 flex items-center gap-2 rounded-full border border-white/20 bg-[#080a0c]/75 px-3 py-2 backdrop-blur-md"><RatingStars rating={featuredProduct.rating} /><span className="text-[10px] text-white/55">({featuredProduct.reviewCount})</span></div>
                 <div className="absolute right-6 top-6 flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-[9px] font-bold uppercase tracking-[0.2em] text-white/75 backdrop-blur-sm"><span>01</span><span className="text-white/40">/</span><span>{ft.name}</span></div>
@@ -310,7 +311,8 @@ export function HomeContent({ products: allProducts, sections }: { products: Adm
                   return (
                     <article key={product.id} className="group">
                       <div className="relative aspect-[0.92] overflow-hidden bg-[#151a1c]">
-                        <div className="full-media absolute inset-0 opacity-85 transition duration-700 group-hover:opacity-100" style={{ backgroundImage: `url(${product.image})` }} />
+                        <div className="product-media absolute inset-0 opacity-90 transition duration-700 group-hover:opacity-100 group-hover:scale-105" style={{ backgroundImage: `url(${product.image})` }} />
+                        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#080a0c]/55 to-transparent" />
                         {product.salePrice && <span className="absolute left-4 top-4 rounded-full bg-[#22d3ee] px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-[#080a0c]">{Math.round(100 - (product.salePrice / product.price) * 100)}% {copy.off}</span>}
                         <button aria-label={`${saved ? "Remove" : "Add"} ${pt.name} ${saved ? "from" : "to"} wishlist`} onClick={() => toggleItem({ id: product.id, name: pt.name, price, image: product.image })} className={`absolute right-4 top-4 grid size-9 place-items-center rounded-full border backdrop-blur-sm transition ${saved ? "border-[#22d3ee] bg-[#22d3ee] text-[#080a0c]" : "border-white/25 bg-[#080a0c]/40 text-white/75 hover:border-[#22d3ee] hover:text-[#22d3ee]"}`}><Heart size={14} fill={saved ? "currentColor" : "none"} strokeWidth={1.5} /></button>
                         <button aria-label={`${copy.addToCart}: ${pt.name}`} onClick={() => addItem({ id: product.id, name: pt.name, price, image: product.image })} className="absolute bottom-4 left-4 right-4 z-10 flex items-center justify-center gap-2 bg-white px-4 py-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[#080a0c] transition duration-300 sm:translate-y-3 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"><ShoppingBag size={13} /> {copy.addToCart}</button>

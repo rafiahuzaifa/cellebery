@@ -66,7 +66,7 @@ export default function WishlistPage() {
             {items.map((item) => (
               <article key={item.id} className="group border border-white/10 bg-[#101416]">
                 <div className="relative aspect-square overflow-hidden bg-[#151a1c]">
-                  <div className="full-media absolute inset-0 opacity-80 transition duration-700 group-hover:opacity-100" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined }} />
+                  <div className="product-media absolute inset-0 opacity-90 transition duration-700 group-hover:opacity-100" style={{ backgroundImage: item.image ? `url(${item.image})` : undefined }} />
                   <button aria-label={`${labels.remove} ${item.name}`} onClick={() => removeItem(item.id)} className="absolute right-3 top-3 grid size-9 place-items-center rounded-full border border-white/25 bg-[#080a0c]/60 text-white/75 backdrop-blur-sm transition hover:border-red-300 hover:text-red-300"><Trash2 size={14} strokeWidth={1.5} /></button>
                 </div>
                 <div className="flex items-center justify-between gap-4 p-5">
