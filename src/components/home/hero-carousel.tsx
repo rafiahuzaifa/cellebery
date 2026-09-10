@@ -21,8 +21,19 @@ function useIsMobile() {
   return useSyncExternalStore(subscribeIsMobile, getIsMobileSnapshot, () => false);
 }
 
+// If the video's own aspect ratio is close to the hero's, cropping it to
+// fill the frame (cover) looks natural. But several of this site's source
+// clips are portrait (shot for mobile/social), and cover-fitting a portrait
+// video into a wide landscape hero forces a massive blow-up with almost all
+// of the frame cropped away — the "extremely zoomed in" look. Past this
+// mismatch threshold, show the full frame instead (contain) over a blurred
+// fill of the poster so there's no hard letterbox bars.
+const COVER_MISMATCH_THRESHOLD = 1.6;
+
 function SlideVisual({ slide, active, reducedMotion, isMobile }: { slide: PublicHeroSlide; active: boolean; reducedMotion: boolean; isMobile: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [fitMode, setFitMode] = useState<"cover" | "contain">("cover");
   const src = (isMobile && slide.mobileVideo) || slide.desktopVideo;
 
   useEffect(() => {
@@ -32,15 +43,38 @@ function SlideVisual({ slide, active, reducedMotion, isMobile }: { slide: Public
     else video.pause();
   }, [active]);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    const container = containerRef.current;
+    if (!video || !container) return;
+    const checkFit = () => {
+      if (!video.videoWidth || !video.videoHeight || !container.clientWidth || !container.clientHeight) return;
+      const videoAspect = video.videoWidth / video.videoHeight;
+      const containerAspect = container.clientWidth / container.clientHeight;
+      const mismatch = Math.max(videoAspect / containerAspect, containerAspect / videoAspect);
+      setFitMode(mismatch > COVER_MISMATCH_THRESHOLD ? "contain" : "cover");
+    };
+    checkFit();
+    video.addEventListener("loadedmetadata", checkFit);
+    window.addEventListener("resize", checkFit);
+    return () => {
+      video.removeEventListener("loadedmetadata", checkFit);
+      window.removeEventListener("resize", checkFit);
+    };
+  }, [src]);
+
   return (
-    <div className="absolute inset-0">
+    <div ref={containerRef} className="absolute inset-0 bg-[#05070a]">
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${slide.posterImage})` }} />
+      {src && !reducedMotion && fitMode === "contain" && (
+        <div className="absolute inset-0 scale-110 bg-cover bg-center opacity-70 blur-2xl" style={{ backgroundImage: `url(${slide.posterImage})` }} />
+      )}
       {src && !reducedMotion && (
         <video
           ref={videoRef}
           key={src}
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover"
+          className={`absolute inset-0 h-full w-full ${fitMode === "cover" ? "object-cover" : "object-contain"}`}
           muted
           loop
           playsInline
