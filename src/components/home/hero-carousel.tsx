@@ -21,6 +21,15 @@ function useIsMobile() {
   return useSyncExternalStore(subscribeIsMobile, getIsMobileSnapshot, () => false);
 }
 
+// Server and the first client render can't know the real viewport, so they
+// both render as "not yet mounted" (no mismatch). Once React checks this
+// against the real client snapshot right after hydration, it flips —
+// giving a reliable "safe to make client-only decisions now" signal
+// without a manual setState-in-effect.
+function useHasMounted() {
+  return useSyncExternalStore(() => () => {}, () => true, () => false);
+}
+
 // If the video's own aspect ratio is close to the hero's, cropping it to
 // fill the frame (cover) looks natural. But several of this site's source
 // clips are portrait (shot for mobile/social), and cover-fitting a portrait
@@ -34,7 +43,21 @@ function SlideVisual({ slide, active, reducedMotion, isMobile }: { slide: Public
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [fitMode, setFitMode] = useState<"cover" | "contain">("cover");
-  const src = (isMobile && slide.mobileVideo) || slide.desktopVideo;
+  // The server has no way to know the real viewport, so isMobile always
+  // starts false there — meaning a naive `src` pick would put the (heavy,
+  // wrong-aspect) desktop video into the initial HTML on a phone. Browsers'
+  // HTML preload scanners start fetching <video><source> as soon as they're
+  // parsed, before React hydration gets a chance to correct it — so the
+  // fix isn't just picking the right src, it's not rendering any <video>
+  // tag at all until we're certain of the real viewport.
+  const readyForVideo = useHasMounted();
+
+  // No OR-fallback to the desktop clip on mobile: a wrong-aspect,
+  // desktop-sized video is worse for mobile data/load time than just
+  // showing the (properly portrait-cropped) poster. Video only plays on
+  // mobile when a dedicated mobileVideo is actually set for that slide.
+  const src = readyForVideo ? (isMobile ? slide.mobileVideo : slide.desktopVideo) : null;
+  const posterSrc = (isMobile && slide.posterImageMobile) || slide.posterImage;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -65,9 +88,9 @@ function SlideVisual({ slide, active, reducedMotion, isMobile }: { slide: Public
 
   return (
     <div ref={containerRef} className="absolute inset-0 bg-[#05070a]">
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${slide.posterImage})` }} />
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${posterSrc})` }} />
       {src && !reducedMotion && fitMode === "contain" && (
-        <div className="absolute inset-0 scale-110 bg-cover bg-center opacity-70 blur-2xl" style={{ backgroundImage: `url(${slide.posterImage})` }} />
+        <div className="absolute inset-0 scale-110 bg-cover bg-center opacity-70 blur-2xl" style={{ backgroundImage: `url(${posterSrc})` }} />
       )}
       {src && !reducedMotion && (
         <video
@@ -79,7 +102,7 @@ function SlideVisual({ slide, active, reducedMotion, isMobile }: { slide: Public
           loop
           playsInline
           preload={active ? "auto" : "none"}
-          poster={slide.posterImage}
+          poster={posterSrc}
         >
           <source src={src} type="video/mp4" />
         </video>

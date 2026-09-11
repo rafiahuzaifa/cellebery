@@ -492,29 +492,30 @@ model HomepageSection {
 }
 
 model HeroCampaign {
-  id              String    @id @default(cuid())
-  title           String
-  titleAr         String
-  description     String
-  descriptionAr   String
-  desktopVideo    String?
-  mobileVideo     String?
-  posterImage     String
-  ctaText         String
-  ctaTextAr       String
-  ctaLink         String
-  secondaryText   String?
-  secondaryTextAr String?
-  secondaryLink   String?
-  features        Json?
-  productId       String?
-  product         Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
-  sortOrder       Int       @default(0)
-  isActive        Boolean   @default(true)
-  startDate       DateTime?
-  endDate         DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                String    @id @default(cuid())
+  title             String
+  titleAr           String
+  description       String
+  descriptionAr     String
+  desktopVideo      String?
+  mobileVideo       String?
+  posterImage       String
+  posterImageMobile String?
+  ctaText           String
+  ctaTextAr         String
+  ctaLink           String
+  secondaryText     String?
+  secondaryTextAr   String?
+  secondaryLink     String?
+  features          Json?
+  productId         String?
+  product           Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  sortOrder         Int       @default(0)
+  isActive          Boolean   @default(true)
+  startDate         DateTime?
+  endDate           DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   @@index([isActive, sortOrder])
 }

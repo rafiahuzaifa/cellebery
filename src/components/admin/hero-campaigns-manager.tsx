@@ -16,7 +16,7 @@ import {
 function blankCampaign(nextSortOrder: number): AdminHeroCampaign {
   return {
     id: "", title: "", titleAr: "", description: "", descriptionAr: "",
-    desktopVideo: "", mobileVideo: "", posterImage: "",
+    desktopVideo: "", mobileVideo: "", posterImage: "", posterImageMobile: "",
     ctaText: "", ctaTextAr: "", ctaLink: "/shop",
     secondaryText: "", secondaryTextAr: "", secondaryLink: "",
     features: [], productId: "", sortOrder: nextSortOrder, isActive: true, startDate: "", endDate: "",
@@ -104,10 +104,13 @@ export function HeroCampaignsManager({ campaigns, productOptions }: { campaigns:
               <Field label="الوصف (AR)"><textarea dir="rtl" value={editing.descriptionAr} onChange={(e) => setEditing({ ...editing, descriptionAr: e.target.value })} rows={2} className="admin-input resize-none" /></Field>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Desktop video URL (optional)"><input value={editing.desktopVideo} onChange={(e) => setEditing({ ...editing, desktopVideo: e.target.value })} className="admin-input font-mono text-xs" placeholder="/product-video.mp4" /></Field>
               <Field label="Mobile video URL (optional)"><input value={editing.mobileVideo} onChange={(e) => setEditing({ ...editing, mobileVideo: e.target.value })} className="admin-input font-mono text-xs" placeholder="/product-video-mobile.mp4" /></Field>
-              <Field label="Poster image (required — fallback)"><input value={editing.posterImage} onChange={(e) => setEditing({ ...editing, posterImage: e.target.value })} className="admin-input font-mono text-xs" placeholder="/products/x7-pro-hero.jpg" /></Field>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Poster image — desktop (required, landscape ~2:1)"><input value={editing.posterImage} onChange={(e) => setEditing({ ...editing, posterImage: e.target.value })} className="admin-input font-mono text-xs" placeholder="/products/x7-pro-hero-wide.jpg" /></Field>
+              <Field label="Poster image — mobile (optional, portrait ~9:16 — falls back to the desktop one if empty, which will look cropped/zoomed on phones)"><input value={editing.posterImageMobile} onChange={(e) => setEditing({ ...editing, posterImageMobile: e.target.value })} className="admin-input font-mono text-xs" placeholder="/products/x7-pro-hero.jpg" /></Field>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">

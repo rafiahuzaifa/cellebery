@@ -14,6 +14,7 @@ export type AdminHeroCampaign = {
   desktopVideo: string;
   mobileVideo: string;
   posterImage: string;
+  posterImageMobile: string;
   ctaText: string;
   ctaTextAr: string;
   ctaLink: string;
@@ -32,7 +33,7 @@ export type HeroProductOption = { id: string; label: string };
 
 function toAdminHeroCampaign(row: {
   id: string; title: string; titleAr: string; description: string; descriptionAr: string;
-  desktopVideo: string | null; mobileVideo: string | null; posterImage: string;
+  desktopVideo: string | null; mobileVideo: string | null; posterImage: string; posterImageMobile: string | null;
   ctaText: string; ctaTextAr: string; ctaLink: string;
   secondaryText: string | null; secondaryTextAr: string | null; secondaryLink: string | null;
   features: unknown; productId: string | null; sortOrder: number; isActive: boolean;
@@ -47,6 +48,7 @@ function toAdminHeroCampaign(row: {
     desktopVideo: row.desktopVideo ?? "",
     mobileVideo: row.mobileVideo ?? "",
     posterImage: row.posterImage,
+    posterImageMobile: row.posterImageMobile ?? "",
     ctaText: row.ctaText,
     ctaTextAr: row.ctaTextAr,
     ctaLink: row.ctaLink,
@@ -93,6 +95,7 @@ export async function upsertHeroCampaignAction(input: AdminHeroCampaign): Promis
     desktopVideo: input.desktopVideo.trim() || null,
     mobileVideo: input.mobileVideo.trim() || null,
     posterImage: input.posterImage.trim(),
+    posterImageMobile: input.posterImageMobile.trim() || null,
     ctaText: input.ctaText.trim(),
     ctaTextAr: input.ctaTextAr.trim(),
     ctaLink: input.ctaLink.trim(),
@@ -152,6 +155,7 @@ export type PublicHeroSlide = {
   desktopVideo: string | null;
   mobileVideo: string | null;
   posterImage: string;
+  posterImageMobile: string | null;
   ctaText: string;
   ctaTextAr: string;
   ctaLink: string;
@@ -180,6 +184,7 @@ export async function getPublicHeroCampaigns(): Promise<PublicHeroSlide[]> {
     desktopVideo: row.desktopVideo,
     mobileVideo: row.mobileVideo,
     posterImage: row.posterImage,
+    posterImageMobile: row.posterImageMobile,
     ctaText: row.ctaText,
     ctaTextAr: row.ctaTextAr,
     ctaLink: row.ctaLink,
