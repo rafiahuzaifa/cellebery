@@ -39,6 +39,10 @@ function useHasMounted() {
 // fill of the poster so there's no hard letterbox bars.
 const COVER_MISMATCH_THRESHOLD = 1.6;
 
+// Target minimum duration (seconds) for one loop of a hero video, achieved
+// by slowing playback down when the clip itself is shorter than this.
+const MIN_LOOP_SECONDS = 3.5;
+
 function SlideVisual({ slide, active, reducedMotion, isMobile }: { slide: PublicHeroSlide; active: boolean; reducedMotion: boolean; isMobile: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -87,6 +91,15 @@ function SlideVisual({ slide, active, reducedMotion, isMobile }: { slide: Public
       const containerAspect = container.clientWidth / container.clientHeight;
       const mismatch = Math.max(videoAspect / containerAspect, containerAspect / videoAspect);
       setFitMode(mismatch > COVER_MISMATCH_THRESHOLD ? "contain" : "cover");
+      // The trimmed hero clips are short (kept to just their clean,
+      // caption/overlay-free window) — played at 1x they loop so fast
+      // within a single slide's view that it reads as stuttering/
+      // restarting rather than a video actually playing. Slow short clips
+      // down so each loop takes a more natural, cinematic few seconds;
+      // never speed a clip up past its own real pace.
+      if (video.duration && Number.isFinite(video.duration)) {
+        video.playbackRate = Math.min(1, video.duration / MIN_LOOP_SECONDS);
+      }
     };
     checkFit();
     video.addEventListener("loadedmetadata", checkFit);
