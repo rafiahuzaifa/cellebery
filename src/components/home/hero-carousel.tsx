@@ -62,9 +62,20 @@ function SlideVisual({ slide, active, reducedMotion, isMobile }: { slide: Public
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    if (active) void video.play().catch(() => {});
-    else video.pause();
-  }, [active]);
+    if (active) {
+      // React sets .muted as a JS property but doesn't reliably reflect it
+      // as the actual "muted" HTML attribute — some browsers' autoplay
+      // policies check the attribute, silently blocking play() otherwise.
+      video.muted = true;
+      video.defaultMuted = true;
+      void video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+    // Re-run when src changes: the <video> remounts (key={src}) once
+    // readyForVideo flips true after mount, so this must fire again for
+    // the newly-created element, not just once on the initial (srcless) mount.
+  }, [active, src]);
 
   useEffect(() => {
     const video = videoRef.current;
