@@ -43,7 +43,7 @@ export function AccountAddresses({ addresses }: { addresses: CustomerAddress[] }
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#22d3ee]">{isArabic ? "حسابي" : "My Account"}</p>
           <h1 className="display-font mt-2 text-4xl font-semibold uppercase leading-[0.9]">{isArabic ? "العناوين" : "Addresses"}</h1>
         </div>
-        <button onClick={() => { setEditing(blankAddress()); setError(null); }} className="flex items-center gap-2 bg-[#22d3ee] px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[#080a0c] transition hover:bg-white">
+        <button onClick={() => { setEditing(blankAddress()); setError(null); }} className="flex items-center gap-2 rounded-full bg-[#22d3ee] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[#080a0c] transition hover:shadow-[0_0_20px_rgba(34,211,238,0.4)]">
           <Plus size={13} /> {isArabic ? "عنوان جديد" : "New address"}
         </button>
       </div>
@@ -86,7 +86,7 @@ export function AccountAddresses({ addresses }: { addresses: CustomerAddress[] }
             <label className="flex items-center gap-2 text-xs text-white/60"><input type="checkbox" checked={editing.isDefault} onChange={(e) => setEditing({ ...editing, isDefault: e.target.checked })} /> {isArabic ? "اجعله العنوان الافتراضي" : "Set as default address"}</label>
           </div>
           <div className="mt-5 flex gap-2">
-            <button onClick={save} disabled={isPending} className="flex items-center gap-2 bg-[#22d3ee] px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[#080a0c] transition hover:bg-white disabled:opacity-60"><Save size={13} /> {isPending ? "..." : (isArabic ? "حفظ" : "Save")}</button>
+            <button onClick={save} disabled={isPending} className="flex items-center gap-2 rounded-full bg-[#22d3ee] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[#080a0c] transition hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] disabled:opacity-60 disabled:shadow-none"><Save size={13} /> {isPending ? "..." : (isArabic ? "حفظ" : "Save")}</button>
             <button onClick={() => setEditing(null)} className="border border-white/15 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-white/60">{isArabic ? "إلغاء" : "Cancel"}</button>
           </div>
         </div>

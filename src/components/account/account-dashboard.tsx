@@ -41,7 +41,7 @@ export function AccountDashboard({ name, phone, recentOrders, locale }: { name: 
               <input name="phone" defaultValue={phone} className="w-full border border-white/15 bg-transparent px-3 py-2.5 text-sm outline-none focus:border-[#22d3ee]" />
             </label>
             {state?.error && <p className="flex items-center gap-2 border border-red-500/25 bg-red-500/10 px-3 py-2 text-xs text-red-300"><AlertCircle size={13} /> {state.error}</p>}
-            <button type="submit" disabled={pending} className="flex items-center gap-2 bg-[#22d3ee] px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[#080a0c] transition hover:bg-white disabled:opacity-60">
+            <button type="submit" disabled={pending} className="flex items-center gap-2 rounded-full bg-[#22d3ee] px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[#080a0c] transition hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] disabled:opacity-60 disabled:shadow-none">
               <Save size={13} /> {pending ? (isArabic ? "جارٍ الحفظ..." : "Saving...") : (isArabic ? "حفظ" : "Save")}
             </button>
           </form>

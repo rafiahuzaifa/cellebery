@@ -72,7 +72,7 @@ export function ProductReviews({ reviews, slug, locale, isArabic }: { reviews: P
                 <input name="title" placeholder={isArabic ? "عنوان (اختياري)" : "Title (optional)"} className="w-full border border-white/15 bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-white/30 focus:border-[#22d3ee]" />
                 <textarea name="comment" required minLength={10} rows={4} placeholder={isArabic ? "شاركنا رأيك..." : "Share your thoughts..."} className="w-full resize-none border border-white/15 bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-white/30 focus:border-[#22d3ee]" />
                 {state?.error && <p className="flex items-center gap-2 text-xs text-red-300"><AlertCircle size={13} className="shrink-0" /> {state.error}</p>}
-                <button type="submit" disabled={pending || rating === 0} className="w-full bg-[#22d3ee] px-4 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#080a0c] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
+                <button type="submit" disabled={pending || rating === 0} className="w-full rounded-full bg-[#22d3ee] px-4 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#080a0c] transition hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none">
                   {pending ? (isArabic ? "جارٍ الإرسال..." : "Submitting...") : (isArabic ? "إرسال التقييم" : "Submit review")}
                 </button>
               </form>

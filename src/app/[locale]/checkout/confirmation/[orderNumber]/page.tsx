@@ -32,10 +32,10 @@ export default async function CheckoutConfirmationPage({ params }: PageProps<"/[
             <p className="mt-4 max-w-md text-sm leading-7 text-white/50">
               {isArabic ? "إذا خصم المبلغ من بطاقتك، سيتم تأكيد طلبك تلقائياً خلال دقائق." : "If your card was charged, your order will confirm automatically within a few minutes."}
             </p>
-            {orderNumber && <Link href={`/${locale}/checkout/pay/${orderNumber}`} className="mt-6 inline-flex items-center gap-2 border border-white/20 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.16em] text-white/70 hover:border-[#22d3ee] hover:text-[#22d3ee]">{isArabic ? "المحاولة مرة أخرى" : "Try again"}</Link>}
+            {orderNumber && <Link href={`/${locale}/checkout/pay/${orderNumber}`} className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.16em] text-white/70 transition hover:border-[#22d3ee] hover:text-[#22d3ee]">{isArabic ? "المحاولة مرة أخرى" : "Try again"}</Link>}
           </>
         )}
-        <Link href={`/${locale}/shop`} className="mt-9 inline-flex items-center gap-6 bg-[#22d3ee] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c]">{isArabic ? "متابعة التسوق" : "Continue shopping"}</Link>
+        <Link href={`/${locale}/shop`} className="mt-9 inline-flex items-center gap-6 rounded-full bg-[#22d3ee] px-7 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:shadow-[0_0_28px_rgba(34,211,238,0.45)]">{isArabic ? "متابعة التسوق" : "Continue shopping"}</Link>
       </section>
     </main>
   );

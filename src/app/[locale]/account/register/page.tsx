@@ -43,7 +43,7 @@ export default function AccountRegisterPage() {
             </p>
           )}
 
-          <button type="submit" disabled={pending} className="flex w-full items-center justify-center gap-2 bg-[#22d3ee] px-4 py-3.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#080a0c] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60">
+          <button type="submit" disabled={pending} className="flex w-full items-center justify-center gap-2 rounded-full bg-[#22d3ee] px-4 py-3.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#080a0c] transition hover:shadow-[0_0_28px_rgba(34,211,238,0.45)] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none">
             <UserPlus size={14} /> {pending ? (isArabic ? "جارٍ الإنشاء..." : "Creating...") : (isArabic ? "إنشاء حساب" : "Create account")} {!pending && <ArrowUpRight size={14} />}
           </button>
         </form>

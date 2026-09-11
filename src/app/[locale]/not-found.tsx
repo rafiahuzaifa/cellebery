@@ -45,10 +45,10 @@ export default function NotFound() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Link href={`/${locale}`} className="inline-flex items-center justify-center bg-[#22d3ee] px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#080a0c] transition hover:bg-white">
+            <Link href={`/${locale}`} className="inline-flex items-center justify-center rounded-full bg-[#22d3ee] px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#080a0c] transition hover:shadow-[0_0_28px_rgba(34,211,238,0.45)]">
               {copy.home}
             </Link>
-            <Link href={`/${locale}/shop`} className="inline-flex items-center justify-center border border-white/25 px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:border-[#22d3ee] hover:text-[#22d3ee]">
+            <Link href={`/${locale}/shop`} className="inline-flex items-center justify-center rounded-full border border-white/25 px-7 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:border-[#22d3ee] hover:text-[#22d3ee]">
               {copy.shop}
             </Link>
           </div>

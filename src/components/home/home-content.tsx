@@ -91,7 +91,7 @@ function NewsletterSection({ section, isArabic }: { section: HomepageSection; is
         ) : (
           <form onSubmit={(e) => { e.preventDefault(); if (valid) setSubscribed(true); }} className="flex w-full max-w-md flex-col gap-3 sm:flex-row">
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={isArabic ? "بريدك الإلكتروني" : "Your email address"} className="min-w-0 flex-1 border border-white/15 bg-transparent px-4 py-3.5 text-sm outline-none placeholder:text-white/30 focus:border-[#22d3ee]" />
-            <button type="submit" disabled={!valid} className="bg-[#22d3ee] px-6 py-3.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#080a0c] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">{t.ctaLabel || (isArabic ? "اشترك" : "Subscribe")}</button>
+            <button type="submit" disabled={!valid} className="rounded-full bg-[#22d3ee] px-6 py-3.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#080a0c] transition hover:shadow-[0_0_28px_rgba(34,211,238,0.45)] disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none">{t.ctaLabel || (isArabic ? "اشترك" : "Subscribe")}</button>
           </form>
         )}
       </div>
@@ -107,7 +107,7 @@ function GenericBanner({ section, isArabic, locale }: { section: HomepageSection
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#22d3ee]">CELIBERY</p>
         <h2 className="display-font text-4xl font-semibold uppercase leading-[0.95] sm:text-5xl">{t.title}</h2>
         <p className="max-w-md text-sm leading-7 text-white/55">{t.subtitle}</p>
-        {t.ctaLabel && <Link href={`/${locale}/shop`} className="mt-2 inline-flex items-center gap-4 bg-[#22d3ee] px-5 py-3.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white">{t.ctaLabel} <ArrowUpRight size={14} /></Link>}
+        {t.ctaLabel && <Link href={`/${locale}/shop`} className="mt-2 inline-flex items-center gap-4 rounded-full bg-[#22d3ee] px-7 py-3.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:shadow-[0_0_28px_rgba(34,211,238,0.45)]">{t.ctaLabel} <ArrowUpRight size={14} /></Link>}
       </div>
     </section>
   );
@@ -190,8 +190,8 @@ export function HomeContent({ products: allProducts, sections, heroSlides }: { p
                   </div>
                 </div>
                 <div className="mt-6 flex flex-wrap items-center gap-4">
-                  <button onClick={() => addItem({ id: featuredProduct.id, name: ft.name, price, image: featuredProduct.image })} className="inline-flex items-center gap-4 bg-[#22d3ee] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:bg-white"><ShoppingBag size={15} /> {copy.addToCart}</button>
-                  <Link href={`/${locale}/shop/${featuredProduct.id}`} className="inline-flex items-center gap-6 border border-white/20 px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:border-[#22d3ee] hover:text-[#22d3ee]">{t.ctaLabel || copy.discoverX7} <ArrowUpRight size={15} /></Link>
+                  <button onClick={() => addItem({ id: featuredProduct.id, name: ft.name, price, image: featuredProduct.image })} className="inline-flex items-center gap-4 rounded-full bg-[#22d3ee] px-7 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:shadow-[0_0_28px_rgba(34,211,238,0.45)]"><ShoppingBag size={15} /> {copy.addToCart}</button>
+                  <Link href={`/${locale}/shop/${featuredProduct.id}`} className="inline-flex items-center gap-6 rounded-full border border-white/20 px-7 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition hover:border-[#22d3ee] hover:text-[#22d3ee]">{t.ctaLabel || copy.discoverX7} <ArrowUpRight size={15} /></Link>
                 </div>
               </div>
               <div className="relative aspect-[1.1] overflow-hidden bg-[#171d1e]">

@@ -90,7 +90,7 @@ export function ProductDetail({ product, locale, reviews = [] }: { product: Admi
           <button
             disabled={!inStock}
             onClick={() => { addItem({ id: product.id, name: t.name, price, image: product.image }); setAdded(true); }}
-            className="mt-9 flex w-full items-center justify-between bg-[#22d3ee] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.17em] text-[#080a0c] transition hover:bg-white disabled:cursor-not-allowed disabled:bg-white/15 disabled:text-white/40 sm:w-80"
+            className="mt-9 flex w-full items-center justify-between rounded-full bg-[#22d3ee] px-7 py-4 text-[10px] font-bold uppercase tracking-[0.17em] text-[#080a0c] transition hover:shadow-[0_0_28px_rgba(34,211,238,0.45)] disabled:cursor-not-allowed disabled:bg-white/15 disabled:text-white/40 disabled:shadow-none sm:w-80"
           >
             {!inStock ? labels.outOfStock : added ? labels.added : labels.add} {inStock && <ArrowUpRight size={16} />}
           </button>

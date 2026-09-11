@@ -57,7 +57,7 @@ export default function WishlistPage() {
         <section className="mx-auto max-w-[1440px] px-6 pb-32 lg:px-12">
           <div className="border border-white/10 bg-[#101416] px-6 py-24 text-center">
             <p className="text-sm text-white/50">{labels.empty}</p>
-            <Link href={`/${locale}/shop`} className="mt-7 inline-flex items-center gap-5 bg-[#22d3ee] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c]">{labels.explore}<ArrowUpRight size={15} /></Link>
+            <Link href={`/${locale}/shop`} className="mt-7 inline-flex items-center gap-5 rounded-full bg-[#22d3ee] px-7 py-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#080a0c] transition hover:shadow-[0_0_28px_rgba(34,211,238,0.45)]">{labels.explore}<ArrowUpRight size={15} /></Link>
           </div>
         </section>
       ) : (
