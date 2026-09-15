@@ -120,8 +120,26 @@ model Category {
   translations CategoryTranslation[]
   products     Product[]
   promotions   PromotionCategory[]
+  navItems     NavItem[]
   createdAt    DateTime              @default(now())
   updatedAt    DateTime              @updatedAt
+}
+
+model NavItem {
+  id            String    @id @default(cuid())
+  labelEn       String
+  labelAr       String
+  linkType      String    @default("custom") // "custom" | "category"
+  customPath    String? // e.g. "/shop", "/blog", "#story", "/shop?sort=newest" (no locale prefix)
+  categoryId    String?
+  category      Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  sortOrder     Int       @default(0)
+  enabled       Boolean   @default(true)
+  showInPrimary Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([sortOrder])
 }
 
 model CategoryTranslation {

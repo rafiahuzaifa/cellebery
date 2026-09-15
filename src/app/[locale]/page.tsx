@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getPublicProducts } from "@/actions/products";
 import { getHomepageSections } from "@/actions/homepage";
 import { getPublicHeroCampaigns } from "@/actions/hero-campaigns";
+import { getPublicCategoryOptions } from "@/actions/categories";
 import { HomeContent } from "@/components/home/home-content";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]">): Promise<Metadata> {
@@ -15,6 +16,6 @@ export async function generateMetadata({ params }: PageProps<"/[locale]">): Prom
 }
 
 export default async function Home() {
-  const [products, sections, heroSlides] = await Promise.all([getPublicProducts(), getHomepageSections(), getPublicHeroCampaigns()]);
-  return <HomeContent products={products} sections={sections} heroSlides={heroSlides} />;
+  const [products, sections, heroSlides, categories] = await Promise.all([getPublicProducts(), getHomepageSections(), getPublicHeroCampaigns(), getPublicCategoryOptions()]);
+  return <HomeContent products={products} sections={sections} heroSlides={heroSlides} categories={categories} />;
 }

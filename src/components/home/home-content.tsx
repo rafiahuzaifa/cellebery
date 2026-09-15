@@ -5,12 +5,15 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { MediaVideo } from "@/components/media-video";
 import { HeroCarousel } from "@/components/home/hero-carousel";
+import { ScrollGallery } from "@/components/home/scroll-gallery";
+import { LifestyleParallax } from "@/components/home/lifestyle-parallax";
 import { useLocale } from "@/components/locale-provider";
 import { useCart } from "@/components/cart-provider";
 import { useWishlist } from "@/components/wishlist-provider";
 import type { AdminProduct } from "@/lib/admin/catalog";
 import type { HomepageSection } from "@/actions/homepage";
 import type { PublicHeroSlide } from "@/actions/hero-campaigns";
+import type { PublicCategoryOption } from "@/actions/categories";
 import { useState } from "react";
 import {
   ArrowUpRight,
@@ -24,6 +27,7 @@ import {
   Headphones,
   Home as HomeIcon,
   Mail,
+  Package,
   Plane,
   ShieldCheck,
   ShoppingBag,
@@ -31,13 +35,14 @@ import {
   Speaker,
   Star,
   Volume2,
+  type LucideIcon,
 } from "lucide-react";
 
-const categories = [
-  { label: "Headphones", filterValue: "headphones", detail: "Immersive. Powerful. Personal.", image: "/products/headphones-classic.jpg", icon: Headphones },
-  { label: "Earbuds", filterValue: "earbuds", detail: "Small form. Big sound.", image: "/products/earbuds-case.jpg", icon: Ear },
-  { label: "Speakers", filterValue: "speakers", detail: "Turn every moment up.", image: "/products/speaker-hero.jpg", icon: Speaker },
-];
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  headphones: Headphones,
+  earbuds: Ear,
+  speakers: Speaker,
+};
 
 const whyItems = [
   { icon: Sparkles, en: ["Premium Sound", "Studio-grade drivers tuned for clarity."], ar: ["صوت فاخر", "دقة استوديو في كل تردد."] },
@@ -51,17 +56,6 @@ const lifestyleItems = [
   { key: "work", image: "/lifestyle/work.jpg", icon: Briefcase, en: ["Work", "Focus without distractions."], ar: ["العمل", "تركيز بلا تشتيت."] },
   { key: "fitness", video: "/Friends_playing_football_with_sp%E2%80%A6_202609080042.mp4", icon: Dumbbell, en: ["Fitness", "Music that keeps you moving."], ar: ["اللياقة", "موسيقى تواكب حركتك."] },
   { key: "home", image: "/lifestyle/home.jpg", icon: HomeIcon, en: ["Home", "Fill every room with sound."], ar: ["المنزل", "املأ كل غرفة بالصوت."] },
-];
-
-const mediaGallery = [
-  { type: "image", src: "/lifestyle/travel.jpg", className: "" },
-  { type: "image", src: "/products/earbuds-hero.jpg", className: "" },
-  { type: "video", src: "/CELIBERY_Bluetooth_speaker_comme%E2%80%A6_202609080042.mp4", className: "gallery-tile--tall" },
-  { type: "image", src: "/lifestyle/work.jpg", className: "" },
-  { type: "image", src: "/products/speaker-hero.jpg", className: "" },
-  { type: "video", src: "/Friends_playing_football_with_sp%E2%80%A6_202609080042.mp4", className: "" },
-  { type: "image", src: "/lifestyle/home.jpg", className: "" },
-  { type: "video", src: "/WhatsApp%20Video%202026-09-08%20at%2007.52.47.mp4", className: "gallery-tile--wide" },
 ];
 
 function RatingStars({ rating }: { rating: number }) {
@@ -113,7 +107,7 @@ function GenericBanner({ section, isArabic, locale }: { section: HomepageSection
   );
 }
 
-export function HomeContent({ products: allProducts, sections, heroSlides }: { products: AdminProduct[]; sections: HomepageSection[]; heroSlides: PublicHeroSlide[] }) {
+export function HomeContent({ products: allProducts, sections, heroSlides, categories }: { products: AdminProduct[]; sections: HomepageSection[]; heroSlides: PublicHeroSlide[]; categories: PublicCategoryOption[] }) {
   const { isArabic, locale } = useLocale();
   const { addItem } = useCart();
   const { isSaved, toggleItem } = useWishlist();
@@ -152,21 +146,26 @@ export function HomeContent({ products: allProducts, sections, heroSlides }: { p
               <Link href={`/${locale}/shop`} className="hidden items-center gap-2 text-[10px] uppercase tracking-[0.17em] text-white/60 transition hover:text-[#22d3ee] sm:flex">{copy.viewAll} <ArrowUpRight size={15} /></Link>
             </div>
             <div className="grid gap-4 md:grid-cols-3">
-              {categories.map((category) => (
-                <motion.a whileHover={{ y: -5 }} transition={{ duration: 0.25 }} href={`/${locale}/shop?category=${category.filterValue}`} key={category.label} className="group relative aspect-[0.82] overflow-hidden bg-[#151a1c] p-6 sm:p-8">
-                  <div className="product-media absolute inset-0 opacity-80 transition duration-700 group-hover:opacity-100" style={{ backgroundImage: `url(${category.image})` }} />
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#080a0c] to-transparent" />
-                  <div className="absolute inset-0 border border-white/10 transition group-hover:border-[#22d3ee]/60" />
-                  <div className="relative flex h-full flex-col justify-between">
-                    <span className="flex size-10 items-center justify-center rounded-full border border-white/30 bg-[#080a0c]/50 text-[#22d3ee] backdrop-blur-sm"><category.icon size={16} strokeWidth={1.5} /></span>
-                    <div>
-                      <h3 className="display-font text-4xl font-semibold uppercase">{category.label}</h3>
-                      <p className="mt-2 text-sm text-white/55">{category.detail}</p>
-                      <span className="mt-7 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#22d3ee] opacity-0 transition group-hover:opacity-100">Explore <ArrowUpRight size={14} /></span>
+              {categories.map((category) => {
+                const Icon = CATEGORY_ICONS[category.slug] ?? Package;
+                const label = isArabic ? category.ar.name : category.en.name;
+                const detail = isArabic ? category.ar.description : category.en.description;
+                return (
+                  <motion.a whileHover={{ y: -5 }} transition={{ duration: 0.25 }} href={`/${locale}/shop?category=${category.slug}`} key={category.id} className="group relative aspect-[0.82] overflow-hidden bg-[#151a1c] p-6 sm:p-8">
+                    {category.imageUrl && <div className="product-media absolute inset-0 opacity-80 transition duration-700 group-hover:opacity-100" style={{ backgroundImage: `url(${category.imageUrl})` }} />}
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#080a0c] to-transparent" />
+                    <div className="absolute inset-0 border border-white/10 transition group-hover:border-[#22d3ee]/60" />
+                    <div className="relative flex h-full flex-col justify-between">
+                      <span className="flex size-10 items-center justify-center rounded-full border border-white/30 bg-[#080a0c]/50 text-[#22d3ee] backdrop-blur-sm"><Icon size={16} strokeWidth={1.5} /></span>
+                      <div>
+                        <h3 className="display-font text-4xl font-semibold uppercase">{label}</h3>
+                        {detail && <p className="mt-2 text-sm text-white/55">{detail}</p>}
+                        <span className="mt-7 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#22d3ee] opacity-0 transition group-hover:opacity-100">Explore <ArrowUpRight size={14} /></span>
+                      </div>
                     </div>
-                  </div>
-                </motion.a>
-              ))}
+                  </motion.a>
+                );
+              })}
             </div>
           </section>
         );
@@ -236,26 +235,7 @@ export function HomeContent({ products: allProducts, sections, heroSlides }: { p
                   <h2 className="display-font text-5xl font-semibold uppercase sm:text-7xl">{t.title}</h2>
                 </div>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {lifestyleItems.map(({ key, image, video, icon: Icon, en, ar }) => {
-                  const [title, caption] = isArabic ? ar : en;
-                  return (
-                    <div key={key} className="group relative aspect-[3/4] overflow-hidden bg-[#151a1c]">
-                      {video ? (
-                        <video className="absolute inset-0 h-full w-full object-cover opacity-75 transition duration-700 group-hover:opacity-95" autoPlay muted loop playsInline preload="metadata">
-                          <source src={video} type="video/mp4" />
-                        </video>
-                      ) : (
-                        <div className="full-media absolute inset-0 opacity-75 transition duration-700 group-hover:opacity-95" style={{ backgroundImage: `url(${image})` }} />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#080a0c] via-[#080a0c]/10 to-transparent" />
-                      <div className="absolute inset-0 border border-white/10 transition group-hover:border-[#22d3ee]/50" />
-                      <span className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-white/25 bg-[#080a0c]/50 text-[#22d3ee] backdrop-blur-sm"><Icon size={15} strokeWidth={1.5} /></span>
-                      <div className="absolute bottom-5 left-5 right-5"><h3 className="text-xl font-semibold uppercase tracking-[-0.02em]">{title}</h3><p className="mt-1.5 text-xs leading-5 text-white/55">{caption}</p></div>
-                    </div>
-                  );
-                })}
-              </div>
+              <LifestyleParallax items={lifestyleItems} isArabic={isArabic} />
             </div>
           </section>
         );
@@ -343,22 +323,14 @@ export function HomeContent({ products: allProducts, sections, heroSlides }: { p
         </div>
       </section>
 
-      <section className="border-b border-white/10 px-6 py-24 lg:px-12 lg:py-32">
-        <div className="mx-auto max-w-[1440px]">
+      <section className="border-b border-white/10 py-24 lg:py-32">
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
           <div className="mb-10 flex items-end justify-between gap-6">
             <div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#22d3ee]">CELIBERY / In the wild</p><h2 className="display-font max-w-xl text-5xl font-semibold uppercase leading-[0.9] sm:text-7xl">Sound<br /><span className="text-white/35">in motion.</span></h2></div>
             <p className="hidden max-w-xs text-right text-xs leading-6 text-white/45 sm:block">Designed for real days, long nights, open roads, and every room in between.</p>
           </div>
-          <div className="gallery-grid">
-            {mediaGallery.map((media) => media.type === "video" ? (
-              <div key={media.src} className={`gallery-tile gallery-video-tile ${media.className}`}>
-                <MediaVideo src={media.src} className="h-full w-full" label={isArabic ? "تفعيل أو كتم صوت الفيديو" : "Toggle sound"} />
-              </div>
-            ) : (
-              <div key={media.src} className={`gallery-tile gallery-image-tile ${media.className}`} style={{ backgroundImage: `url(${media.src})` }} />
-            ))}
-          </div>
         </div>
+        <ScrollGallery isArabic={isArabic} />
       </section>
 
       <section id="story" className="mx-auto grid max-w-[1440px] gap-12 px-6 py-24 lg:grid-cols-[1fr_1fr] lg:items-end lg:px-12 lg:py-36"><div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#22d3ee]">{isArabic ? "لماذا CELIBERY" : "Why CELIBERY"}</p><h2 className="display-font max-w-2xl text-5xl font-semibold uppercase leading-[0.9] sm:text-7xl">{isArabic ? <>الصوت يجب<br /><span className="text-white/35">أن يرافقك.</span></> : <>Sound should<br /><span className="text-white/35">follow you.</span></>}</h2></div><div className="max-w-md justify-self-end"><div className="mb-8 flex items-center gap-3 text-[#22d3ee]"><Volume2 size={19} strokeWidth={1.5} /><span className="text-[10px] uppercase tracking-[0.18em]">{isArabic ? "مصمم لكل تردد" : "Built for every frequency"}</span></div><p className="text-lg leading-8 text-white/55">{isArabic ? "من أول نغمة في الرياض إلى آخر ضوء على البحر الأحمر، تمنحك CELIBERY تفاصيل وعمقاً وحرية في كل لحظة." : "From the first note in Riyadh to the last light on the Red Sea, CELIBERY brings detail, depth, and freedom to every moment."}</p><Link href={`/${locale}/shop`} className="mt-8 inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.18em] transition hover:text-[#22d3ee]">{isArabic ? "فلسفتنا" : "Our philosophy"} <ArrowUpRight size={15} /></Link></div></section>

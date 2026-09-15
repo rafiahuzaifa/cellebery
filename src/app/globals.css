@@ -173,6 +173,15 @@ a {
     grid-row: span 2;
   }
 
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   @media (min-width: 768px) {
     .gallery-grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));

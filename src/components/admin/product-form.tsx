@@ -5,16 +5,18 @@ import { useState, useTransition } from "react";
 import { AlertCircle, ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
 import { useLocale } from "@/components/locale-provider";
-import { categoryOptions, translationStatus, useCaseOptions, type AdminProduct } from "@/lib/admin/catalog";
+import { translationStatus, useCaseOptions, type AdminProduct } from "@/lib/admin/catalog";
+import type { PublicCategoryOption } from "@/actions/categories";
 import { upsertAdminProductAction } from "@/actions/products";
 
 const emptyTranslation = { name: "", shortDescription: "", description: "", features: [] as string[], seoTitle: "", seoDescription: "" };
 
-function blankProduct(): AdminProduct {
+function blankProduct(defaultCategory: string): AdminProduct {
   return {
     id: "",
     sku: "",
-    category: "headphones",
+    category: defaultCategory,
+    categoryName: { en: "", ar: "" },
     price: 0,
     salePrice: null,
     stock: 0,
@@ -33,10 +35,10 @@ function blankProduct(): AdminProduct {
   };
 }
 
-export function ProductForm({ initial }: { initial?: AdminProduct }) {
+export function ProductForm({ initial, categoryOptions }: { initial?: AdminProduct; categoryOptions: PublicCategoryOption[] }) {
   const { isArabic } = useLocale();
   const router = useRouter();
-  const [product, setProduct] = useState<AdminProduct>(initial ?? blankProduct());
+  const [product, setProduct] = useState<AdminProduct>(initial ?? blankProduct(categoryOptions[0]?.slug ?? ""));
   const [activeTab, setActiveTab] = useState<"en" | "ar">("en");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -169,8 +171,8 @@ export function ProductForm({ initial }: { initial?: AdminProduct }) {
             <h2 className="mb-4 text-sm font-semibold text-white/85">{isArabic ? "التنظيم" : "Organization"}</h2>
             <div className="space-y-4">
               <Field label={isArabic ? "الفئة" : "Category"}>
-                <select value={product.category} onChange={(e) => setProduct({ ...product, category: e.target.value as AdminProduct["category"] })} className="admin-input">
-                  {categoryOptions.map((option) => <option key={option.value} value={option.value}>{isArabic ? option.ar : option.en}</option>)}
+                <select value={product.category} onChange={(e) => setProduct({ ...product, category: e.target.value })} className="admin-input">
+                  {categoryOptions.map((option) => <option key={option.slug} value={option.slug}>{isArabic ? option.ar.name : option.en.name}</option>)}
                 </select>
               </Field>
               <Field label={isArabic ? "الحالة" : "Status"}>

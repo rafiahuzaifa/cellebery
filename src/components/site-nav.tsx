@@ -9,6 +9,20 @@ import { useEffect, useState } from "react";
 import { LanguageToggle, useLocale } from "@/components/locale-provider";
 import { useCart } from "@/components/cart-provider";
 import { useWishlist } from "@/components/wishlist-provider";
+import { getPublicNavItems, type PublicNavItem } from "@/actions/navigation";
+
+// Shown until the DB-backed nav items load client-side (see the effect below) —
+// keeps first paint identical to the admin-managed default so there's no flash.
+const FALLBACK_NAV_ITEMS: PublicNavItem[] = [
+  { id: "shop", en: "Shop", ar: "المتجر", path: "/shop", showInPrimary: true },
+  { id: "headphones", en: "Headphones", ar: "سماعات الرأس", path: "/shop?category=headphones", showInPrimary: true },
+  { id: "earbuds", en: "Earbuds", ar: "سماعات الأذن", path: "/shop?category=earbuds", showInPrimary: true },
+  { id: "speakers", en: "Speakers", ar: "مكبرات الصوت", path: "/shop?category=speakers", showInPrimary: true },
+  { id: "accessories", en: "Accessories", ar: "الإكسسوارات", path: "/shop?category=accessories", showInPrimary: false },
+  { id: "new-arrivals", en: "New arrivals", ar: "وصل حديثاً", path: "/shop?sort=newest", showInPrimary: false },
+  { id: "journal", en: "Journal", ar: "المجلة", path: "/blog", showInPrimary: false },
+  { id: "story", en: "Our story", ar: "قصتنا", path: "#story", showInPrimary: true },
+];
 
 export function SiteNav({ overlay = false }: { overlay?: boolean }) {
   const { isArabic, locale } = useLocale();
@@ -16,33 +30,18 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
   const { items: wishlistItems } = useWishlist();
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [navItems, setNavItems] = useState<PublicNavItem[]>(FALLBACK_NAV_ITEMS);
+
+  useEffect(() => {
+    getPublicNavItems().then((items) => { if (items.length > 0) setNavItems(items); }).catch(() => {});
+  }, []);
+
   // Full set (shown in the mobile/tablet drawer, where vertical space is cheap).
-  const links = isArabic
-    ? [
-        ["المتجر", `/${locale}/shop`],
-        ["سماعات الرأس", `/${locale}/shop?category=headphones`],
-        ["سماعات الأذن", `/${locale}/shop?category=earbuds`],
-        ["مكبرات الصوت", `/${locale}/shop?category=speakers`],
-        ["الإكسسوارات", `/${locale}/shop?category=accessories`],
-        ["وصل حديثاً", `/${locale}/shop?sort=newest`],
-        ["المجلة", `/${locale}/blog`],
-        ["قصتنا", `/${locale}#story`],
-      ]
-    : [
-        ["Shop", `/${locale}/shop`],
-        ["Headphones", `/${locale}/shop?category=headphones`],
-        ["Earbuds", `/${locale}/shop?category=earbuds`],
-        ["Speakers", `/${locale}/shop?category=speakers`],
-        ["Accessories", `/${locale}/shop?category=accessories`],
-        ["New arrivals", `/${locale}/shop?sort=newest`],
-        ["Journal", `/${locale}/blog`],
-        ["Our story", `/${locale}#story`],
-      ];
-  // Trimmed set for the inline desktop row, so it reliably fits on one line
-  // from the standard lg (1024px) breakpoint instead of wrapping into the
-  // hero — Accessories/New arrivals/Journal stay one click away via the Shop
-  // page's own filters and the drawer above.
-  const primaryLinks = [links[0], links[1], links[2], links[3], links[7]];
+  const links = navItems.map((item) => [isArabic ? item.ar : item.en, `/${locale}${item.path}`] as const);
+  // Trimmed set for the inline desktop row, admin-controlled via "show in
+  // desktop row", so it reliably fits on one line instead of wrapping into
+  // the hero — everything else stays one click away via the drawer above.
+  const primaryLinks = navItems.filter((item) => item.showInPrimary).map((item) => [isArabic ? item.ar : item.en, `/${locale}${item.path}`] as const);
   const textTone = overlay ? "text-white" : "text-white/80";
   const borderTone = overlay ? "border-white/15" : "border-white/15";
   const navPosition = overlay ? "absolute inset-x-0 top-0" : "relative";

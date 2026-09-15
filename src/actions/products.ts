@@ -3,14 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
 import type { Prisma, ProductStatus as DbProductStatus } from "@prisma/client";
-import type { AdminCategory, AdminProduct, AdminProductStatus, AdminProductTranslation } from "@/lib/admin/catalog";
+import type { AdminProduct, AdminProductStatus, AdminProductTranslation } from "@/lib/admin/catalog";
 
 const STATUS_TO_DB: Record<AdminProductStatus, DbProductStatus> = { draft: "DRAFT", active: "ACTIVE", archived: "ARCHIVED" };
 const STATUS_FROM_DB: Record<DbProductStatus, AdminProductStatus> = { DRAFT: "draft", ACTIVE: "active", ARCHIVED: "archived" };
 
 const PRODUCT_INCLUDE = {
   translations: true,
-  category: true,
+  category: { include: { translations: true } },
   inventory: true,
   images: { orderBy: { sortOrder: "asc" as const }, take: 1 },
   specifications: { where: { locale: "en" } },
@@ -37,10 +37,14 @@ function toAdminProduct(product: ProductWithRelations): AdminProduct {
   const specs: Record<string, string> = {};
   for (const spec of product.specifications) specs[spec.key] = spec.value;
 
+  const categoryEn = product.category.translations.find((t) => t.locale === "en");
+  const categoryAr = product.category.translations.find((t) => t.locale === "ar");
+
   return {
     id: product.slug,
     sku: product.sku,
-    category: product.category.slug as AdminCategory,
+    category: product.category.slug,
+    categoryName: { en: categoryEn?.name ?? product.category.slug, ar: categoryAr?.name ?? categoryEn?.name ?? product.category.slug },
     price: Number(product.price),
     salePrice: product.salePrice != null ? Number(product.salePrice) : null,
     stock: product.inventory?.stock ?? 0,

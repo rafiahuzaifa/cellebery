@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLocale } from "@/components/locale-provider";
 import { SiteNav } from "@/components/site-nav";
 import { useCart } from "@/components/cart-provider";
-import { categoryOptions, type AdminProduct } from "@/lib/admin/catalog";
+import type { AdminProduct } from "@/lib/admin/catalog";
 import { ProductReviews } from "@/components/shop/product-reviews";
 import type { PublicReview } from "@/actions/reviews";
 import { useState } from "react";
@@ -63,7 +63,6 @@ export function ProductDetail({ product, locale, reviews = [] }: { product: Admi
 
   const t = isArabic && product.ar.name ? product.ar : product.en;
   const features = t.features.length > 0 ? t.features : product.en.features;
-  const category = categoryOptions.find((c) => c.value === product.category);
   const price = product.salePrice ?? product.price;
   const inStock = product.stock > 0;
 
@@ -78,7 +77,7 @@ export function ProductDetail({ product, locale, reviews = [] }: { product: Admi
           {product.salePrice && <span className="absolute right-6 top-6 rounded-full bg-[#22d3ee] px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[#080a0c]">{Math.round(100 - (product.salePrice / product.price) * 100)}% {isArabic ? "خصم" : "OFF"}</span>}
         </div>
         <div>
-          <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#22d3ee]">{isArabic ? category?.ar : category?.en}</p>
+          <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#22d3ee]">{isArabic ? product.categoryName.ar : product.categoryName.en}</p>
           <h1 className="display-font text-7xl font-semibold uppercase leading-[0.85] sm:text-8xl">{t.name}</h1>
           <div className="mt-5 flex items-center gap-3"><RatingStars rating={product.rating} /><span className="text-xs text-white/45">{product.rating} ({product.reviewCount} {isArabic ? "تقييم" : "reviews"})</span></div>
           <p className="mt-8 max-w-md text-base leading-8 text-white/55">{t.description}</p>

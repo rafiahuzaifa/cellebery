@@ -1,5 +1,4 @@
 export type AdminProductStatus = "draft" | "active" | "archived";
-export type AdminCategory = "headphones" | "earbuds" | "speakers" | "accessories";
 
 export type AdminProductTranslation = {
   name: string;
@@ -13,7 +12,8 @@ export type AdminProductTranslation = {
 export type AdminProduct = {
   id: string;
   sku: string;
-  category: AdminCategory;
+  category: string;
+  categoryName: { en: string; ar: string };
   price: number;
   salePrice: number | null;
   stock: number;
@@ -43,13 +43,6 @@ export function translationStatus(product: AdminProduct): "complete" | "partial"
   if (filled === 0) return "missing";
   return "partial";
 }
-
-export const categoryOptions: { value: AdminCategory; en: string; ar: string }[] = [
-  { value: "headphones", en: "Headphones", ar: "سماعات الرأس" },
-  { value: "earbuds", en: "Earbuds", ar: "سماعات الأذن" },
-  { value: "speakers", en: "Speakers", ar: "مكبرات الصوت" },
-  { value: "accessories", en: "Accessories", ar: "الإكسسوارات" },
-];
 
 export const useCaseOptions: { value: string; en: string; ar: string }[] = [
   { value: "music", en: "Music", ar: "الموسيقى" },

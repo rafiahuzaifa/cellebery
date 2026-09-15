@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Copy, Eye, EyeOff, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { useLocale } from "@/components/locale-provider";
-import { categoryOptions, type AdminProduct } from "@/lib/admin/catalog";
+import type { AdminProduct } from "@/lib/admin/catalog";
+import type { PublicCategoryOption } from "@/actions/categories";
 import { TranslationBadge } from "@/components/admin/translation-badge";
 import { deleteAdminProductAction, duplicateAdminProductAction, setAdminProductStatusAction } from "@/actions/products";
 
@@ -15,7 +16,7 @@ const statusTone: Record<string, string> = {
   archived: "text-white/40 bg-white/5",
 };
 
-export function ProductsTable({ products }: { products: AdminProduct[] }) {
+export function ProductsTable({ products, categoryOptions }: { products: AdminProduct[]; categoryOptions: PublicCategoryOption[] }) {
   const { isArabic } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -54,7 +55,7 @@ export function ProductsTable({ products }: { products: AdminProduct[] }) {
         </label>
         <select value={category} onChange={(event) => setCategory(event.target.value)} className="rounded-lg border border-white/12 bg-[#101416] px-3 py-2.5 text-xs text-white/70 outline-none focus:border-[#22d3ee]">
           <option value="all">{isArabic ? "كل الفئات" : "All categories"}</option>
-          {categoryOptions.map((option) => <option key={option.value} value={option.value}>{isArabic ? option.ar : option.en}</option>)}
+          {categoryOptions.map((option) => <option key={option.slug} value={option.slug}>{isArabic ? option.ar.name : option.en.name}</option>)}
         </select>
         <span className="text-[11px] text-white/35">{filtered.length} {isArabic ? "منتج" : "products"}</span>
         {isPending && <span className="text-[11px] text-[#22d3ee]">{isArabic ? "جارٍ التحديث..." : "Updating..."}</span>}
@@ -81,7 +82,7 @@ export function ProductsTable({ products }: { products: AdminProduct[] }) {
                     <div className="size-10 shrink-0 rounded-lg bg-cover bg-center" style={{ backgroundImage: `url(${product.image})` }} />
                     <div className="min-w-0">
                       <p className="truncate font-medium text-white/85">{isArabic ? product.ar.name || product.en.name : product.en.name}</p>
-                      <p className="text-[10px] text-white/40">{isArabic ? categoryOptions.find((c) => c.value === product.category)?.ar : categoryOptions.find((c) => c.value === product.category)?.en}</p>
+                      <p className="text-[10px] text-white/40">{isArabic ? product.categoryName.ar : product.categoryName.en}</p>
                     </div>
                   </div>
                 </td>

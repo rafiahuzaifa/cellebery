@@ -2,10 +2,11 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { ProductForm } from "@/components/admin/product-form";
 import { getAdminProductBySlug } from "@/actions/products";
+import { getPublicCategoryOptions } from "@/actions/categories";
 
 export default async function EditAdminProductPage({ params }: PageProps<"/admin/products/[id]">) {
   const { id } = await params;
-  const product = await getAdminProductBySlug(id);
+  const [product, categoryOptions] = await Promise.all([getAdminProductBySlug(id), getPublicCategoryOptions()]);
 
   if (!product) {
     return (
@@ -16,5 +17,5 @@ export default async function EditAdminProductPage({ params }: PageProps<"/admin
     );
   }
 
-  return <ProductForm initial={product} />;
+  return <ProductForm initial={product} categoryOptions={categoryOptions} />;
 }

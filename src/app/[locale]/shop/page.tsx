@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getPublicProducts } from "@/actions/products";
+import { getPublicCategoryOptions } from "@/actions/categories";
 import { ShopPageContent } from "@/components/shop/shop-page-content";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/shop">): Promise<Metadata> {
@@ -16,10 +17,10 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/shop">):
 }
 
 export default async function ShopPage() {
-  const products = await getPublicProducts();
+  const [products, categoryOptions] = await Promise.all([getPublicProducts(), getPublicCategoryOptions()]);
   return (
     <Suspense fallback={<main className="min-h-screen bg-[#080a0c]" />}>
-      <ShopPageContent products={products} />
+      <ShopPageContent products={products} categoryOptions={categoryOptions} />
     </Suspense>
   );
 }
